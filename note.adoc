@@ -1,0 +1,20 @@
+# Typescript React apollo (Client) 
+// https://hasura.io/learn/graphql/typescript-react-apollo/intro-to-graphql/1-architecture/
+
+
+// https://www.freecodecamp.org/news/react-apollo-client-2020-tutorial/
+
+// https://swizec.com/blog/how-react-query-gives-you-almost-everything-you-thought-you-needed-graphql-for/
+
+
+> npx create-react-app <projectName> --use-npm
+> cd <projectName>
+> npm i typescript web-vitals --save-dev
+
+> npm i typescript @types/node @types/react
+
+> npx tsc --init
+
+> npm i @apollo/react-hooks apollo-client graphql graphql-tag apollo-cache-inmemory apollo-link-ws
+
+> npm audit fix
