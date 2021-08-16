@@ -1,33 +1,46 @@
-import React from 'react'; 
-import { ApolloProvider } from "@apollo/client";
+import React, { useEffect, useState } from 'react'; 
+import { ApolloProvider } from "@apollo/client"; 
+
+//import { TestComponent } from '@fredjgermain/reactutils/lib/component/test.component'; 
 
 // --------------------------------------------------------
 import { client } from './libs/apolloclient'; 
-import { TestCrud, TestModel } from './components/testcrud.components'; 
-
-
-
-
-const forminputs = [
-  {fid:'asdsaasdasd', 
-  title:['', ''], 
-  description: ['', ''], 
-}] as any[]; 
+import { Dao } from './libs/dao/dao.class';
+//import { TestCrud, TestModel } from './components/testcrud.components'; 
 
 
 export default function Apptypescript() { 
   //<Query_Test/> 
   // <Mutation_Create/> 
-  return <ApolloProvider {...{client}} >
-    <TestModel modelName={'Form'} /> 
-    <TestCrud modelName={'Form'} /> 
-    <TestCrud modelName={'Form'} /> 
-    <TestCrud modelName={'Question'} /> 
-    <TestCrud modelName={'ResponseGroup'} /> 
-    <TestCrud modelName={'Patient'} /> 
+  return <ApolloProvider {...{client}} > 
+    <TestCrud/> 
   </ApolloProvider> 
 } 
 
+
+function TestCrud() {
+  const dao = new Dao(client); 
+  const [ready, setReady] = useState(false); 
+  const [res, setRes] = useState({} as any); 
+
+  useEffect(() => { 
+    dao.fetcher.Read({modelName:'Form'}) 
+    .then( res => { 
+      setReady(true); 
+      console.log("res", res); 
+      setRes(res); 
+    }) 
+    .catch( err => { 
+      setReady(false); 
+      setRes(err); 
+    }) 
+  }, []); 
+
+  return <div> 
+    {ready ? '!!!': '...'} <br/> 
+    {JSON.stringify(res)} 
+  </div> 
+}
 
 /*
 
