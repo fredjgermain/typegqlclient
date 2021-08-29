@@ -4,18 +4,18 @@ import {
 } from "@apollo/client";
 
 // --------------------------------------------------------
-import { QUERY_FEEDBACK, QUERY_MODEL, QUERY_READ, QUERY_VALIDATE, MUTATION_CREATE, MUTATION_UPDATE, MUTATION_DELETE } from '../gql'; 
+import { MODEL, VALIDATE, CREATE, READ, UPDATE, DELETE } from '../gql'; 
 
 
 export function useQueryMutator() { 
   return {
-    Model: useLazyQuery(QUERY_MODEL), 
-    Validate: useLazyQuery(QUERY_VALIDATE), 
-    FeedbackMsg: useLazyQuery(QUERY_FEEDBACK), 
+    Model: useLazyQuery(MODEL), 
+    Validate: useLazyQuery(VALIDATE), 
+    FeedbackMsg: useLazyQuery(CREATE), 
     
-    Read: useLazyQuery(QUERY_READ), 
-    Create: useMutation(MUTATION_CREATE), 
-    Update: useMutation(MUTATION_UPDATE), 
-    Delete: useMutation(MUTATION_DELETE) 
+    Create: useMutation(CREATE), 
+    Read: useLazyQuery(READ), 
+    Update: useMutation(UPDATE), 
+    Delete: useMutation(DELETE) 
   }
 }

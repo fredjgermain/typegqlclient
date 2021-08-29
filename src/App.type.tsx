@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'; 
-import { ApolloProvider } from "@apollo/client"; 
+import { ApolloProvider, gql } from "@apollo/client"; 
 
 //import { TestComponent } from '@fredjgermain/reactutils/lib/component/test.component'; 
 
 // --------------------------------------------------------
 import { client } from './libs/apolloclient'; 
 import { Dao } from './libs/dao/dao.class';
+//import {  } from './libs/subfield'; 
+
 //import { TestCrud, TestModel } from './components/testcrud.components'; 
 
 
@@ -18,32 +20,51 @@ export default function Apptypescript() {
 } 
 
 
-function TestCrud() {
+
+function TestCrud() { 
   const dao = new Dao(client); 
   const [ready, setReady] = useState(false); 
-  const [res, setRes] = useState({} as any); 
+  const [fetch, setFetch] = useState([] as any[]); 
+  const [cache, setCache] = useState([] as any[]); 
 
-  useEffect(() => { 
-    dao.fetcher.Read({modelName:'Form'}) 
-    .then( res => { 
+  function Fetch() { 
+    
+    //dao.fetcher.Model({modelsName:['Form']}) 
+    dao.fetcher.Read("Form") 
+    .then( (res:any) => { 
+      console.log("fetcher", res); 
       setReady(true); 
-      console.log("res", res); 
-      setRes(res); 
+      setFetch(res); 
     }) 
     .catch( err => { 
+      console.log("fetcher-error", err); 
       setReady(false); 
-      setRes(err); 
+      setFetch(err); 
     }) 
-  }, []); 
+  } 
+
+  function Cache() { 
+    const read = dao.cacher.Read({modelName:'Form'}) 
+  } 
+
+  useEffect(() => { Fetch() }, []); 
+
+  // if(ready && !cache) 
+  //   Cache() 
+  /*.map( (e,i) => { 
+      return <div key={i} > #{i} {JSON.stringify(e)}</div> 
+    })} */
 
   return <div> 
     {ready ? '!!!': '...'} <br/> 
-    {JSON.stringify(res)} 
+    {JSON.stringify(fetch)}
+    
   </div> 
-}
+} 
+
+
 
 /*
-
 function Mutation_Create() {
   const modelName = 'Form'; 
   const ids = ['asdas'] as string[]; 

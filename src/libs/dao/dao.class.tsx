@@ -4,33 +4,15 @@ import {
   NormalizedCacheObject, 
 } from "@apollo/client"; 
 
+
 // --------------------------------------------------------
 import { Cacher } from './cacher.class'; 
 import { Fetcher } from './fetcher.class'; 
 
 
-/** 
-DAO --- map to Apollo client ... 
---- 
-// ASYNC METHODS 
-Model => IModel 
-Validate => IError[] 
-
-Create => IResult 
-Read => IResult 
-Update => IResult 
-Delete => IResult 
-
-// From cached data, NOT ASYNC METHODS 
-GetEntry => IEntry 
-GetDefaultEntry => IEntry 
-GetAbbrevEntry => string 
-GetOptions => IOption[] (from enums? or from ref? and Abbrev) 
-*/
 
 export const DaoContext = React.createContext({} as Dao); 
 
-type EntryPredicate = string|((entry:IEntry)=>boolean); 
 // Complete each methods to map it to the Apollo clients functions etc. 
 export class Dao { 
   cacher:Cacher; 

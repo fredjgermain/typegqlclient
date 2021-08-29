@@ -1,4 +1,5 @@
-import { QUERY_MODEL, QUERY_READ } from '../gql'; 
+import React from 'react'; 
+// import { QUERY_MODEL, QUERY_READ } from '../gql'; 
 // import { client } from '../../apolloclient'; 
 
 
