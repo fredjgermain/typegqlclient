@@ -1,8 +1,5 @@
-import { 
-  ApolloClient, 
-  NormalizedCacheObject, 
-  ApolloQueryResult, gql 
-} from "@apollo/client"; 
+import { ApolloClient, NormalizedCacheObject, ApolloQueryResult } 
+  from "@apollo/client"; 
 
 
 // -------------------------------------------------------- 
@@ -22,93 +19,72 @@ export function ParseItemsErrors(result:ApolloQueryResult<any>):IEntry[]|IError[
 }
 
 
+export function ParseCrudResult(crudresult:any) { 
+  const [results] = Object.values(crudresult) as {items:any[], errors:any[]}[]; 
+  
+  return results; 
+}
+
+
 export class Fetcher {
   private client:ApolloClient<NormalizedCacheObject>; 
 
   constructor(client:ApolloClient<NormalizedCacheObject>) { 
     this.client = client; 
+  } 
+
+  // MODEL .................................................. 
+  public async ModelDescriptors(subfields:string, modelsName?:string[]) { 
+    const query = request.MODELDESCRIPTORS(`{${subfields}}`); 
+    const variables = {modelsName}; 
+    return this.client.query({query, variables}) 
+    .then( res => res.data["ModelDescriptors"] ) 
+    .catch( err => err ) 
+  } 
+
+  // VALIDATE .................................................
+  public async Validate(modelName:string, inputs:any[]) { 
+    const query = request.VALIDATE(modelName); 
+    const variables = {inputs}; 
+    return this.client.query({query, variables}) 
+    .then( res => res.data ) 
+    .catch( err => err ) 
   }
 
-  public async Read(modelName:string, ids?:string[]) { 
-    const subfield = gql`{title}` 
+  // READ ..................................................
+  public async Create(modelName:string, subfields:string, inputs:any[]) { 
+    const mutation = request.CREATE(modelName, `{${subfields}}`); 
+    const variables = {inputs}; 
+    return this.client.mutate({mutation, variables}) 
+    .then( res => ParseCrudResult(res.data) ) 
+    .catch( err => err)
+  } 
 
-    const READ = gql` 
-      query Read($ids: [String!]) { 
-        Read${modelName}(ids:$ids) { 
-          items ${subfield} 
-        } 
-      }` 
-
+  // READ .................................................
+  public async Read(modelName:string, subfields:string, ids?:any[]) { 
+    const query = request.READ(modelName, `{${subfields}}`); 
     const variables = {ids}; 
-    return await this.client.query({ 
-      query:READ, variables}) 
-    .then( res => res.data ) 
+    return this.client.query({query, variables}) 
+    .then( res => ParseCrudResult(res.data) ) 
     .catch( err => err ) 
   } 
 
-  public async Test() { 
-    const model = 'Form'; 
-    const subfield = gql`{title}` 
-    
-    const MODEL = gql` 
-      query Read($ids: [String!]) { 
-        Read${model}(ids:$ids) { 
-          items ${subfield} 
-        } 
-      }` 
-
-    const variables = {ids:undefined} 
-    return await this.client.query({ 
-      query:MODEL, variables}) 
-    .then( res => res.data ) 
+  // UPDATE .................................................
+  public async Update(modelName:string, subfields:string, inputs:any[]) { 
+    const mutation = request.UPDATE(modelName, `{${subfields}}`); 
+    const variables = {inputs}; 
+    return this.client.mutate({mutation, variables}) 
+    .then( res => ParseCrudResult(res.data) ) 
     .catch( err => err ) 
   } 
 
-  // MODEL ..................................................
-  public async Model(variables:{modelsName:string[]}) { 
-    return await this.client.query({ 
-      query:request.MODEL, variables}) 
-    .then( res => res.data ) 
+  // UPDATE .................................................
+  public async Delete(modelName:string, subfields:string, ids?:any[]) { 
+    const mutation = request.DELETE(modelName, `{${subfields}}`); 
+    const variables = {ids}; 
+    return this.client.mutate({mutation, variables}) 
+    .then( res => ParseCrudResult(res.data) ) 
     .catch( err => err ) 
-  }
-
-  // READ ..................................................
-  /*public async Read(modelName:string, ids?:string[]) { 
-    return await this.client.query({
-      query:request.M
-    })
-  }*/
-
-  // READ ..................................................
-  // public async Read(variables:{modelName:string, ids?:string[]}) { 
-  //   const result = await this.client.query({query:request.READ, variables}) 
-  //   return result.data.Read; 
-  //     // .then( res => res.data.items as IEntry[] ) 
-  //     // .catch( err => err ) 
-  // } 
-
-  // CREATE ................................................
-  public async Create(variables:{modelName:string, inputs:object}) { 
-    return await this.client.mutate({ 
-      mutation:request.CREATE, variables}) 
-      .then( res => res.data.items as IEntry[]) 
-      .catch( err => err ) 
   } 
-
-  // UPDATE ...............................................
-  public async Update(variables:{modelName:string, inputs:object}) { 
-    return await this.client.mutate({ 
-      mutation:request.UPDATE, variables}) 
-      .then( res => res.data.items as IEntry[]) 
-      .catch( err => err ) 
-  } 
-
-  // DELETE ................................................
-  public async Delete(variables:{modelName:string, ids?:string[]}) { 
-    return await this.client.mutate({ 
-      mutation:request.DELETE, variables}) 
-      .then( res => res.data.items as IEntry[]) 
-      .catch( err => err ) 
-  }
-} 
+}
   

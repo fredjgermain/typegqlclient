@@ -1,66 +1,65 @@
 import React, { useEffect, useState } from 'react'; 
 import { ApolloProvider, gql } from "@apollo/client"; 
 
-//import { TestComponent } from '@fredjgermain/reactutils/lib/component/test.component'; 
+
 
 // --------------------------------------------------------
 import { client } from './libs/apolloclient'; 
-import { Dao } from './libs/dao/dao.class';
-//import {  } from './libs/subfield'; 
+import { GetModels } from './components/modeldescriptors.component'; 
 
-//import { TestCrud, TestModel } from './components/testcrud.components'; 
+import * as request from './libs/dao/gql'; 
+import { CreateForm } from './components/createform.component'; 
+import { ReadForms } from './components/readforms.component'; 
+import { UpdateForm } from './components/updateform.component'; 
+import { DeleteForm } from './components/deleteform.component'; 
+import { Dao } from './libs/dao/dao.class'; 
+
+
 
 
 export default function Apptypescript() { 
-  //<Query_Test/> 
-  // <Mutation_Create/> 
   return <ApolloProvider {...{client}} > 
     <TestCrud/> 
   </ApolloProvider> 
 } 
 
 
-
 function TestCrud() { 
   const dao = new Dao(client); 
-  const [ready, setReady] = useState(false); 
-  const [fetch, setFetch] = useState([] as any[]); 
-  const [cache, setCache] = useState([] as any[]); 
 
-  function Fetch() { 
-    
-    //dao.fetcher.Model({modelsName:['Form']}) 
-    dao.fetcher.Read("Form") 
-    .then( (res:any) => { 
-      console.log("fetcher", res); 
-      setReady(true); 
-      setFetch(res); 
-    }) 
-    .catch( err => { 
-      console.log("fetcher-error", err); 
-      setReady(false); 
-      setFetch(err); 
-    }) 
-  } 
+  const [step, setStep] = useState(0); 
+  const SetStep = (step:number) => setStep(step) 
 
-  function Cache() { 
-    const read = dao.cacher.Read({modelName:'Form'}) 
-  } 
+  const query = request.READ('Form', '{_id}'); 
 
-  useEffect(() => { Fetch() }, []); 
+  /*const query = gql` 
+    query Read($ids: [String!]) { 
+      Read${modelName}(ids:$ids) { 
+        items ${subfields} 
+        errors 
+      } 
+    }` */
+  const variables = {ids:undefined} 
 
-  // if(ready && !cache) 
-  //   Cache() 
-  /*.map( (e,i) => { 
-      return <div key={i} > #{i} {JSON.stringify(e)}</div> 
-    })} */
 
+  if(step >= 2) { 
+    console.log(client.cache); 
+    const result = client.readQuery({query, variables}); 
+    console.log("cacher", result); 
+  }
+  
+  
   return <div> 
-    {ready ? '!!!': '...'} <br/> 
-    {JSON.stringify(fetch)}
-    
+
+    <GetModels/> 
+    <ReadForms {...{SetStep}}/> 
+    <CreateForm/> 
+    {step >= 1 && <UpdateForm/> } 
+    {step >= 1 && <DeleteForm {...{SetStep}}/> } 
+
   </div> 
 } 
+
 
 
 

@@ -23,6 +23,12 @@ export class Dao {
     this.fetcher = new Fetcher(client); 
   }
 
+  public Test() { 
+    const result = this.cacher; 
+    console.log(result); 
+  }
+
+
 
   /** GetEntry ............................................
    * 
@@ -37,9 +43,10 @@ export class Dao {
       return this.GetEntry(modelName, (entry:IEntry) => entry._id === predicate) 
 
     // replace with proper collection entries ... 
-    const entries = this.cacher.Read({modelName}); 
+    const entries = [] as any[] // this.cacher.Read({modelName}); 
     return entries.find(predicate) ?? this.GetDefaultEntry(modelName); 
   } 
+
 
 
   /** GetDefaultEntry .....................................
@@ -48,13 +55,14 @@ export class Dao {
    * @returns 
    */
   public GetDefaultEntry(modelName:string):IEntry { 
-    const {ifields} = this.cacher.Model({modelName}); 
+    const {ifields} = this.cacher.ModelDescriptors('ifields', [modelName])[0]; 
     let defaultEntry = {} as IEntry; 
     ifields?.forEach( ifield => { 
       defaultEntry[ifield.accessor] = ifield.type.defaultValue 
     }) 
     return defaultEntry; 
   } 
+
 
 
   /** GetAbbrevEntry ......................................
@@ -67,6 +75,7 @@ export class Dao {
     return ''; 
   } 
 
+  
 
   /** GetOptions ..........................................
    * 
@@ -87,7 +96,7 @@ export class Dao {
 
   private GetOptionsFromRef(ifield:IField):IOption[] { 
     const foreignRef = ifield.options?.ref ?? ''; 
-    const entries = this.cacher.Read({modelName:foreignRef}) ?? [] 
+    const entries = [] as any[] // this.cacher.Read({modelName:foreignRef}) ?? [] 
     return entries.map( entry => { 
       const abbrev = this.GetAbbrevEntry(ifield.options.ref, entry); 
       const value = entry._id; 

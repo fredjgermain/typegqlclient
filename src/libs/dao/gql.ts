@@ -1,64 +1,74 @@
-import { DocumentNode, gql } from "@apollo/client"; 
+import { gql } from "@apollo/client"; 
 
 
-/*export function TEST2(subfields:DocumentNode) {
+
+// VALIDATE ===============================================
+export function VALIDATE(modelName:string) { 
   return gql` 
-    query Test($modelName:String!) { 
-      Test(modelName:$modelName) ${subfields} 
+    query Validate($inputs: [ObjectScalar!]!) { 
+      Validate${modelName}(inputs:$inputs) 
     }` 
-}*/
+} 
 
-export const FACTORQUERY = gql` 
-  query ReadForm { 
-    items { 
-      title 
-    } 
-  }` 
 
-/*export function FactorQuery(subfields:DocumentNode) { 
-  //const func = gql`ReadForm`; 
+
+// MODELDESCRIPTORS ===============================================
+// ModelDescriptors(modelsName: [String!]): [ModelDescriptor!]!
+export function MODELDESCRIPTORS(subfields:string) { 
   return gql` 
-    query ReadForm { 
-      title
-    } 
-  ` 
-} */
+    query ModelDescriptors($modelsName: [String!]) { 
+      ModelDescriptors(modelsName:$modelsName) ${subfields} 
+    }` 
+} 
 
 
-// Model(modelName: String!): GQLModel! 
-export const MODEL = gql` 
-  query ModelDescriptors($modelsName: [String!]!) { 
-    ModelDescriptors(modelsName:$modelsName) {
-      accessor
-    } 
-  }` 
 
-// Validate(inputs: [ObjectScalar!]!, modelName: String!): CrudResult!
-export const VALIDATE = gql` 
-  query Validate($inputs: [ObjectScalar!]!, $modelName: String!) { 
-    Validate(inputs:$inputs, modelName: $modelName) {items errors} 
-  }` 
+// CREATE ================================================= 
+export function CREATE(modelName:string, subfields:string) { 
+  return gql` 
+    mutation Create($inputs: [ObjectScalar!]!) { 
+      Create${modelName}(inputs:$inputs) { 
+        items ${subfields} 
+        errors 
+      } 
+    }` 
+} 
 
-// Create(fields: [String!], inputs: [ObjectScalar!]!, modelName: String!): CrudResult!
-export const CREATE = gql`
-  mutation Create($fields: [String!], $inputs: [ObjectScalar!]!, $modelName: String!) { 
-    Create(fields:$fields, inputs:$inputs, modelName:$modelName) {items errors} 
-  }` 
 
-// Read(fields: [String!], ids: [ID!], modelName: String!): CrudResult!
-export const READ = gql` 
-  query Read($fields: [String!], $ids: [ID!], $modelName: String!) { 
-    Read(fields:$fields, ids:$ids, modelName:$modelName) {items errors} 
-  }` 
 
-// Update(fields: [String!], inputs: [ObjectScalar!]!, modelName: String!): CrudResult!
-export const UPDATE = gql` 
-  mutation Update($fields: [String!], $inputs: [ObjectScalar!]!, $modelName: String!) { 
-    Update(fields:$fields, inputs:$inputs, modelName:$modelName) {items errors} 
-  }` 
+// READ =================================================== 
+export function READ(modelName:string, subfields:string) {
+  return gql` 
+    query Read($ids: [String!]) { 
+      Read${modelName}(ids:$ids) { 
+        items ${subfields} 
+        errors 
+      } 
+    }` 
+} 
 
-// Delete(fields: [String!], ids: [ID!], modelName: String!): CrudResult!
-export const DELETE = gql` 
-  mutation Delete($fields: [String!], $ids: [ID!], $modelName: String!) { 
-    Delete(fields:$fields, ids:$ids, modelName:$modelName) {items errors} 
-  }` 
+
+
+// UPDATE =================================================
+export function UPDATE(modelName:string, subfields:string) {
+  return gql` 
+    mutation Update($inputs: [ObjectScalar!]!) { 
+      Update${modelName}(inputs:$inputs) { 
+        items ${subfields} 
+        errors 
+      } 
+    }` 
+} 
+
+
+
+// DELETE =================================================== 
+export function DELETE(modelName:string, subfields:string) {
+  return gql` 
+    mutation Delete($ids: [String!]!) { 
+      Delete${modelName}(ids:$ids) { 
+        items ${subfields} 
+        errors 
+      } 
+    }` 
+} 
