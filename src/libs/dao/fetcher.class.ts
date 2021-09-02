@@ -26,6 +26,15 @@ export function ParseCrudResult(crudresult:any) {
 }
 
 
+// REDUCE SUBFIELDS 
+export function ReduceSubfields(subfields?:string[], defaultSubfields?:string[]) { 
+  const reducer = (prev:string, curr:string) => `${prev} ${curr}`; 
+  if(!subfields || subfields.length === 0) 
+    return `{${defaultSubfields?.reduce( reducer, '')}}`; 
+  return `{${subfields?.reduce( reducer, '')}}`; 
+} 
+
+
 export class Fetcher {
   private client:ApolloClient<NormalizedCacheObject>; 
 
@@ -34,8 +43,9 @@ export class Fetcher {
   } 
 
   // MODEL .................................................. 
-  public async ModelDescriptors(subfields:string, modelsName?:string[]) { 
-    const query = request.MODELDESCRIPTORS(`{${subfields}}`); 
+  public async ModelDescriptors({subfields, modelsName}:{subfields?:string[], modelsName?:string[]}) { 
+    const defaultSubfields = ["_id accessor label description ifields"]; 
+    const query = request.MODELDESCRIPTORS( ReduceSubfields(subfields, defaultSubfields) ); 
     const variables = {modelsName}; 
     return this.client.query({query, variables}) 
     .then( res => res.data["ModelDescriptors"] ) 

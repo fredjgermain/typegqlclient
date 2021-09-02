@@ -1,0 +1,40 @@
+.select-main { 
+  /*Necessary styles*/
+  position: relative; 
+  display: inline-block; 
+
+  /*Esthetic*/
+  width: 20ch; 
+  margin-right: 1.2ch; 
+}
+
+.select-header { 
+  /*Necessary*/
+  width: 100%; 
+
+  /*Esthetic*/
+  border-radius: 3px; 
+  border: 1px solid #333; 
+  padding: 0.5ch; 
+}
+
+.select-options {
+  /*Necessary styles*/
+  position: absolute;
+  z-index: 1;
+  width: 100%; 
+
+  /*Esthetic*/
+  border-radius: 3px; 
+  border: 1px solid #333; 
+  background-color: white; 
+  padding: 0.5ch; 
+}
+
+.select-placeholder { 
+  color:#888; 
+} 
+
+.select-option-selected{ 
+  color:#888; 
+} 

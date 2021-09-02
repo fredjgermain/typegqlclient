@@ -21,6 +21,7 @@ export function UpdateForm() {
       //console.log("update", res.items); 
       setReady(true); 
       setFetch(res.items); 
+      console.log(client.cache) 
     }) 
     .catch( err => { 
       //console.log("update-error", err.errors); 

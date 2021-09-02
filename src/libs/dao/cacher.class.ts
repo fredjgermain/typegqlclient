@@ -6,8 +6,10 @@ import {
 
 // --------------------------------------------------------
 import * as request from './gql'; 
+import { ReduceSubfields } from './fetcher.class'; 
 
 
+type Item = IModel & {_id:string}; 
 
 export class Cacher { 
   private client:ApolloClient<NormalizedCacheObject>; 
@@ -16,11 +18,21 @@ export class Cacher {
     this.client = client; 
   }
 
+  
+
   // MODEL ................................................
-  public ModelDescriptors(subfields:string, modelsName?:string[]):IModel[] { 
-    const query = request.MODELDESCRIPTORS(subfields); 
+  public ModelDescriptors({subfields, modelsName}:{subfields?:string[], modelsName?:string[]}) { 
+    const defaultSubfields = ["_id accessor label description ifields"]; 
+    const query = request.MODELDESCRIPTORS( ReduceSubfields(subfields, defaultSubfields) ); 
     const variables = {modelsName}; 
-    return this.client.readQuery({query, variables}) as IModel[]; 
+    
+    //console.log('not defined', this.client.cache); 
+    
+    const results = this.client.readQuery({query, variables})?.ModelDescriptors as Item[]; 
+    return results.map( item => {
+      const {_id, accessor, label, description, ifields} = item; 
+      return {_id, accessor, label, description, ifields}; 
+    }); 
   } 
 
   // READ ................................................

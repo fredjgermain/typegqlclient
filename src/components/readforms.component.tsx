@@ -18,6 +18,7 @@ export function ReadForms({SetStep}:{SetStep:(step:number)=>void}) {
       setReady(true); 
       setFetch(res.items); 
       SetStep(1); 
+      console.log(client.cache) 
     }) 
     .catch( err => { 
       //console.log("fetcher-error", err.errors); 

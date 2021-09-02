@@ -1,7 +1,6 @@
 import { gql } from "@apollo/client"; 
 
 
-
 // VALIDATE ===============================================
 export function VALIDATE(modelName:string) { 
   return gql` 

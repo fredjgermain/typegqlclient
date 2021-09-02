@@ -13,7 +13,7 @@ export function GetModels() {
   const [fetch, setFetch] = useState([] as any[]); 
   
   function Fetch() { 
-    dao.fetcher.ModelDescriptors("accessor") 
+    dao.fetcher.ModelDescriptors({}) 
     .then( (res:any) => { 
       //console.log("fetcher", res); 
       setReady(true); 

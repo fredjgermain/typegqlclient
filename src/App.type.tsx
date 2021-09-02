@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { ApolloProvider, gql } from "@apollo/client"; 
 
 
-
 // --------------------------------------------------------
 import { client } from './libs/apolloclient'; 
 import { GetModels } from './components/modeldescriptors.component'; 
