@@ -6,10 +6,14 @@ import {
 
 // --------------------------------------------------------
 import * as request from './gql'; 
-import { ReduceSubfields } from './fetcher.class'; 
+import { 
+  ReduceSubfields, ParseModelDescriptors, ParseCrudResult, 
+  ModelDescriptor, ArgsIds, ArgsModelName, ArgsModelDescriptors, CrudResult
+} from './dao.utils'; 
+import { IsEmpty } from "../utils/value_type.utils"; 
+import { CrudError } from "./fetcher.class";
 
 
-type Item = IModel & {_id:string}; 
 
 export class Cacher { 
   private client:ApolloClient<NormalizedCacheObject>; 
@@ -21,49 +25,46 @@ export class Cacher {
   
 
   // MODEL ................................................
-  public ModelDescriptors({subfields, modelsName}:{subfields?:string[], modelsName?:string[]}) { 
+  public ModelDescriptors({modelsName, subfields}:ArgsModelDescriptors) { 
     const defaultSubfields = ["_id accessor label description ifields"]; 
     const query = request.MODELDESCRIPTORS( ReduceSubfields(subfields, defaultSubfields) ); 
     const variables = {modelsName}; 
     
-    //console.log('not defined', this.client.cache); 
-    
-    const results = this.client.readQuery({query, variables})?.ModelDescriptors as Item[]; 
-    return results.map( item => {
-      const {_id, accessor, label, description, ifields} = item; 
-      return {_id, accessor, label, description, ifields}; 
-    }); 
+    try{
+      const results = this.client.readQuery({query, variables})?.ModelDescriptors as ModelDescriptor[]; 
+      return ParseModelDescriptors(results); 
+    }catch(err) { 
+      return null; 
+    } 
   } 
 
   // READ ................................................
-  public Read(modelName:string, subfields:string, ids?:string[]) { 
-    const query = request.READ(modelName, subfields); 
+  public Read({modelName, subfields, ids}:ArgsIds) { 
+    const reducedSubfields = this.GetReducedSubfields({modelName, subfields}); 
+    const query = request.READ(modelName, reducedSubfields); 
     const variables = {ids}; 
-    const result = this.client.readQuery({query, variables}) 
-    console.log('cacher', result); 
-    return result; 
+
+    let results = {} as CrudResult; 
+    try{ 
+      results = ParseCrudResult( this.client.readQuery({query, variables}) ) 
+    } catch(err) { 
+      results.errors = [err as any]; 
+    }
+    
+    if(!IsEmpty(results.errors)) 
+      throw new CrudError(results.errors); 
+    return results.items; 
   } 
 
-  /*public Model(variables:{modelName:string}) { 
-    const result = this.client.readQuery({ 
-      query: MODEL, variables 
-    }); 
-    if(!result || !('Model' in result)) 
-      return {} as IModel; 
-    return result.model as IModel; 
-  } */
+  // GetSubfields -----------------------------------------
+  private GetReducedSubfields({modelName, subfields}:ArgsModelName) { 
+    const defaultSubfields = this.GetDefaultSubfields(modelName); 
+    return ReduceSubfields(subfields, defaultSubfields); 
+  }
 
-  // READ .................................................
-  /*public Read(variables:{modelName:string, ids?:string[]}) { 
-    const result = this.client.readQuery({ 
-      query: READ, variables 
-    }); 
-    console.log("cache", result); 
-
-    if(!result || !('items' in result)) 
-      return [] as IEntry[]; 
-    return result.items as IEntry[]; 
-  } */
-
-  // Validate ?? 
+  private GetDefaultSubfields(modelName:string) { 
+    const [model] = this.ModelDescriptors({modelsName:[modelName]}) ?? []; 
+    const subfields = (model as ModelDescriptor)?.ifields.filter( f => f.accessor != '__v'); 
+    return subfields?.map( f => f.accessor) ?? ["_id"]; 
+  }
 } 

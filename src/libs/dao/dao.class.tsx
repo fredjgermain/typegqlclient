@@ -17,6 +17,7 @@ export const DaoContext = React.createContext({} as Dao);
 export class Dao { 
   cacher:Cacher; 
   fetcher:Fetcher; 
+  status:any; 
 
   constructor(client:ApolloClient<NormalizedCacheObject>) { 
     this.cacher = new Cacher(client); 
@@ -55,12 +56,12 @@ export class Dao {
    * @returns 
    */
   public GetDefaultEntry(modelName:string):IEntry { 
-    const {ifields} = this.cacher.ModelDescriptors('ifields', [modelName])[0]; 
+    /*const {ifields} = this.cacher.ModelDescriptors('ifields', [modelName])[0]; 
     let defaultEntry = {} as IEntry; 
     ifields?.forEach( ifield => { 
       defaultEntry[ifield.accessor] = ifield.type.defaultValue 
-    }) 
-    return defaultEntry; 
+    }) */
+    return {} as IEntry; 
   } 
 
 
