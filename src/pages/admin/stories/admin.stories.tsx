@@ -1,25 +1,24 @@
-import { useEffect } from 'react'; 
 import { Story } from '@storybook/react'; 
 import { ApolloProvider } from "@apollo/client"; 
 
 
 // ------------------------------------------------------- 
-import { client } from '../../apolloclient'; 
-import { FetchModels } from './collectionselector.component'; 
+import { client } from '../../../apolloclient'; 
+import { AdminPage } from '../admin.page'; 
 
 
 
 export default { 
-  title: 'DAO/modeldescriptor', 
+  title: 'AdminPage', 
   component: TemplateComponent, 
 } 
 
 function TemplateComponent() { 
   return <ApolloProvider {...{client}} > 
-    <FetchModels/> 
+    <AdminPage/> 
   </ApolloProvider> 
 } 
 
 const Template:Story<any> = (args) => <TemplateComponent {...args} /> 
 
-export const TestDAO = Template.bind({}) 
+export const TestAdminPage = Template.bind({}) 

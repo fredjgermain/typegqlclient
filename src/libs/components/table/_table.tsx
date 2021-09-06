@@ -1,5 +1,5 @@
 export { 
-  Table, 
+  Table, TableContext, 
   Col, ColContext, Cols, ColsContext, 
   Row, RowContext, Rows, RowsContext 
 } from './components/rowcolcell.component'; 

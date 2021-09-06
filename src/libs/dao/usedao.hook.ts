@@ -1,5 +1,5 @@
 // -------------------------------------------------------- 
-import { useFetcher } from '../hooks/usefetcher/usefetcher.hook'; 
+import { useFetcher } from '../fetcher/usefetcher.hook'; 
 import { Dao } from './dao.class'; 
 import { ArgsIds, ArgsInputs, ArgsModelDescriptors } from './dao.utils'; 
 

@@ -1,13 +1,18 @@
 import React from 'react'; 
 
+
+export const TableContext = React.createContext({} as any); 
 interface ITable { 
   Key:React.Key, 
+  contextValue?:any, 
   tableAttribute?:React.TableHTMLAttributes<HTMLTableElement>, 
-}
-export function Table({Key, tableAttribute, children}: React.PropsWithChildren<ITable>) { 
-  return <table key={Key} {...tableAttribute}> 
+} 
+export function Table({Key, contextValue, tableAttribute, children}: React.PropsWithChildren<ITable>) { 
+  return <TableContext.Provider value={contextValue} >
+    <table key={Key} {...tableAttribute}> 
       {children} 
     </table> 
+  </TableContext.Provider>
 } 
 
 

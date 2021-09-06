@@ -35,9 +35,13 @@ export class Fetcher {
     const defaultSubfields = ["_id accessor label description ifields"]; 
     const query = request.MODELDESCRIPTORS( ReduceSubfields(subfields, defaultSubfields) ); 
     const variables = {modelsName}; 
-    return this.client.query({query, variables}) 
-      .then( res => ParseModelDescriptors(res.data) ) 
-      .catch( err => err ) 
+
+    try {
+      const res = await this.client.query({query, variables}) 
+      return ParseModelDescriptors(res.data); 
+    } catch(err) { 
+      throw err; 
+    } 
   } 
 
   // VALIDATE .................................................
@@ -58,7 +62,7 @@ export class Fetcher {
 
     const {items, errors} = await this.client.mutate({mutation, variables}) 
       .then( res => ParseCrudResult(res.data) ) 
-      .catch( err => { return {items:[], errors:[err]}} ) 
+      .catch( err => { return {items:[] as IEntry[], errors:[err]}} ) 
 
     if(!IsEmpty(errors)) 
       throw new CrudError(errors); 
@@ -73,7 +77,7 @@ export class Fetcher {
 
     const {items, errors} = await this.client.query({query, variables}) 
       .then( res => ParseCrudResult(res.data) ) 
-      .catch( err => { return {items:[], errors:[err]}} ) 
+      .catch( err => { return {items:[] as IEntry[], errors:[err]}} ) 
 
     if(!IsEmpty(errors)) 
       throw new CrudError(errors); 
@@ -88,7 +92,7 @@ export class Fetcher {
 
     const {items, errors} = await this.client.mutate({mutation, variables}) 
       .then( res => ParseCrudResult(res.data) ) 
-      .catch( err => { return {items:[], errors:[err]}} ) 
+      .catch( err => { return {items:[] as IEntry[], errors:[err]}} ) 
 
     if(!IsEmpty(errors)) 
       throw new CrudError(errors); 
@@ -103,7 +107,7 @@ export class Fetcher {
 
     const {items, errors} = await this.client.mutate({mutation, variables}) 
       .then( res => ParseCrudResult(res.data) ) 
-      .catch( err => { return {items:[], errors:[err]}} ) 
+      .catch( err => { return {items:[] as IEntry[], errors:[err]}} ) 
 
     if(!IsEmpty(errors)) 
       throw new CrudError(errors); 
