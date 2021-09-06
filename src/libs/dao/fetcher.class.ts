@@ -50,7 +50,7 @@ export class Fetcher {
     .catch( err => err ) 
   }
 
-  // READ ..................................................
+  // CREATE ..................................................
   public async Create({modelName, subfields, inputs}:ArgsInputs) { 
     const reducedSubfields = await this.GetReducedSubfields({modelName, subfields}); 
     const mutation = request.CREATE(modelName, reducedSubfields); 
@@ -95,7 +95,7 @@ export class Fetcher {
     return items; 
   } 
 
-  // UPDATE .................................................
+  // DELETE .................................................
   public async Delete({modelName, subfields, ids}:ArgsIds) { 
     const reducedSubfields = await this.GetReducedSubfields({modelName, subfields}); 
     const mutation = request.DELETE(modelName, reducedSubfields); 

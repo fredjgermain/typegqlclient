@@ -12,25 +12,50 @@ export type ArgsIds = ArgsModelName & {ids?:string[]}
 
 
 
+/** ParseModelDescriptors ................................. 
+ * 
+ * @param queryResult 
+ * @returns 
+ */
 export function ParseModelDescriptors(queryResult:any):ModelDescriptor[] { 
   const results = Object.values(queryResult).flat() as any[]; 
   return results.map( item => { 
     const {_id, accessor, label, description, ifields} = item; 
     return {_id, accessor, label, description, ifields} as ModelDescriptor; 
   }); 
-}
+} 
 
+
+
+/** ParseCrudResult ....................................... 
+ * 
+ * @param queryResult 
+ * @returns CrudResult {items, errors} 
+ */
 export function ParseCrudResult(queryResult:any):CrudResult { 
   const [parsed] = Object.values(queryResult) as CrudResult[]; 
   return {items:Remove__typename(parsed.items), errors:parsed.errors}; 
 }
 
 
+
+/** Remove__typename ...............................
+ * Takes an array of entries and returns that array after removing the superfluous field '__typename'. 
+ * @param items 
+ * @returns 
+ */
 function Remove__typename(items:IEntry[]) { 
   return items.map( ({__typename, ...item}:IEntry) => item ) 
 }
 
-// REDUCE SUBFIELDS 
+
+
+/** ReduceSubfields ........................................ 
+ * Reduces a string array to a single array seperated with white spaces 
+ * @param subfields 
+ * @param defaultSubfields 
+ * @returns 
+ */
 export function ReduceSubfields(subfields?:string[], defaultSubfields?:string[]) { 
   const reducer = (prev:string, curr:string) => `${prev} ${curr}`; 
   if(!subfields || subfields.length === 0) 
