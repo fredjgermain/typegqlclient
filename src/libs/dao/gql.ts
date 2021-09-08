@@ -1,5 +1,17 @@
 import { gql } from "@apollo/client"; 
 
+export function TYPE() { 
+  return gql` 
+    query __type($name: String!) { 
+      __type(name:$name) { 
+        name fields { 
+          name 
+        } 
+      } 
+    }` 
+} 
+
+
 
 // VALIDATE ===============================================
 export function VALIDATE(modelName:string) { 

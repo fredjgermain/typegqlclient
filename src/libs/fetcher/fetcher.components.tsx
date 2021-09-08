@@ -7,28 +7,27 @@ import { IsEmpty, IsNull } from '../../libs/utils';
 
 
 export const FetcherContext = React.createContext( {} as any ); 
-export function FetcherComponent({children, ...prop}:React.PropsWithChildren<{fetchAction:any, Error:any, Busy:any}>) { 
+type TFetcherComponent = {fetchAction:any, Error?:any, Busy?:any}; 
+export function FetcherComponent({children, ...props}:React.PropsWithChildren<TFetcherComponent>) { 
   const {status:{loading, ready, result, error}, Fetch} = useFetcher(); 
 
+  const busyComponent = props?.Busy ? <props.Busy/>: <Busy/> 
+  const errorComponent = props?.Error ? <props.Error/>: <Error/> 
+
   useEffect(() => { 
-    Fetch( prop.fetchAction ); 
+    Fetch( props.fetchAction ); 
   }, []); 
 
   if(loading && !ready) 
     return <FetcherContext.Provider value={{}}> 
-      <prop.Busy/> 
-    </FetcherContext.Provider>
-  
-  if(!IsEmpty(error) && !IsNull(prop.Error)) 
-    return <FetcherContext.Provider value={error}> 
-      <prop.Error/> 
+      {busyComponent} 
     </FetcherContext.Provider> 
-  if(!IsEmpty(result)) 
-    return <FetcherContext.Provider value={result}> 
-      {children} 
+  if(ready && (error ?? result)) 
+    return <FetcherContext.Provider value={error ?? result}> 
+      {IsEmpty(error) ? children : error} 
     </FetcherContext.Provider> 
   else 
-    return <FetcherContext.Provider value={result}> 
+    return <FetcherContext.Provider value={{}}> 
     </FetcherContext.Provider> 
 }
 

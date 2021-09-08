@@ -3,7 +3,7 @@ import { ApolloProvider } from "@apollo/client";
 
 
 // ------------------------------------------------------- 
-import { client } from '../../../apolloclient'; 
+import { client } from '../../../libs/dao/apolloclient'; 
 import { AdminPage } from '../admin.page'; 
 
 

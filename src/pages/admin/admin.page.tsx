@@ -1,19 +1,23 @@
-import React, { useState, useContext, useEffect } from 'react'; 
+import React, { useState } from 'react'; 
+
 
 
 // --------------------------------------------------------------------
-import { client } from '../../apolloclient'; 
-import { ColContext, Cols, RowContext, Rows, Table, TableContext } from '../../libs/components/table/_table'; 
+import { client } from '../../libs/dao/apolloclient'; 
 import { Dao } from '../../libs/dao/dao.class'; 
-import { ModelDescriptor } from '../../libs/dao/dao.utils'; 
-import { FetcherComponent, Busy, Error, FetcherContext } 
+import { ModelDescriptor } from '../../libs/dao/dao.utils';
+import { FetcherComponent, Busy, Error } 
   from '../../libs/fetcher/fetcher.components'; 
-import { InputSelect } from '../../libs/inputs'; 
-import { IsEmpty } from '../../libs/utils';
+import { IsEmpty } from '../../libs/utils'; 
+import { AdminTable } from './component/admin.table'; 
+import { CollectionSelector } from './component/collectionselector.component'; 
 
 
 
-type TAdminContext = {collectionAccessor:string, SetCollectionAccessor:(accessor:string)=>void} 
+type TAdminContext = { 
+  collectionAccessor:string, 
+  SetCollectionAccessor:(accessor:string)=>void, 
+} 
 export const AdminContext = React.createContext({} as TAdminContext); 
 export function AdminPage() { 
   const [collectionAccessor, setCollectionAccessor] = useState(''); 
@@ -22,11 +26,17 @@ export function AdminPage() {
   } 
 
   const dao = new Dao(client); 
+  
   const fetchModels = () => dao.fetcher.ModelDescriptors({}); 
   async function fetchCollection() { 
     const [model] = await dao.fetcher.ModelDescriptors({modelsName:[collectionAccessor]}); 
     const entries = await dao.fetcher.Read({modelName:collectionAccessor}); 
-    return {model, entries} 
+    const introspection = await dao.fetcher.TypeIntrospection(collectionAccessor); 
+
+    const options = [] as IOption[] // = await dao.fetcher.GetOptionsFromIFields(model.ifields); 
+    //console.log(options); 
+
+    return {model, entries, introspection, options} //, options}; 
   } 
   
   return <AdminContext.Provider value={{collectionAccessor, SetCollectionAccessor}}> 
@@ -34,69 +44,10 @@ export function AdminPage() {
       <CollectionSelector/> 
       {!IsEmpty(collectionAccessor) && 
         <FetcherComponent {...{fetchAction:fetchCollection, Busy, Error}} key={collectionAccessor}> 
-          <AdminTable/>
+          <AdminTable/> 
         </FetcherComponent>
       }
     </FetcherComponent> 
   </AdminContext.Provider>
 }
-
-
-function AdminTable() { 
-  const {collectionAccessor} = useContext(AdminContext); 
-  const result = useContext(FetcherContext); 
-  const {model, entries} = (result ?? {}) as {model:ModelDescriptor, entries:IEntry[]} 
-  const rows = entries.map( entry => entry._id ); 
-  const cols = model.ifields.map( f => f.accessor ); 
-
-  return <div> 
-    <DisplayModel {...{model}} /> 
-    <Table {...{Key:collectionAccessor, contextValue:{model, entries}}} > 
-      <Rows {...{rows}} > 
-        <Cols {...{cols}}><Cell/></Cols> 
-      </Rows>
-    </Table>
-  </div> 
-}
-
-function Cell() { 
-  const {model, entries} = useContext(TableContext) as {model:ModelDescriptor, entries:IEntry[]} 
-  const {row} = useContext(RowContext); 
-  const {col} = useContext(ColContext); 
-
-  const entry = (entries.find( entry => entry._id === row ) ?? {}) as IEntry; 
-  
-  return <span> 
-    {entry[col]} 
-  </span> 
-}
-
-
-function DisplayModel({model}:{model:ModelDescriptor}) { 
-  if(IsEmpty(model)) 
-    return <div></div> 
-  return <div> 
-    MODEL : {model?.label[0]} <br/> 
-    {model?.description[0]} 
-  </div> 
-}
-
-
-function CollectionSelector() { 
-  const result = useContext(FetcherContext); 
-  const { collectionAccessor:value, SetCollectionAccessor } = useContext(AdminContext); 
-  function onSetValue(newValue:any) { 
-    SetCollectionAccessor(newValue); 
-  }
-
-  const bModels = ((result ?? []) as ModelDescriptor[]) 
-    .filter( model => ['Patient', 'Form', 'Question', 'Instructions', 'ResponseGroup', 'Answer'].includes(model.accessor) ) 
-
-  const options = bModels.map( model => { 
-    return {value:model.accessor, label:model.label[0]} as IOption; 
-  }) 
-
-  return <div> 
-    <InputSelect {...{value, onSetValue, options, multiple:false}} /> 
-  </div> 
-}
+// <AdminTable/>

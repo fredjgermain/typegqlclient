@@ -12,6 +12,19 @@ export type ArgsIds = ArgsModelName & {ids?:string[]}
 
 
 
+/** 
+ * 
+ * @param queryResult 
+ * @returns 
+ */
+export function ParseTypeIntrospection(queryResult:any) { 
+  const [result] = Object.values(queryResult).flat() as any[]; 
+  const {__typename, ...introspection} = result; 
+  return introspection; 
+}
+
+
+
 /** ParseModelDescriptors ................................. 
  * 
  * @param queryResult 
@@ -34,7 +47,7 @@ export function ParseModelDescriptors(queryResult:any):ModelDescriptor[] {
  */
 export function ParseCrudResult(queryResult:any):CrudResult { 
   const [parsed] = Object.values(queryResult) as CrudResult[]; 
-  return {items:Remove__typename(parsed.items), errors:parsed.errors}; 
+  return {items:Remove__typename(parsed.items) as IEntry[], errors:parsed.errors}; 
 }
 
 
@@ -44,8 +57,8 @@ export function ParseCrudResult(queryResult:any):CrudResult {
  * @param items 
  * @returns 
  */
-function Remove__typename(items:IEntry[]) { 
-  return items.map( ({__typename, ...item}:IEntry) => item ) 
+function Remove__typename(items:any[]) { 
+  return items.map( ({__typename, ...item}:any) => item ) 
 }
 
 

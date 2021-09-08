@@ -5,7 +5,8 @@ import { ApolloClient, NormalizedCacheObject }
 // -------------------------------------------------------- 
 import * as request from './gql'; 
 import { 
-  ParseModelDescriptors, ParseCrudResult, ReduceSubfields, 
+  ParseModelDescriptors, ParseCrudResult, ParseTypeIntrospection, 
+  ReduceSubfields, 
   ArgsIds, ArgsInputs, ArgsModelDescriptors, ArgsModelName, 
   ModelDescriptor, CrudResult 
 } from './dao.utils'; 
@@ -21,7 +22,10 @@ export class CrudError extends Error {
   }
 }
 
-
+type TIntrospect = {
+  name: string, 
+  fields: {name: string} []
+}
 
 export class Fetcher {
   private client:ApolloClient<NormalizedCacheObject>; 
@@ -29,6 +33,17 @@ export class Fetcher {
   constructor(client:ApolloClient<NormalizedCacheObject>) { 
     this.client = client; 
   } 
+
+  public async TypeIntrospection(name:string):Promise<TIntrospect> { 
+    const query = request.TYPE(); 
+    const variables = {name}; 
+    try{ 
+      const res = await this.client.query({query, variables}) 
+      return ParseTypeIntrospection(res.data); 
+    }catch(err) { 
+      throw err; 
+    }
+  }
 
   // MODEL .................................................. 
   public async ModelDescriptors({subfields, modelsName}:ArgsModelDescriptors) { 
@@ -118,14 +133,58 @@ export class Fetcher {
 
   // GetSubfields -----------------------------------------
   private async GetReducedSubfields({modelName, subfields}:ArgsModelName) { 
-    const defaultSubfields = await this.GetDefaultSubfields(modelName); 
+    const defaultSubfields = await this.IntrospectSubfields(modelName); 
     return ReduceSubfields(subfields, defaultSubfields); 
   }
 
-  private async GetDefaultSubfields(modelName:string) { 
+  /*private async GetDefaultSubfields(modelName:string) { 
     const models = await this.ModelDescriptors({modelsName:[modelName]}); 
     const subfields = (models[0] as ModelDescriptor)?.ifields.filter( f => f.accessor != '__v'); 
     return subfields?.map( f => f.accessor) ?? ["_id"]; 
+  }*/
+
+  public async GetOptionsFromIFields(ifields:IField[]):Promise<{[accessor:string]:IOption[]}> { 
+    let options = {} as {[accessor:string]:IOption[]} 
+    for(let i=0; i < ifields.length; i++) { 
+      const ifield = ifields[i]; 
+      options[ifield.accessor] = await this.GetOptionsFromIField(ifield); 
+    } 
+    return options; 
+  }
+
+  public async GetOptionsFromIField(ifield:IField):Promise<IOption[]> { 
+    if(ifield.isRef) 
+      return this.GetOptionsFromRef(ifield.options?.ref); 
+    
+    // Get Options from Enums 
+    const enums = ifield.type.enums ?? []; 
+    return enums.map( e => { 
+      return {value:e, label:e} as IOption; 
+    }) 
+  }
+
+  public async GetOptionsFromRef(modelName:string):Promise<IOption[]> { 
+    let entries = [] as IEntry[]; 
+    // subfield 'Abbrev' may not be available ... 
+    try { 
+      entries = await this.Read({modelName, subfields:['_id', 'abbrev']}); 
+    } catch(err) { 
+      entries = await this.Read({modelName, subfields:['_id']}); 
+    } 
+    return entries.map( entry => { 
+      return {value:entry._id, label:entry.abbrev} as IOption; 
+    }) 
+  } 
+
+  public async IntrospectSubfields(modelName:string) { 
+    const models = await this.ModelDescriptors({modelsName:[modelName]}); 
+    const ifields = (models[0] as ModelDescriptor)?.ifields; 
+
+    const introspection = (await this.TypeIntrospection(modelName)) 
+    return introspection.fields.map( field => { 
+      const ifield = ifields.find( f => f.accessor === field.name ); 
+      return ifield?.isRef ? `${field.name} {_id}` : field.name 
+    }) ?? ['_id'] as string[]; 
   }
 }
   

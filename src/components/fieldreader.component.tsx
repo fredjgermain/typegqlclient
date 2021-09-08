@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'; 
 
 // --------------------------------------------------------------
-import { client } from '../apolloclient'; 
+import { client } from '../libs/dao/apolloclient'; 
 import { Dao } from '../libs/dao/dao.class';
 
 

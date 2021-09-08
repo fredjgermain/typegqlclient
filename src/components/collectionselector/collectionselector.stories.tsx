@@ -4,7 +4,7 @@ import { ApolloProvider } from "@apollo/client";
 
 
 // ------------------------------------------------------- 
-import { client } from '../../apolloclient'; 
+import { client } from '../../libs/dao/apolloclient'; 
 import { FetchModels } from './collectionselector.component'; 
 
 

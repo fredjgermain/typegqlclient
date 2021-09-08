@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 
 
 // ---------------------------------------------------------
-import { client } from '../../apolloclient'; 
+import { client } from '../../libs/dao/apolloclient'; 
 import { Dao } from '../../libs/dao/dao.class'; 
 import { ModelDescriptor } from '../../libs/dao/dao.utils'; 
 import { FetcherComponent, Busy, Error, FetcherContext } from '../../libs/fetcher/fetcher.components';
@@ -23,6 +23,7 @@ export function FetchModels() {
     </FetcherComponent> 
   </div> 
 }
+
 
 
 function CollectionSelector() { 

@@ -50,14 +50,3 @@ export function Col({col, children}:React.PropsWithChildren<{col:React.Key}>) {
     {children} 
   </ColContext.Provider></td> 
 } 
-
-/*
-export const CellContext = React.createContext({} as {row:string, col:string}) 
-export function Cell({children}:React.PropsWithChildren<any>) { 
-  const {row} = useContext(RowContext); 
-  const {col} = useContext(ColContext); 
-  return <CellContext.Provider value={{row, col}}> 
-    {children} 
-  </CellContext.Provider> 
-} 
-*/

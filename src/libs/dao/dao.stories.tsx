@@ -5,7 +5,7 @@ import { ApolloProvider } from "@apollo/client";
 
 
 // --------------------------------------------------------
-import { client } from '../../apolloclient'; 
+import { client } from './apolloclient'; 
 import { useDao } from './usedao.hook'; 
 import { ArgsIds, ArgsInputs, ArgsModelDescriptors, ModelDescriptor } from './dao.utils'; 
 

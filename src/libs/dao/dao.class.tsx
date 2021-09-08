@@ -10,8 +10,6 @@ import { Cacher } from './cacher.class';
 import { Fetcher } from './fetcher.class'; 
 
 
-export const DaoContext = React.createContext({} as Dao); 
-
 // Complete each methods to map it to the Apollo clients functions etc. 
 export class Dao { 
   cacher:Cacher; 

@@ -3,7 +3,7 @@ import { ApolloProvider, gql } from "@apollo/client";
 
 
 // --------------------------------------------------------
-import { client } from './apolloclient'; 
+import { client } from './libs/dao/apolloclient'; 
 import { GetModels } from './components/modeldescriptors.component'; 
 
 import * as request from './libs/dao/gql'; 

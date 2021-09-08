@@ -3,7 +3,7 @@ import { ApolloProvider, gql } from "@apollo/client";
 
 
 // --------------------------------------------------------
-import { client } from '../apolloclient'; 
+import { client } from '../libs/dao/apolloclient'; 
 import { Dao } from '../libs/dao/dao.class'; 
 
 export function UpdateForm() { 
