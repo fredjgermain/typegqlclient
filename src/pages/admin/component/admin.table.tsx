@@ -29,6 +29,8 @@ export function AdminTable() {
   const rows = entries.map( entry => entry._id ); 
   const cols = model.ifields.map( f => f.accessor ).filter( f => !f.includes('_') ); 
 
+  console.log('test');
+
   return <div> 
     <DisplayModel {...{model}} /> 
     <Table {...{Key:collectionAccessor, contextValue}} > 
@@ -50,9 +52,8 @@ export function AdminTable() {
 
 function Head() { 
   const {model} = useContext(TableContext) as TTableContext; 
-  const {col} = useContext(ColContext); 
-
-  const ifield = model.ifields.find( f => f.accessor === col); 
+  const {index} = useContext(ColContext); 
+  const ifield = model.ifields[index ?? 0]; 
   const label = ifield?.label[0]; 
 
   return <span>{label}</span> 
@@ -63,15 +64,14 @@ function Head() {
 function Cell() { 
   const {model} = useContext(TableContext) as TTableContext; 
   const {row} = useContext(RowContext); 
-  const {col} = useContext(ColContext); 
-  const ifield = model.ifields.find( f => f.accessor === col) as IField; 
+  const {col, index} = useContext(ColContext); 
+  const ifield = model.ifields[index ?? 0]; 
   
-  async function fetchOption() { 
-    const options = await new Dao(client).fetcher.GetOptionsFromIField(ifield); 
-    return options; 
-  }
+  const fetchCallBack = { 
+    fetchFunc: async () => await new Dao(client).fetcher.GetOptionsFromIField(ifield) 
+  } 
 
-  return <FetcherComponent key={model.accessor+row+col} {...{fetchAction:fetchOption}} > 
+  return <FetcherComponent key={model.accessor+row+col} {...{fetchCallBack}} > 
     <Reader/> 
   </FetcherComponent> 
 }
@@ -80,21 +80,18 @@ function Cell() {
 function Reader() { 
   const {model, entries} = useContext(TableContext) as TTableContext; 
   const {row} = useContext(RowContext); 
-  const {col} = useContext(ColContext); 
+  const {col, index} = useContext(ColContext); 
   const entry = (entries.find( entry => entry._id === row ) ?? {}) as IEntry; 
   const value = entry[col]; 
-  const ifield = model.ifields.find( f => f.accessor === col) as IField; 
+  const ifield = model.ifields[index ?? 0]; 
   const options = useContext(FetcherContext) as IOption[]; 
 
   let _value = value; 
-  if(ifield.accessor === 'instructions') 
-    console.log('array ref',  ifield.isRef, ifield.type.isArray) 
-
   if(ifield.isRef && ifield.type.isArray) { 
     _value = ToArray(value).map( v => { 
       return options.find( o => o.value === v._id) as IOption; 
     }).map( o => o.label ) 
-    console.log(_value); 
+    //console.log(_value); 
   } 
 
   else if(ifield.isRef) 

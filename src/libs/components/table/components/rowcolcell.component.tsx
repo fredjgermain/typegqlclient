@@ -1,6 +1,6 @@
 import React from 'react'; 
 
-
+// TABLE -----------------------------------------------------
 export const TableContext = React.createContext({} as any); 
 interface ITable { 
   Key:React.Key, 
@@ -16,37 +16,58 @@ export function Table({Key, contextValue, tableAttribute, children}: React.Props
 } 
 
 
+// ROWS -----------------------------------------------------
 export const RowsContext = React.createContext({} as {rows:React.Key[]}) 
 export function Rows({rows, children}:React.PropsWithChildren<{rows:React.Key[]}>) { 
   return <RowsContext.Provider value={{rows}}> 
-    {rows.map(row => { 
-      return <Row key={row} row={row}>{children}</Row> 
+    {rows.map( (row, index) => { 
+      return <Row key={row} {...{index, row}}>{children}</Row> 
     })} 
   </RowsContext.Provider> 
 } 
 
 
-export const RowContext = React.createContext({} as {row:React.Key}) 
-export function Row({row, children}:React.PropsWithChildren<{row:React.Key}>) { 
-  return <tr><RowContext.Provider value={{row}}> 
+type TRow = {index?:number, row:React.Key} 
+export const RowContext = React.createContext({} as TRow) 
+export function Row({index, row, children}:React.PropsWithChildren<TRow>) { 
+  return <tr><RowContext.Provider value={{index, row}}> 
     {children} 
   </RowContext.Provider></tr> 
 }
 
 
+// COLS -----------------------------------------------------
 export const ColsContext = React.createContext({} as {cols:React.Key[]}) 
 export function Cols({cols, children}:React.PropsWithChildren<{cols:React.Key[]}>) { 
   return <ColsContext.Provider value={{cols}}> 
-    {cols.map(col => { 
-      return <Col key={col} col={col}>{children}</Col> 
+    {cols.map( (col, index) => { 
+      return <Col key={col} {...{index, col}}>{children}</Col> 
     })} 
   </ColsContext.Provider> 
 } 
 
-
-export const ColContext = React.createContext({} as {col:React.Key}) 
-export function Col({col, children}:React.PropsWithChildren<{col:React.Key}>) { 
-  return <td><ColContext.Provider value={{col}}> 
+type TCol = {index?:number, col:React.Key} 
+export const ColContext = React.createContext({} as TCol) 
+export function Col({index, col, children}:React.PropsWithChildren<TCol>) { 
+  return <td><ColContext.Provider value={{index, col}}> 
     {children} 
   </ColContext.Provider></td> 
 } 
+
+
+// HEADS -----------------------------------------------------
+export const THeadsContext = React.createContext({} as {cols:string[]}) 
+export function THeads({cols, children}:React.PropsWithChildren<{cols:string[]}>) { 
+  return <THeadsContext.Provider value={{cols}}> 
+    {cols.map( (col, index) => { 
+      return <THead key={col} {...{index, col}}>{children}</THead> 
+    })} 
+  </THeadsContext.Provider> 
+} 
+
+export const THeadContext = React.createContext({} as TCol) 
+export function THead({col, children}:React.PropsWithChildren<TCol>) { 
+  return <th><THeadContext.Provider value={{col}}> 
+    {children} 
+  </THeadContext.Provider></th> 
+}

@@ -5,8 +5,7 @@ import React, { useState } from 'react';
 // --------------------------------------------------------------------
 import { client } from '../../libs/dao/apolloclient'; 
 import { Dao } from '../../libs/dao/dao.class'; 
-import { ModelDescriptor } from '../../libs/dao/dao.utils';
-import { FetcherComponent, Busy, Error } 
+import { FetcherComponent } 
   from '../../libs/fetcher/fetcher.components'; 
 import { IsEmpty } from '../../libs/utils'; 
 import { AdminTable } from './component/admin.table'; 
@@ -27,27 +26,29 @@ export function AdminPage() {
 
   const dao = new Dao(client); 
   
-  const fetchModels = () => dao.fetcher.ModelDescriptors({}); 
-  async function fetchCollection() { 
-    const [model] = await dao.fetcher.ModelDescriptors({modelsName:[collectionAccessor]}); 
-    const entries = await dao.fetcher.Read({modelName:collectionAccessor}); 
-    const introspection = await dao.fetcher.TypeIntrospection(collectionAccessor); 
+  const fetchModels = { 
+    fetchFunc: async () => await dao.fetcher.ModelDescriptors({}) 
+  }; 
 
-    const options = [] as IOption[] // = await dao.fetcher.GetOptionsFromIFields(model.ifields); 
-    //console.log(options); 
-
-    return {model, entries, introspection, options} //, options}; 
+  const fetchCollection = { 
+    fetchFunc: async () => { 
+      const [model] = await dao.fetcher.ModelDescriptors({modelsName:[collectionAccessor]}); 
+      const entries = await dao.fetcher.Read({modelName:collectionAccessor}); 
+      const introspection = await dao.fetcher.TypeIntrospection(collectionAccessor); 
+      const options = [] as IOption[]; 
+      return {model, entries, introspection, options} 
+    } 
   } 
   
   return <AdminContext.Provider value={{collectionAccessor, SetCollectionAccessor}}> 
-    <FetcherComponent {...{fetchAction:fetchModels, Busy, Error}}> 
+    <FetcherComponent {...{fetchCallBack:fetchModels}}> 
       <CollectionSelector/> 
       {!IsEmpty(collectionAccessor) && 
-        <FetcherComponent {...{fetchAction:fetchCollection, Busy, Error}} key={collectionAccessor}> 
+        <FetcherComponent {...{fetchCallBack:fetchCollection}} key={collectionAccessor}> 
           <AdminTable/> 
         </FetcherComponent>
       }
     </FetcherComponent> 
   </AdminContext.Provider>
 }
-// <AdminTable/>
+

@@ -19,7 +19,7 @@ export function CollectionSelector() {
   }
 
   const bModels = ((result ?? []) as ModelDescriptor[]) 
-    .filter( model => ['Patient', 'Form', 'Question', 'Instructions', 'ResponseGroup', 'Answer'].includes(model.accessor) ) 
+    .filter( model => ['Patient', 'Form', 'Question', 'Instruction', 'ResponseGroup', 'Answer'].includes(model.accessor) ) 
 
   const options = bModels.map( model => { 
     return {value:model.accessor, label:model.label[0]} as IOption; 

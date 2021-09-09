@@ -2,29 +2,30 @@ import React, { useContext, useEffect, useState } from 'react';
 
 
 // ---------------------------------------------------------
-import { useFetcher } from './usefetcher.hook';
+import { useFetcher, TFetchCallBack } from './usefetcher.hook';
 import { IsEmpty, IsNull } from '../../libs/utils';
 
 
 export const FetcherContext = React.createContext( {} as any ); 
-type TFetcherComponent = {fetchAction:any, Error?:any, Busy?:any}; 
+type TFetcherComponent = {fetchCallBack:TFetchCallBack, Error?:any, Busy?:any}; 
+
 export function FetcherComponent({children, ...props}:React.PropsWithChildren<TFetcherComponent>) { 
-  const {status:{loading, ready, result, error}, Fetch} = useFetcher(); 
+  const { state:{busy, success, ready, error, result}, Fetch } = useFetcher(); 
+
+  console.log(ready); 
 
   const busyComponent = props?.Busy ? <props.Busy/>: <Busy/> 
   const errorComponent = props?.Error ? <props.Error/>: <Error/> 
 
-  useEffect(() => { 
-    Fetch( props.fetchAction ); 
-  }, []); 
+  useEffect(() => { Fetch( props.fetchCallBack ); }, []); 
 
-  if(loading && !ready) 
+  if(busy) 
     return <FetcherContext.Provider value={{}}> 
       {busyComponent} 
     </FetcherContext.Provider> 
-  if(ready && (error ?? result)) 
-    return <FetcherContext.Provider value={error ?? result}> 
-      {IsEmpty(error) ? children : error} 
+  if(ready) 
+    return <FetcherContext.Provider value={success ? result : error}> 
+      {success ? children : error} 
     </FetcherContext.Provider> 
   else 
     return <FetcherContext.Provider value={{}}> 
