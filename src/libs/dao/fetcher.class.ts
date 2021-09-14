@@ -34,6 +34,8 @@ export class Fetcher {
     this.client = client; 
   } 
 
+
+  // TypeInstrospection ......................................
   public async TypeIntrospection(name:string):Promise<TIntrospect> { 
     const query = request.TYPE(); 
     const variables = {name}; 
@@ -129,19 +131,12 @@ export class Fetcher {
     return items; 
   } 
 
-
-
-  // GetSubfields -----------------------------------------
-  private async GetReducedSubfields({modelName, subfields}:ArgsModelName) { 
-    const defaultSubfields = await this.IntrospectSubfields(modelName); 
-    return ReduceSubfields(subfields, defaultSubfields); 
+  public GetDefaultEntry(model:ModelDescriptor):IEntry { 
+    const ifields = model.ifields.filter( f => !['_id', '_v'].includes(f.accessor) ); 
+    let defaultEntry = {} as IEntry; 
+    ifields.forEach( f => defaultEntry[f.accessor] = f.type.defaultValue ) 
+    return defaultEntry; 
   }
-
-  /*private async GetDefaultSubfields(modelName:string) { 
-    const models = await this.ModelDescriptors({modelsName:[modelName]}); 
-    const subfields = (models[0] as ModelDescriptor)?.ifields.filter( f => f.accessor != '__v'); 
-    return subfields?.map( f => f.accessor) ?? ["_id"]; 
-  }*/
 
   public async GetOptionsFromIFields(ifields:IField[]):Promise<{[accessor:string]:IOption[]}> { 
     let options = {} as {[accessor:string]:IOption[]} 
@@ -176,7 +171,16 @@ export class Fetcher {
     }) 
   } 
 
-  public async IntrospectSubfields(modelName:string) { 
+  
+
+  // GetSubfields -----------------------------------------
+  private async GetReducedSubfields({modelName, subfields}:ArgsModelName) { 
+    const defaultSubfields = await this.IntrospectSubfields(modelName); 
+    return ReduceSubfields(subfields, defaultSubfields); 
+  }
+
+
+  private async IntrospectSubfields(modelName:string) { 
     const models = await this.ModelDescriptors({modelsName:[modelName]}); 
     const ifields = (models[0] as ModelDescriptor)?.ifields; 
 

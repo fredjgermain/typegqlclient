@@ -7,47 +7,41 @@ import { client } from '../../libs/dao/apolloclient';
 import { Dao } from '../../libs/dao/dao.class'; 
 import { FetcherComponent } 
   from '../../libs/fetcher/fetcher.components'; 
-import { IsEmpty } from '../../libs/utils'; 
-import { AdminTable } from './component/admin.table'; 
+import { AdminTableFetcher } from './component/admintablefetcher.component'; 
 import { CollectionSelector } from './component/collectionselector.component'; 
 
 
 
-type TAdminContext = { 
+// Page Hook ..............................................
+function useAdminPage() { 
+  const dao = new Dao(client); 
+  const [collectionAccessor, setCollectionAccessor] = useState(''); 
+  function SetCollectionAccessor(accessor:string) { 
+    setCollectionAccessor(accessor); 
+  } 
+  
+  const fetchModels = { 
+    fetchFunc: async () => await dao.ModelDescriptors({}) 
+  }; 
+
+  return {dao, collectionAccessor, SetCollectionAccessor, fetchModels, }; 
+}
+
+
+// Page Component ..............................................
+export type TAdminContext = { 
+  dao:Dao, 
   collectionAccessor:string, 
   SetCollectionAccessor:(accessor:string)=>void, 
 } 
 export const AdminContext = React.createContext({} as TAdminContext); 
 export function AdminPage() { 
-  const [collectionAccessor, setCollectionAccessor] = useState(''); 
-  function SetCollectionAccessor(accessor:string) { 
-    setCollectionAccessor(accessor); 
-  } 
-
-  const dao = new Dao(client); 
+  const {dao, collectionAccessor, SetCollectionAccessor, fetchModels} = useAdminPage() 
   
-  const fetchModels = { 
-    fetchFunc: async () => await dao.fetcher.ModelDescriptors({}) 
-  }; 
-
-  const fetchCollection = { 
-    fetchFunc: async () => { 
-      const [model] = await dao.fetcher.ModelDescriptors({modelsName:[collectionAccessor]}); 
-      const entries = await dao.fetcher.Read({modelName:collectionAccessor}); 
-      const introspection = await dao.fetcher.TypeIntrospection(collectionAccessor); 
-      const options = [] as IOption[]; 
-      return {model, entries, introspection, options} 
-    } 
-  } 
-  
-  return <AdminContext.Provider value={{collectionAccessor, SetCollectionAccessor}}> 
+  return <AdminContext.Provider value={{dao, collectionAccessor, SetCollectionAccessor}}> 
     <FetcherComponent {...{fetchCallBack:fetchModels}}> 
       <CollectionSelector/> 
-      {!IsEmpty(collectionAccessor) && 
-        <FetcherComponent {...{fetchCallBack:fetchCollection}} key={collectionAccessor}> 
-          <AdminTable/> 
-        </FetcherComponent>
-      }
+      <AdminTableFetcher/> 
     </FetcherComponent> 
   </AdminContext.Provider>
 }

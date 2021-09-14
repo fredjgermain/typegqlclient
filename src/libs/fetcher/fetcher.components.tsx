@@ -3,7 +3,6 @@ import React, { useContext, useEffect, useState } from 'react';
 
 // ---------------------------------------------------------
 import { useFetcher, TFetchCallBack } from './usefetcher.hook';
-import { IsEmpty, IsNull } from '../../libs/utils';
 
 
 export const FetcherContext = React.createContext( {} as any ); 
@@ -11,9 +10,6 @@ type TFetcherComponent = {fetchCallBack:TFetchCallBack, Error?:any, Busy?:any};
 
 export function FetcherComponent({children, ...props}:React.PropsWithChildren<TFetcherComponent>) { 
   const { state:{busy, success, ready, error, result}, Fetch } = useFetcher(); 
-
-  console.log(ready); 
-
   const busyComponent = props?.Busy ? <props.Busy/>: <Busy/> 
   const errorComponent = props?.Error ? <props.Error/>: <Error/> 
 

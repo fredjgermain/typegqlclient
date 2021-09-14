@@ -1,5 +1,3 @@
-import { type } from "os";
-
 /** IsNull ======================================
  * returns true if value is:
   - undefined
@@ -72,7 +70,7 @@ export function IsEmpty(value:any): boolean {
  * @param source 
  * @returns 
  */
-export function DeepCopy(source:any) { 
+export function DeepCopy(source:any):any { 
   if(Array.isArray(source)) 
     return source.map( value => DeepCopy(value) ); 
   if(typeof source === 'object') { 
@@ -154,7 +152,7 @@ export function IsInRange(value:number, min?:number, max?:number) {
  * @param at 
  * @returns 
  */
-export function GetValueAt(source:any, at:string[]) { 
+export function GetValueAt(source:any, at:string[]):any { 
   const [key, ...rest] = at; 
   if(IsEmpty(key) || !(key in source)) 
     return; 
