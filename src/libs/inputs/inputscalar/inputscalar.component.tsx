@@ -1,15 +1,16 @@
 // --------------------------------------------------------
-import { useInputScalar } from './inputscalar.hook'; 
+import { InitProps } from './inputscalar.hook'; 
 import { IInput } from '../input.types'; 
+
 /** Input 
  * Accepts most input types 
  * @param param0 
  * @returns 
  */
-export function InputScalar({...props}:IInput) { 
-  const {inputAttribute, ...args} = useInputScalar(props); 
+export function InputScalar({inputAttribute = {}, ...props}:IInput) { 
+  const initprops = InitProps({inputAttribute, ...props}); 
   
-  if(inputAttribute.type ==='checkbox') 
-    return <input {...inputAttribute} {...{checked:args.value} }  /> 
-  return <input {...inputAttribute} /> 
+  if(initprops.inputAttribute.type ==='checkbox') 
+    return <input {...initprops.inputAttribute} {...{checked:initprops.value} }  /> 
+  return <input {...initprops.inputAttribute} /> 
 }

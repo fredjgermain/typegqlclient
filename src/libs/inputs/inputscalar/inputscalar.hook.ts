@@ -1,84 +1,67 @@
-// --------------------------------------------------------
-import { GetDefaultValueByType, GetTypeByValue, 
-  GetValueFromInput, GetInputType, 
-  IsNull, DefaultWidth, IEvent } from '../../utils'; 
 import React, { useState } from 'react'; 
+
+// --------------------------------------------------------
+import { GetDefaultValueByType, GetValueFromInput, GetInputType, IEvent } 
+  from '../../utils'; 
+import { GetTypeNameByValue } from '../../typeclass/type.class'; 
 import { IInput } from '../input.types'; 
-import { GetTType, GetTTypeFromValue, IsInDomain } from '../../typeclass/type.class';
 
 
 
-
-export function useInputScalar(props:IInput) { 
+export function InitProps({inputAttribute = {}, ...props}:IInput):IInput { 
+  console.log('init');
   // complete ttype definition 
-  const ttype = props.ttype ? GetTType(props.ttype) : GetTTypeFromValue(props.value); 
-
-  //console.log(ttype); 
-  // complete placeholder definition. 
-  const [value, setValue] = useState(props.value ?? ttype.defaultvalue); 
-
-  // Input attributes .....................................
-  // Calculate input width 
-  // const width = props.sizeFunc ? 
-  //   {width: `${props.sizeFunc(value)}ch`}: 
-  //   {width: `${DefaultWidth(value, ttype.name ?? '')}ch`}; 
-
-  //const style = {...props.inputAttribute?.style, ...width}; 
-  const type = props.inputAttribute?.type ?? GetInputType(ttype.name ?? 'string'); 
-  console.log(type); 
-
-  const {onChange, onBlur, onKeyUp} = SetAction(type, value, setValue, props.sendValue); 
-  const inputAttribute = {
-    value, type, 
-    onChange, onBlur, onKeyUp, 
-    ...(props.inputAttribute ?? {} ) 
+  const valueType = props.valueType ?? GetTypeNameByValue(props.value); 
+  const defaultValue = props.defaultValue ?? GetDefaultValueByType(valueType); 
+  const value = props.value ?? defaultValue; 
+  const SetValue = props.SetValue; 
+  const type = inputAttribute.type ?? GetInputType(valueType); 
+  
+  let {onChange, onBlur, onEnter} = DefaultSetAction({value, SetValue, defaultValue, valueType, inputAttribute}); 
+  // let  = { 
+  //   onChange: props.onChange ?? defaultSetAction.onChange, 
+  //   onBlur: props.onBlur ?? defaultSetAction.onBlur, 
+  //   onEnter: props.onEnter ?? defaultSetAction.onEnter 
+  // } 
+  
+  inputAttribute = { value, type, 
+    onChange, onBlur, onKeyUp:onEnter, 
+    ...inputAttribute 
   } 
 
-  return { value, setValue, ttype, inputAttribute } 
+  return { value, SetValue, defaultValue, valueType, inputAttribute } 
 } 
 
 
 
-
-
-/**
-  type:text, number, password ... 
-    onChange: setValue 
-    onEnter: sendValue, 
-    onBlur: sendValue 
-
-  type:checkbox 
-    onChange: setValue, sendValue, color 
-    onEnter: sendValue, 
-    onBlur: sendValue 
- */
-
-function SetAction(inputType:string, value:any, setValue:(newValue:any)=>void, sendValue:(newValue:any)=>void) { 
+type InputActions = { 
+  onChange?: (event:IEvent) => void; 
+  onEnter?: (event: React.KeyboardEvent<HTMLInputElement>) => void; 
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void; 
+} 
+function DefaultSetAction({value, SetValue}:IInput): InputActions { 
   const onChange = (event:IEvent) => { 
     const newValue = GetValueFromInput(event); 
-    setValue(newValue); 
-    const typeSendValue = ['checkbox','color']; 
-    if(typeSendValue.includes(inputType)) 
-      sendValue(newValue); 
+    console.log('onChange'); 
+    SetValue(newValue); 
   } 
 
-  const onBlur = (event: React.FocusEvent<HTMLInputElement>) => sendValue(value); 
+  const onBlur = (event: React.FocusEvent<HTMLInputElement>) => { 
+    console.log('onBlur', value); 
+    SetValue(value); 
+  }
 
   // Enter Function called on KeyUp. 
-  const onKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => { 
-    OnEnter(event) && sendValue(value); 
+  const onEnter = (event: React.KeyboardEvent<HTMLInputElement>) => { 
+    console.log('onEnter', value); 
+    if(OnEnter(event)) { 
+      
+      SetValue(value); 
+    }
   } 
 
-  return {onChange, onBlur, onKeyUp}; 
+  return {onChange, onBlur, onEnter}; 
 }
-
-  // // on input changes 
-  // const onChange = (event:IEvent) => { 
-  //   const newValue = GetValueFromInput(event); 
-  //   inputAttribute?.onChange && inputAttribute.onChange(newValue); 
-  //   setValue(newValue); 
-  // } 
-
 
 
 

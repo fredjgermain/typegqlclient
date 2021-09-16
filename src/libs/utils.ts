@@ -5,7 +5,7 @@ export { StringInterpolation, ReduceToString, SplitWithRegex, StringifyEach } fr
 
 export { DaysPerMonth, IsLeapYear, IsToday, ParseDate } from './utils/date.utils'; 
 
-export { DefaultWidth, GetInputType, GetValueFromInput, 
+export { DefaultWidth, GetInputType, GetValueFromInput, InputType_ValueType, 
   OnEnter, OnEnterOrTab, OnPress, OnTab } from './utils/htmlelement.utils'; 
 export type { IEvent } from './utils/htmlelement.utils'; 
 

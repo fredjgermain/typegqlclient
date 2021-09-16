@@ -9,21 +9,26 @@ export type TType = {
   nested?: TType[] 
 } 
 
-export const PrimitiveTypeName = { 
-  object:'object', 
-  array:'array', 
+// "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function" | "array"
+export const TypesOf = { 
   boolean:'boolean', 
   number:'number', 
+  bigint:'bigint', 
   string:'string', 
+  object:'object', 
+  array:'array', 
   function:'function', 
+  symbol:'symbol', 
+  undefined:'undefined', 
 } 
 
 export const DefaultValues = { 
-  object: {}, 
-  array: [], 
   boolean: false, 
   number: 0, 
+  bigint: 0, 
   string: '', 
+  object: {}, 
+  array: [], 
   function: () => {}, 
 } as any; 
 
@@ -114,10 +119,5 @@ export const NUMERIC_DOMAIN = {
  * @returns 
  */ 
 export function GetTypeNameByValue(value:any) { 
-  const keys = Object.keys(PrimitiveTypeName); 
-  if( keys.includes(typeof value) ) 
-    return typeof value; 
-  if(Array.isArray(value)) 
-    return 'array'; 
-  return ''; 
+  return Array.isArray(value) ? 'array': typeof value; 
 } 

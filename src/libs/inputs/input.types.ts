@@ -1,33 +1,15 @@
-import { TType } from "../typeclass/type.class";
+import { IEvent } from "../utils";
+
+
 
 export interface IInput { 
   value: any; 
-  sendValue: (newValue:any) => void; 
+  SetValue: (newValue:any) => void; 
+  defaultValue?: any; 
+  valueType?: string; 
+  inputAttribute: React.InputHTMLAttributes<HTMLInputElement>; 
 
-  ttype?: TType; 
-  //sizeFunc?: (value:any) => number; 
-  inputAttribute?: React.InputHTMLAttributes<HTMLInputElement>; 
-
-  /*
-  onChange?: (newValue:any) => void; 
-  onEnter?: (newValue:any) => void; 
-  onTab?: (newValue:any) => void; 
-  */ 
+  onChange?: (event:IEvent) => void; 
+  onEnter?: (event: React.KeyboardEvent<HTMLInputElement>) => void; 
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void; 
 } 
-
-// export interface IInput { 
-//   type?: string; 
-//   value?: any; 
-//   defaultValue?: any; 
-//   inputType?: string; 
-
-//   placeholder?: string; 
-
-//   onChange: (newValue:any) => void; 
-//   onPressEnter?: (newValue:any) => void; 
-//   onPressTab?: (newValue:any) => void; 
-
-//   sizeFunc?: (value:any) => number; 
-//   inputAttribute?: React.InputHTMLAttributes<HTMLInputElement>; 
-// } 
-

@@ -69,7 +69,27 @@ export function GetInputType(type:string) {
   if(acceptableTypes.includes(type)) 
     return type; 
   return 'text'; 
+} 
+
+
+export const InputType_ValueType = { 
+  button: '', 
+  checkbox: 'boolean', 
+  color: 'string', 
+  date: 'string', 
+  image: '', 
+  hidden: '', 
+  number: 'number', 
+  password: 'string', 
+  range: '', 
+  reset: '', 
+  tel: 'string', 
+  text:'string', 
+  time: 'string', 
+  url: 'string', 
+  week: '' 
 }
+
 
 
 // TAG UTILS ###################################
