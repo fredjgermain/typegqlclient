@@ -1,4 +1,4 @@
-import { IsEmpty } from './value_type.utils'; 
+import { IsEmpty } from '../utils'; 
 
 
 
@@ -74,7 +74,7 @@ export function Pick<T, U>(toPickFrom:T[] = [], pickingOrder:U[] = [], picker:(t
  * @returns 
  */
 export function Order<T>(toOrder:T[] = [], orderers:Predicate<T>[]):[T[], T[]] { 
-  let ordered = []; 
+  let ordered:T[] = []; 
   let unordered = [...toOrder]; 
   orderers.forEach( orderer => { 
     const [filter, unfiltered] = Filter(unordered, orderer); 

@@ -1,26 +1,4 @@
-import { GetDefaultValueByType } from "../utils";
-
-
-export type TType = { 
-  name?: string, 
-  key?: string, 
-  domain?: ((x:any) => boolean | any[]), 
-  defaultvalue?: any, 
-  nested?: TType[] 
-} 
-
-// "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function" | "array"
-export const TypesOf = { 
-  boolean:'boolean', 
-  number:'number', 
-  bigint:'bigint', 
-  string:'string', 
-  object:'object', 
-  array:'array', 
-  function:'function', 
-  symbol:'symbol', 
-  undefined:'undefined', 
-} 
+export const TypeNames = ["string" , "number" , "bigint" , "boolean" , "symbol" , "undefined" , "object" , "function" , "array"]; 
 
 export const DefaultValues = { 
   boolean: false, 
@@ -33,6 +11,43 @@ export const DefaultValues = {
 } as any; 
 
 
+
+/** GetDefaultValue ==========================================
+ * Takes a typename and return its default value
+ * 
+ * @param typeName 
+ * @returns 
+ */
+export function GetDefaultValue(typeName:string) { 
+  return DefaultValues[typeName]; 
+} 
+
+
+
+/** GetTypeNameByValue ======================================== 
+ * Takes a any value and returns its typeName if possible. 
+ * 
+ * @param value 
+ * @returns 
+ */ 
+ export function GetTypeNameByValue(value:any) { 
+  return Array.isArray(value) ? 'array': typeof value; 
+} 
+
+
+
+/* TType ################################################### */ 
+
+export type TType = { 
+  name?: string, 
+  key?: string, 
+  domain?: ((x:any) => boolean | any[]), 
+  defaultvalue?: any, 
+  nested?: TType[] 
+} 
+
+
+
 /** GetTTypeValue ============================================ 
  * 
  * @param value 
@@ -40,7 +55,7 @@ export const DefaultValues = {
  */ 
  export function GetTTypeFromValue(value:any):TType { 
   const name = GetTypeNameByValue(value); 
-  const defaultvalue = GetDefaultValueByType(name); 
+  const defaultvalue = GetDefaultValue(name); 
 
   const nested = 
     name === 'object' ? Object.keys(value).map( key => { 
@@ -68,7 +83,7 @@ export function GetTType(ttype:TType):TType {
     ttype.nested && ttype.nested.every( type => !type.key ) ? 'array' : 
     GetTypeNameByValue(ttype.defaultvalue); 
 
-  const defaultvalue = ttype.defaultvalue ?? GetDefaultValueByType(name); 
+  const defaultvalue = ttype.defaultvalue ?? GetDefaultValue(name); 
   
   const nested = ttype.nested ? ttype.nested : 
     name === 'object' ? [] : 
@@ -81,16 +96,6 @@ export function GetTType(ttype:TType):TType {
 }
 
 
-/** GetDefaultValue ========================================
- * 
- * @param ttype 
- * @returns 
- */
-export function GetDefaultValue(ttype:TType) { 
-  return ttype.defaultvalue ?? DefaultValues[ttype.name ?? ''] ?? undefined; 
-} 
-
-
 
 /** IsInDomain ==============================================
  * 
@@ -98,7 +103,7 @@ export function GetDefaultValue(ttype:TType) {
  * @param type 
  * @returns 
  */
-export function IsInDomain(x:any, type:TType) { 
+ export function IsInDomain(x:any, type:TType) { 
   if( Array.isArray(type.domain) ) 
     return type.domain.includes(x); 
   if( typeof type.domain === 'function' ) 
@@ -111,13 +116,3 @@ export const NUMERIC_DOMAIN = {
   IsEven: (x:any) => !Number.isNaN(x) && x % 2 === 0, 
   IsOdd: (x:any) => !Number.isNaN(x) && x % 2 != 0, 
 }
-
-
-/** GetTypeNameByValue ======================================== 
- * 
- * @param value 
- * @returns 
- */ 
-export function GetTypeNameByValue(value:any) { 
-  return Array.isArray(value) ? 'array': typeof value; 
-} 

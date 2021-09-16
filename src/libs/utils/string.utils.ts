@@ -10,7 +10,7 @@ console.log(EvalFormat(error, "this is error ${name}: at ${path} ... ${value} ")
 const entry = {firstName:'Fred', lastName:'Jean-Germain', title:'Mrs'}; 
 console.log(EvalFormat(entry, "Hi! ${title} ${lastName}, ${firstName} ")) 
 */ 
-export function StringInterpolation(values:object, strInterpoTemplate:string) { 
+export function StringInterpolation(values:any, strInterpoTemplate:string) { 
   const keys = Object.keys(values); 
   strInterpoTemplate = strInterpoTemplate.replace(/`/g, '\\`'); 
   const fn = new Function(...keys, 'return `' + strInterpoTemplate + '`'); 

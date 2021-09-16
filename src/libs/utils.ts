@@ -9,9 +9,6 @@ export { DefaultWidth, GetInputType, GetValueFromInput, InputType_ValueType,
   OnEnter, OnEnterOrTab, OnPress, OnTab } from './utils/htmlelement.utils'; 
 export type { IEvent } from './utils/htmlelement.utils'; 
 
-export { Copy, DeepCopy, 
-  GetDefaultValueByType, GetTypeByValue, 
-  IsEmpty, IsInRange, IsNaN, IsNull, 
-  GetValueAt, GetValuesAt, SetValuesAt } from './utils/value_type.utils'; 
+export { Copy, DeepCopy, IsEmpty, IsNaN, IsNull } from './utils/value.utils'; 
 
-export { ITypeFromString } from './utils/itype.utils'; 
+export { GetDefaultValue, GetTypeNameByValue } from './utils/type.utils'; 

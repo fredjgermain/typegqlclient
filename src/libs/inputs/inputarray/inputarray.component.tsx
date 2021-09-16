@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'; 
 
 // -------------------------------------------------------- 
-import { OnEnter } from '../../inputs/inputscalar/inputscalar.hook'; 
+import { OnEnter } from '../inputscalar/inputscalar.utils'; 
 import { InputScalar } from '../inputscalar/inputscalar.component'; 
 import { useInputArray, IUseInputArray } from './inputarray.hook'; 
 import { IInput } from '../input.types'; 

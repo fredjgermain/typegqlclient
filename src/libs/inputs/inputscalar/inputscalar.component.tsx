@@ -1,5 +1,5 @@
 // --------------------------------------------------------
-import { InitProps } from './inputscalar.hook'; 
+import { InitProps } from './inputscalar.utils'; 
 import { IInput } from '../input.types'; 
 
 /** Input 

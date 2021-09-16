@@ -1,9 +1,9 @@
 import React, { useState } from 'react'; 
 
 // --------------------------------------------------------
-import { GetDefaultValueByType, GetValueFromInput, GetInputType, IEvent } 
+import { GetDefaultValue, GetTypeNameByValue, 
+  GetValueFromInput, GetInputType, IEvent } 
   from '../../utils'; 
-import { GetTypeNameByValue } from '../../typeclass/type.class'; 
 import { IInput } from '../input.types'; 
 
 
@@ -12,7 +12,7 @@ export function InitProps({inputAttribute = {}, ...props}:IInput):IInput {
   console.log('init');
   // complete ttype definition 
   const valueType = props.valueType ?? GetTypeNameByValue(props.value); 
-  const defaultValue = props.defaultValue ?? GetDefaultValueByType(valueType); 
+  const defaultValue = props.defaultValue ?? GetDefaultValue(valueType); 
   const value = props.value ?? defaultValue; 
   const SetValue = props.SetValue; 
   const type = inputAttribute.type ?? GetInputType(valueType); 
