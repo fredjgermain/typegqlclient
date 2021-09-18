@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'; 
-import { useInputSelect, IInputSelect, IUseSelect } from '../inputselect.hook'; 
+import { useInputSelect, IInputSelect } from '../inputselect.hook'; 
 import { Options, OptionGroup } from './option.component'; 
 import { DisplaySelection, Selection } from './selection.component'; 
 
@@ -11,22 +11,15 @@ import '../inputselect.css';
 U+2335 COUNTERSINK wide 'v' ?? 
 
 */
-
+type IUseSelect = ReturnType<typeof useInputSelect>; 
 export const InputSelectContext = React.createContext({} as IUseSelect); 
 export function InputSelect({children, ...props}:React.PropsWithChildren<IInputSelect>) { 
   const context = useInputSelect(props); 
-  const {toggle, SetToggle} = context; 
-
-  const onClick = () => { 
-    if(!toggle) SetToggle() 
-  } 
-  const onBlur = () => SetToggle(false) 
-  const onFocus = () => SetToggle(true) 
   const className = 'select-main'; 
 
   if(children) 
     return <InputSelectContext.Provider value={context}> 
-        <div tabIndex={0} {...{onClick, onBlur, onFocus, className}}>{children}</div> 
+        <div {...{...context.toggleAttribute, className}} >{children}</div> 
     </InputSelectContext.Provider> 
 
   const defaultOptions = props.multiple ? 
@@ -38,10 +31,11 @@ export function InputSelect({children, ...props}:React.PropsWithChildren<IInputS
     </Options>
 
   return <InputSelectContext.Provider value={context}> 
-    <div tabIndex={0} {...{onClick, onBlur, onFocus, className}}> 
+    <div {...{...context.toggleAttribute, className}}> 
       <Selection><DisplaySelection/></Selection> 
       {defaultOptions} 
     </div> 
   </InputSelectContext.Provider> 
 } 
+
 

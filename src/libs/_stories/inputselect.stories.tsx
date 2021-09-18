@@ -5,7 +5,7 @@ import { Story } from '@storybook/react';
 // -------------------------------------------------------- 
 import { IInputSelect, InputSelect } from '../inputs/inputselect/inputselect'; 
 
-function TestInput({...props}:IInputSelect) { 
+function TestInput(props:IInputSelect) { 
   const [value, setValue] = useState(props.value); 
   const SetValue = (newValue:any[]) => setValue(newValue); 
   const args = {...props, value, SetValue}

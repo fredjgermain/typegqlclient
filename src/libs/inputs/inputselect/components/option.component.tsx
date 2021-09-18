@@ -23,7 +23,7 @@ export function OptionGroup({options}:{options?:IOptionGroup}) {
 
 export function Option({option}:{option:IOption}) { 
   const context = useContext(InputSelectContext); 
-  const {selection, multiple, IsSelected} = context; 
+  const {multiple, IsSelected} = context; 
   const onClick = () => context.SelectValue(option.value); 
   const className = IsSelected(option) ? 'select-option-selected': 'select-option'; 
   const addRemSymbol = <div>{IsSelected(option) ? '-': '+'}</div> 
@@ -36,7 +36,7 @@ export function Option({option}:{option:IOption}) {
 
 function GetOptions(options?:IOptionGroup):IOption[] { 
   const context = useContext(InputSelectContext); 
-  const {selection, IsSelected} = context; 
+  const {IsSelected} = context; 
   let _options = context.options; 
 
   if(IsEmpty(options)) 
