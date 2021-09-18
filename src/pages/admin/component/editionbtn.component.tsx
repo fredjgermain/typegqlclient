@@ -1,7 +1,7 @@
 import { useState, useContext } from "react"; 
 
 // ---------------------------------------------------------------- 
-import { RowContext, TableContext } from '../../../libs/components/table/_table'; 
+import { RowContext, TableContext } from '../../../libs/table/_table'; 
 import { AdminTableContext } from "./admintable.component"; 
 
 

@@ -1,15 +1,14 @@
 import React, { useContext } from 'react'; 
 
 // -------------------------------------------------------- 
-import { OnEnter } from '../inputscalar/inputscalar.utils'; 
+import { EnterIsPressed } from '../../utils';
 import { InputScalar } from '../inputscalar/inputscalar.component'; 
-import { useInputArray, IUseInputArray } from './inputarray.hook'; 
-import { IInput } from '../input.types'; 
+import { useInputArray, IInputArray, IUseInputArray } from './inputarray.hook'; 
 
 
 
 const InputArrayContext = React.createContext({} as IUseInputArray); 
-export function InputArray(props:IInput) { 
+export function InputArray(props:IInputArray) { 
   const context = useInputArray(props); 
 
   return <InputArrayContext.Provider value={context} > 
@@ -29,7 +28,7 @@ function CreateElement() {
   const elementArgs = ElementArgs(); 
 
   const OnEnterCreateThenReset = (event:any) => 
-    OnEnter(event) && CreateThenReset(); 
+    EnterIsPressed(event) && CreateThenReset(); 
 
   const CreateThenReset = () => { 
     Create(elementArgs.value); 
@@ -52,7 +51,7 @@ function UpdateElement({at}:{at:number}) {
   const { ElementArgs, Update } = useContext(InputArrayContext); 
   const elementArgs = ElementArgs(at); 
   elementArgs.inputAttribute = {...elementArgs.inputAttribute, 
-    onKeyUp: (event) => { OnEnter(event) && Update(at, elementArgs.value) }, 
+    onKeyUp: (event) => { EnterIsPressed(event) && Update(at, elementArgs.value) }, 
     onBlur: () => Update(at, elementArgs.value) 
   }; 
   return <InputScalar {...elementArgs} /> 

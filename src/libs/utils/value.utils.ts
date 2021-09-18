@@ -50,8 +50,6 @@ export function IsEmpty(value:any): boolean {
 
 
 
-
-
 /** Copy ========================================
  * Returns a shallow copy an object or an array. 
  * Otherwise returns the value itself. 

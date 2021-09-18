@@ -4,8 +4,8 @@ import React, { useState, useContext } from 'react';
 
 // -------------------------------------------------------------------- 
 import { Table, RowContext, Rows, Row, ColContext, Cols, Col } 
-  from '../../../libs/components/table/_table'; 
-import { Input, InputArray, InputSelect } from '../../../libs/inputs'; 
+  from '../../../libs/table/_table'; 
+//import { Input, InputArray, InputSelect } from '../../../libs/inputs'; 
 import { ModelDescriptor } from '../../../libs/dao/dao.utils'; 
 
 import { FetcherContext } from '../../../libs/fetcher/fetcher.components'; 

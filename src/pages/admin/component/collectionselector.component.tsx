@@ -6,7 +6,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { ModelDescriptor } from '../../../libs/dao/dao.utils'; 
 import { FetcherContext } 
   from '../../../libs/fetcher/fetcher.components'; 
-import { InputSelect } from '../../../libs/inputs'; 
+//import { InputSelect } from '../../../libs/inputs'; 
 import { AdminContext } from '../admin.page'; 
 
 
@@ -26,6 +26,6 @@ export function CollectionSelector() {
   }) 
 
   return <div> 
-    <InputSelect {...{value, onSetValue, options, multiple:false}} /> 
+    {/* <InputSelect {...{value, onSetValue, options, multiple:false}} />  */}
   </div> 
 }

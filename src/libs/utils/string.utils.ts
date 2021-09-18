@@ -19,52 +19,6 @@ export function StringInterpolation(values:any, strInterpoTemplate:string) {
 
 
 
-/** INTERPOLATIONSTRING =================================== 
-// const values = {value1:1, value2:'test2'} 
-// const template = "value1: ${Plural('values.value1', 'single', 'many')}"; 
-
-// // ${Plural(value1, 'single', 'many')} + , value2: ${values.value2}"; 
-// console.log(InterpolationString2(values, template)); 
-
- * Parse an string interpoler and replace the ${key} with their respective value found in 'values'. 
- * @param values 
- * @param template 
- * @returns 
- */
-// export function StringInterpolation(values:object, template:string) { 
-//   function Interpolate(src:string) { 
-//     return eval("`${"+src+"}`") 
-//   } 
-
-//   function Plural(src:string, singular:string, plural:string) { 
-//     const value = Interpolate(src); 
-//     return `${value} ${value > 1 ? plural:singular}`; 
-//   } 
-
-//   try { 
-//     return eval("`"+template+"`") 
-//   } catch(err) { 
-//     return 'error'; 
-//   } 
-// } 
-
-
-/*export function InterpolateString(values:object, interpoler:string) { 
-  const splits = SplitWithRegex(interpoler, [ new RegExp(/\${[a-zA-Z0-9_]+}/) ] ) 
-
-  let interpolated = ""; 
-  splits.forEach( split => { 
-    if(IsEmpty(split[1])) 
-      interpolated += split[0]; 
-    else { 
-      const key = split[0].substring(2, split[0].length-1).trim(); 
-      interpolated += StringifyEach(values[key])[0] ?? ''; 
-    } 
-  }) 
-  return interpolated; 
-} */
-
-
 /** STRINGIFY =============================================
  * Takes a single value or an array of values and stringify each. 
  * If a value is already a string, it returns that string value unchanged. 
@@ -86,11 +40,12 @@ export function StringifyEach(values:any):string[] {
  * Takes a single value or an array of values and stringify each. 
  * If a value is already a string, it returns that string unchanged. 
  * Else it stringify using 'JSON.stringify' rather than 'ToString'. 
+ * The default delimister is a white space ' '. 
  * @param strArray 
  * @param delimiter 
  * @returns a single string. 
  */
-export function ReduceToString(values:any, delimiter:string = '') { 
+export function ReduceToString(values:any, delimiter:string = ' ') { 
   const strArray = StringifyEach(values); 
   return strArray.join(delimiter); 
 } 
