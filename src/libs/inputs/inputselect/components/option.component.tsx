@@ -26,7 +26,7 @@ export function Option({option}:{option:IOption}) {
   const {multiple, IsSelected} = context; 
   const onClick = () => context.SelectValue(option.value); 
   const className = IsSelected(option) ? 'select-option-selected': 'select-option'; 
-  const addRemSymbol = <div>{IsSelected(option) ? '-': '+'}</div> 
+  const addRemSymbol = <span>{IsSelected(option) ? '-': '+'}</span> 
 
   return <div {...{onClick, className}}> 
     {multiple && addRemSymbol} {option.label} 

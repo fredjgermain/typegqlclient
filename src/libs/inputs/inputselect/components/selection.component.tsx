@@ -7,6 +7,11 @@ import { InputSelectContext } from './inputselect.component';
 
 
 
+/** Selection Component =================================== 
+ * Applies 
+ * @param param0 
+ * @returns 
+ */
 export function Selection({children}:React.PropsWithChildren<{}>) { 
   return <div className={'select-header'}> 
     {children} 
@@ -14,6 +19,12 @@ export function Selection({children}:React.PropsWithChildren<{}>) {
 } 
 
 
+
+/** DisplaySelection ====================================== 
+ * Display selected options. 
+ * 
+ * @returns 
+ */
 export function DisplaySelection() { 
   const context = useContext(InputSelectContext); 
   const selection = context.selection.map(option => option.label); 
@@ -24,7 +35,7 @@ export function DisplaySelection() {
 
   if(context.multiple)
     return <div className={className}> 
-      {IsEmpty(abbrevString) ? context.placeholder: JSON.stringify(abbrevString)} 
+      {IsEmpty(abbrevString) ? context.placeholder: (abbrevString)}
     </div> 
   return <div className={className}> 
     {single ?? context.placeholder} 
@@ -32,6 +43,14 @@ export function DisplaySelection() {
 } 
 
 
+
+/** AbbrevSelection ================================ 
+ * Concatenate an array of strings. 
+ * If the cummulative concatenation of strings is longer maxlength, then the concatenation stops. 
+ * @param selection 
+ * @param maxlength 
+ * @returns 
+ */
 function AbbrevSelection(selection:string[], maxlength:number = 20) { 
   const abbrevPredicate:Predicate<string> = ({positive}) => { 
     const reduced = ReduceToString(positive, ', '); 

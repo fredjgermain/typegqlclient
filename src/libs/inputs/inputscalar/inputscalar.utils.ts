@@ -17,7 +17,6 @@ export interface IInputScalar extends TActionAttributes {
 
 
 
-
 export function InitProps({inputAttribute = {}, ...props}:IInputScalar):IInputScalar { 
   console.log('init');
   // complete ttype definition 

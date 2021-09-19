@@ -3,9 +3,13 @@ import { Filter, ToArray, IsEmpty, Pick } from '../../utils';
 import { useToggle } from '../../usetoggle/usetoggle.hook'; 
 
 
-type IUseToggle = ReturnType<typeof useToggle>; 
-export function useInputSelect(props:IInputSelect):IUseSelect { 
-  
+
+/** useInputSelect ======================================== 
+ * 
+ * @param props 
+ * @returns 
+ */
+export function useInputSelect(props:IInputSelect) { 
   const {toggle, SetToggle, toggleAttribute} = useToggle(); 
 
   // initalize properties to default values. 
@@ -45,6 +49,7 @@ export function useInputSelect(props:IInputSelect):IUseSelect {
 }
 
 
+
 export interface IInputSelect { 
   value:any; 
   placeholder?:string; 
@@ -53,12 +58,3 @@ export interface IInputSelect {
   multiple?: boolean; 
   sizeFunc?: (value:any) => number; 
 } 
-
-export type IUseSelect = { 
-  toggle: boolean; 
-  SetToggle: (toggle?:boolean) => void; 
-  selection: IOption[]; 
-  SelectValue:(newValue:any) => void; 
-  IsSelected: (option:IOption) => boolean; 
-  //GetSelection: () => IOption[]; 
-} & IInputSelect & IUseToggle; 

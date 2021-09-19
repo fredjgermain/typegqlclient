@@ -1,9 +1,8 @@
-import React, {useState} from 'react'; 
 import { Story } from '@storybook/react'; 
 
 // -------------------------------------------------------- 
 import { PageOfPages, PagerBtns } from '../pager/pager.component'; 
-import { IPageHook, usePager } from '../pager/pager.hook'; 
+import { usePager } from '../pager/usepager.hook'; 
 
 function TestPager() { 
   const items = [
@@ -41,7 +40,7 @@ function TestPager() {
   ]
 
   const usepager = usePager(items, 2); 
-  const {page, pageIndex, pages, setPageIndex} = usepager; 
+  const {page, pageIndex, pages, SetPageIndex} = usepager; 
 
   return <div> 
     {page.map( (item,i) => { 

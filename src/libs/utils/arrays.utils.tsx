@@ -12,7 +12,11 @@ import { IsEmpty } from '../utils';
  */
 //export type Predicate<T> = (t:T, i:number, a:T[], positive:T[], negative:T[]) => boolean; 
 export type Predicate<T> = (iteration:{t:T, i:number, array:T[], positive:T[], negative:T[]}) => boolean; 
-
+export const PREDICATES = { 
+  isUnic: <T extends unknown>(sameness: Comparator<T>):Predicate<T> => { 
+    return ({t, positive}) => !positive.some( p => sameness(t, p) ); 
+  } 
+} 
 
 
 /** Comparator ================== 
@@ -135,7 +139,6 @@ export function Filter<T>(array:T[] = [], predicate:Predicate<T>):[T[], T[]] {
  */
  export function Unic<T>(array:T[], Sameness:Comparator<T>):[T[], T[]] { 
   const isUnic:Predicate<T> = ({t, positive}) => !positive.some( p => Sameness(t, p) ); 
-
   return Filter(array, isUnic); 
 } 
 

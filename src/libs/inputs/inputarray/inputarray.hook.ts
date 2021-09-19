@@ -16,19 +16,7 @@ export interface IInputArray extends Omit<IInputScalar, 'value' | 'SetValue'> {
 
 
 
-export interface IUseInputArray extends Omit<IInputScalar, 'value' | 'SetValue'> {
-  values:any[]; 
-  SetValues:(newValue:any[]) => void; 
-
-  ElementArgs: (at?: number | undefined) => IInputScalar; 
-  Create: (newValue:any) => void; 
-  Update: (at: number, newValue:any) => void; 
-  Delete: (at: number) => void; 
-}
-
-
-
-export function useInputArray({inputAttribute = {}, ...props}:IInputArray): IUseInputArray { 
+export function useInputArray({inputAttribute = {}, ...props}:IInputArray) { 
   // complete ttype definition 
   const valueType = props.valueType ?? 'string'; 
   const defaultValue = props.defaultValue ?? GetDefaultValue(valueType); 

@@ -35,6 +35,14 @@ const optionsString = [
 
 export const TestInput_singlestringValue = Template.bind({}) 
 TestInput_singlestringValue.args = { 
-  value:['asdasdsa'], 
+  value:undefined, 
   options:optionsString, 
+} 
+
+
+export const TestInput_multiplestringValue = Template.bind({}) 
+TestInput_multiplestringValue.args = { 
+  value:[], 
+  options:optionsString, 
+  multiple:true, 
 } 

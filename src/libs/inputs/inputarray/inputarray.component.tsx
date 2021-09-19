@@ -3,10 +3,10 @@ import React, { useContext } from 'react';
 // -------------------------------------------------------- 
 import { EnterIsPressed } from '../../utils';
 import { InputScalar } from '../inputscalar/inputscalar.component'; 
-import { useInputArray, IInputArray, IUseInputArray } from './inputarray.hook'; 
+import { useInputArray, IInputArray } from './inputarray.hook'; 
 
 
-
+type IUseInputArray = ReturnType<typeof useInputArray>; 
 const InputArrayContext = React.createContext({} as IUseInputArray); 
 export function InputArray(props:IInputArray) { 
   const context = useInputArray(props); 
