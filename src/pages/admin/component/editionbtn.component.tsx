@@ -1,18 +1,13 @@
 import { useState, useContext } from "react"; 
 
 // ---------------------------------------------------------------- 
-import { RowContext, TableContext } from '../../../libs/table/_table'; 
+import { RowContext } from '../../../libs/table/_table'; 
 import { AdminTableContext } from "./admintable.component"; 
 
 
-export interface IUseEdition { 
-  entry: IEntry | undefined; 
-  SetEntry: (modEntry?: IEntry | undefined) => void; 
-  mode: string; 
-  SetMode: (mode: string) => void; 
-} 
-export function useEdition():IUseEdition { 
-  const [entry, setEntry] = useState<IEntry|undefined>(undefined); 
+export type IUseEdition = ReturnType<typeof useEditEntry>; 
+export function useEditEntry() { 
+  const [entry, setEntry] = useState<IEntry>({} as IEntry); 
   const [mode, setMode] = useState(''); 
 
   function SetMode(mode:string) { 
@@ -20,7 +15,7 @@ export function useEdition():IUseEdition {
   } 
 
   function SetEntry(modEntry?:IEntry) { 
-    setEntry(modEntry) 
+    setEntry((modEntry ?? {}) as IEntry) 
   } 
 
   return {entry, SetEntry, mode, SetMode} 
@@ -48,3 +43,24 @@ export function EditBtns({mode}:{mode:string}) {
   </span> 
 }
 
+
+export function SubmitBtn() { 
+  const { useedition:{entry, mode} } = useContext(AdminTableContext); 
+
+  const Submit = () => { 
+    console.log(mode, entry) 
+  }
+
+  return <button onClick={Submit}>Submit</button> 
+}
+
+export function CancelBtn() { 
+  const { useedition:{SetEntry, SetMode}, defaultEntry } = useContext(AdminTableContext); 
+
+  const Cancel = () => { 
+    SetEntry(defaultEntry);  
+    SetMode('read'); 
+  }
+  
+  return <button onClick={Cancel}>Cancel</button>
+}

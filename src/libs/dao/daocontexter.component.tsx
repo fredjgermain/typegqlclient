@@ -8,11 +8,11 @@ import {
 import { Dao } from './dao.class'; 
 
 
-export const DaoContext = React.createContext({} as any); 
+export const DaoContext = React.createContext({} as {dao:Dao}); 
 export function DaoContexter({children, client}:PropsWithChildren<{client: ApolloClient<NormalizedCacheObject>}>) { 
   const dao = new Dao(client); 
 
-  return <DaoContext.Provider value={dao}> 
+  return <DaoContext.Provider value={{dao}}> 
     {children} 
   </DaoContext.Provider> 
 } 

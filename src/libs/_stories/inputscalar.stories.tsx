@@ -3,7 +3,11 @@ import { Story } from '@storybook/react';
 
 // --------------------------------------------------------
 import { InputScalar, IInputScalar } from '../inputs/inputscalar/inputscalar'; 
+import { DateToString } from '../date/date.utils';
 
+const today = new Date(); 
+
+console.log(today.toISOString().substring(0, 10)); 
 
 
 function TestInput({...props}:IInputScalar) { 
@@ -32,6 +36,14 @@ TestInput_DefaultValueNull.args = {
   value:'', 
   SetValue: (newValue:any) => console.log(newValue), 
   //onPressEnter: () => console.log('on Press Enter'), 
+} 
+
+
+export const TestInput_Date = Template.bind({}) 
+TestInput_Date.args = { 
+  value: new Date(), 
+  SetValue: (newValue:any) => console.log(newValue), 
+  valueType: 'date', 
 } 
 
 export const TestInput_String_fewArgs = Template.bind({}) 

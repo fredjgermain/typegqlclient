@@ -145,7 +145,7 @@ export class Dao {
 
   // Get Options ..........................................
   public async GetOptionsFromIFields(ifields:IField[]):Promise<{[accessor:string]:IOption[]}> { 
-    let options = {} as {[accessor:string]:IOption[]} 
+    let options = {} as {[key:string]:IOption[]} 
     for(let i=0; i < ifields.length; i++) { 
       const ifield = ifields[i]; 
       options[ifield.accessor] = await this.GetOptionsFromIField(ifield); 

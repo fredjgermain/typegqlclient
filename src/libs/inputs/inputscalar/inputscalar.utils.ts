@@ -1,4 +1,5 @@
 import React, { useState } from 'react'; 
+import { DateToString } from '../../date/date.utils';
 
 // --------------------------------------------------------
 import { GetDefaultValue, GetTypeNameByValue, 
@@ -18,11 +19,13 @@ export interface IInputScalar extends TActionAttributes {
 
 
 export function InitProps({inputAttribute = {}, ...props}:IInputScalar) { 
-  console.log('init');
   // complete ttype definition 
   const valueType = props.valueType ?? GetTypeNameByValue(props.value); 
   const defaultValue = props.defaultValue ?? GetDefaultValue(valueType); 
-  const value = props.value ?? defaultValue; 
+  let value = props.value ?? defaultValue; 
+  if(valueType === 'date') 
+    value = DateToString(value); 
+
   const SetValue = props.SetValue; 
   const type = inputAttribute.type ?? GetInputType(valueType); 
   const actionAttributes = DefaultActionAttributes({value, SetValue, inputAttribute}); 
@@ -37,19 +40,23 @@ export function InitProps({inputAttribute = {}, ...props}:IInputScalar) {
 } 
 
 
+
 function DefaultActionAttributes({value, SetValue}:IInputScalar):TActionAttributes { 
   const onChange = (event:any) => { 
     const newValue = GetValueFromInput(event); 
+    console.log('OnChange', newValue); 
     SetValue(newValue); 
   } 
 
   const onBlur = (event: React.FocusEvent<HTMLInputElement>) => { 
+    console.log('OnBlur', value); 
     SetValue(value); 
   }
 
   // Enter Function called on KeyUp. 
   const onEnter = (event: React.KeyboardEvent<HTMLInputElement>) => { 
     if(EnterIsPressed(event)) { 
+      console.log('OnEnter', value); 
       SetValue(value); 
     } 
   } 

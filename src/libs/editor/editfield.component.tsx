@@ -46,10 +46,7 @@ display field to edit entry using SetEntry.
 
 */ 
 export function EditField({ifield}:{ifield:IField}) { 
-  
-
   const {entry, SetEntry, ifieldsOptions} = useContext(EditEntryContext); 
-  console.log(entry[ifield.accessor]); 
 
   const value = entry[ifield.accessor] ?? ifield.type.defaultValue; 
   const options = (ifieldsOptions??{})[ifield.accessor]; 
@@ -61,6 +58,9 @@ export function EditField({ifield}:{ifield:IField}) {
   }
 
   const Label = `${ifield.label} : `; 
+  const valueType = ifield.type.name; 
+  //console.log(ifield.type.name); 
+  
 
   // InputSelect, if options is not null 
   if(!IsEmpty(options)) 
@@ -70,10 +70,10 @@ export function EditField({ifield}:{ifield:IField}) {
   // InputArray 
   if(ifield.type.isArray) 
     return <div> 
-      {Label} <InputArray {...{values:value, SetValues:SetValue}} /> 
+      {Label} <InputArray {...{values:value, SetValues:SetValue, valueType}} /> 
     </div> 
   // InputScalar
   return <div> 
-    {Label} <InputScalar {...{value, SetValue}} /> 
+    {Label} <InputScalar {...{value, SetValue, valueType}} /> 
   </div> 
 }

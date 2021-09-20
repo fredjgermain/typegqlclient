@@ -16,8 +16,8 @@ export function AdminTableFetcher() {
       const [model] = await dao.ModelDescriptors({modelsName:[collectionAccessor]}); 
       const defaultEntry = await dao.GetDefaultEntry(model); 
       const entries = await dao.Read({modelName:collectionAccessor}); 
-      const fieldsOptions = await dao.GetOptionsFromIFields(model.ifields); 
-      return {model, entries, defaultEntry, fieldsOptions} 
+      const ifieldsOptions = await dao.GetOptionsFromIFields(model.ifields); 
+      return {model, entries, defaultEntry, ifieldsOptions} 
     } 
   }
   

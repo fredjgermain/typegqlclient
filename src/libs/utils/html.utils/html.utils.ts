@@ -43,6 +43,9 @@ export function GetValueFromInput(event:any) {
   const type = target.type; 
   if(type === 'number') 
     return target.valueAsNumber as number; 
+  if(type === 'date') { 
+    return target.value; 
+  } 
   if(type === 'checkbox') 
     return target.checked as boolean; 
   return target.value; 
@@ -73,7 +76,7 @@ export const InputType_ValueType = {
   button: '', 
   checkbox: 'boolean', 
   color: 'string', 
-  date: 'string', 
+  date: 'date', 
   image: '', 
   hidden: '', 
   number: 'number', 

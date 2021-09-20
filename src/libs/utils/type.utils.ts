@@ -1,3 +1,5 @@
+import { DateToString } from "../date/date.utils";
+
 export const TypeNames = ["string" , "number" , "bigint" , "boolean" , "symbol" , "undefined" , "object" , "function" , "array"]; 
 
 export const DefaultValues = { 
@@ -8,6 +10,7 @@ export const DefaultValues = {
   object: {}, 
   array: [], 
   function: () => {}, 
+  date: DateToString(new Date()), 
 } as any; 
 
 
