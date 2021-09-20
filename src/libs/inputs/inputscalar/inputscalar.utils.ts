@@ -12,12 +12,12 @@ export interface IInputScalar extends TActionAttributes {
   SetValue: (newValue:any) => void; 
   defaultValue?: any; 
   valueType?: string; 
-  inputAttribute: React.InputHTMLAttributes<HTMLInputElement>; 
+  inputAttribute?: React.InputHTMLAttributes<HTMLInputElement>; 
 } 
 
 
 
-export function InitProps({inputAttribute = {}, ...props}:IInputScalar):IInputScalar { 
+export function InitProps({inputAttribute = {}, ...props}:IInputScalar) { 
   console.log('init');
   // complete ttype definition 
   const valueType = props.valueType ?? GetTypeNameByValue(props.value); 

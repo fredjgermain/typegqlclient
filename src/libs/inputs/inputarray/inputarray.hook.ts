@@ -11,7 +11,7 @@ export interface IInputArray extends Omit<IInputScalar, 'value' | 'SetValue'> {
   SetValues: (newValue:any[]) => void; 
   defaultValue?: any; 
   valueType?: string; 
-  inputAttribute: React.InputHTMLAttributes<HTMLInputElement>; 
+  inputAttribute?: React.InputHTMLAttributes<HTMLInputElement>; 
 } 
 
 

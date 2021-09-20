@@ -6,7 +6,7 @@ import { InputScalar, IInputScalar } from '../inputs/inputscalar/inputscalar';
 
 
 
-function TestInput(props:IInputScalar) { 
+function TestInput({...props}:IInputScalar) { 
   const [value, setValue] = useState(props.value); 
   const SetValue = (value:any) => setValue(value); 
   props.value = value; 

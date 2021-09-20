@@ -8,7 +8,7 @@ import { useInputArray, IInputArray } from './inputarray.hook';
 
 type IUseInputArray = ReturnType<typeof useInputArray>; 
 const InputArrayContext = React.createContext({} as IUseInputArray); 
-export function InputArray(props:IInputArray) { 
+export function InputArray({inputAttribute = {},  ...props}:IInputArray) { 
   const context = useInputArray(props); 
 
   return <InputArrayContext.Provider value={context} > 
