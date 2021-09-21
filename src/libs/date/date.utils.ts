@@ -4,11 +4,17 @@ export function ParseDate(date:any) {
   return {year:dateObject.getFullYear(), month:dateObject.getMonth()+1, date:dateObject.getDate()} 
 }
 
-export function DateToString(date:Date) { 
+// returns date in format yyyy-mm-dd
+export function DateToString(date:any) { 
   try{ 
-    return date.toISOString().substring(0, 10); 
+    return date.toISOString().substring(0, 10); // returns date in format yyyy-mm-dd
   } catch{ 
-    return date; 
+    try{ 
+      const _date = new Date(date); 
+      return _date.toISOString().substring(0, 10); // returns date in format yyyy-mm-dd
+    }catch{
+      return 
+    }
   } 
 } 
 

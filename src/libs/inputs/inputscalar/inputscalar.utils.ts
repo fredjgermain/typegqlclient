@@ -44,19 +44,16 @@ export function InitProps({inputAttribute = {}, ...props}:IInputScalar) {
 function DefaultActionAttributes({value, SetValue}:IInputScalar):TActionAttributes { 
   const onChange = (event:any) => { 
     const newValue = GetValueFromInput(event); 
-    console.log('OnChange', newValue); 
     SetValue(newValue); 
   } 
 
   const onBlur = (event: React.FocusEvent<HTMLInputElement>) => { 
-    console.log('OnBlur', value); 
     SetValue(value); 
   }
 
   // Enter Function called on KeyUp. 
   const onEnter = (event: React.KeyboardEvent<HTMLInputElement>) => { 
     if(EnterIsPressed(event)) { 
-      console.log('OnEnter', value); 
       SetValue(value); 
     } 
   } 
