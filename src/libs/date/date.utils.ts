@@ -12,9 +12,9 @@ export function DateToString(date:any) {
     try{ 
       const _date = new Date(date); 
       return _date.toISOString().substring(0, 10); // returns date in format yyyy-mm-dd
-    }catch{
-      return 
-    }
+    }catch{ 
+      return date; 
+    } 
   } 
 } 
 

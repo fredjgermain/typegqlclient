@@ -3,11 +3,7 @@ import { Story } from '@storybook/react';
 
 // --------------------------------------------------------
 import { InputScalar, IInputScalar } from '../inputs/inputscalar/inputscalar'; 
-import { DateToString } from '../date/date.utils';
 
-const today = new Date(); 
-
-console.log(today.toISOString().substring(0, 10)); 
 
 
 function TestInput({...props}:IInputScalar) { 

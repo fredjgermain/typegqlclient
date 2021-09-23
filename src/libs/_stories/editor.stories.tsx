@@ -3,7 +3,7 @@ import { Story } from '@storybook/react';
 
 
 // -------------------------------------------------------- 
-import { EditEntry, IEditEntry } from '../editor/editfield.component'; 
+import { EntryEditor, IEditEntry } from '../editor/fieldeditor.component'; 
 
 
 
@@ -13,7 +13,7 @@ function TestEditor({...props}:IEditEntry) {
   const {ifields, ifieldsOptions} = props; 
 
   return <div> 
-    <EditEntry {...{entry, SetEntry, ifields, ifieldsOptions}} /> 
+    <EntryEditor {...{entry, SetEntry, ifields, ifieldsOptions}} /> 
   </div> 
 } 
 

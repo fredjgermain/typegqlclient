@@ -8,17 +8,22 @@ import { AdminTableContext } from "./admintable.component";
 export type IUseEdition = ReturnType<typeof useEditEntry>; 
 export function useEditEntry() { 
   const [entry, setEntry] = useState<IEntry>({} as IEntry); 
-  const [mode, setMode] = useState(''); 
+  const [mode, setMode] = useState('read'); 
+  const [feedback, setFeedback] = useState([]); 
 
-  function SetMode(mode:string) { 
-    setMode(mode); 
+  function SetMode(mode?:string) { 
+    setMode(mode?? 'read'); 
   } 
 
   function SetEntry(modEntry?:IEntry) { 
     setEntry((modEntry ?? {}) as IEntry) 
   } 
 
-  return {entry, SetEntry, mode, SetMode} 
+  function SetFeedback(newFeedback:any) { 
+    setFeedback(newFeedback); 
+  } 
+
+  return {entry, SetEntry, mode, SetMode, feedback, SetFeedback} 
 } 
 
 
@@ -43,24 +48,3 @@ export function EditBtns({mode}:{mode:string}) {
   </span> 
 }
 
-
-export function SubmitBtn() { 
-  const { useedition:{entry, mode} } = useContext(AdminTableContext); 
-
-  const Submit = () => { 
-    console.log(mode, entry) 
-  }
-
-  return <button onClick={Submit}>Submit</button> 
-}
-
-export function CancelBtn() { 
-  const { useedition:{SetEntry, SetMode}, defaultEntry } = useContext(AdminTableContext); 
-
-  const Cancel = () => { 
-    SetEntry(defaultEntry);  
-    SetMode('read'); 
-  }
-  
-  return <button onClick={Cancel}>Cancel</button>
-}

@@ -9,11 +9,6 @@ import { IInputScalar } from './inputscalar.utils';
  */
 export function InputScalar({inputAttribute = {}, ...props}:IInputScalar) { 
   const initprops = InitProps({inputAttribute, ...props}); 
-  if(initprops.valueType === 'date') {
-    console.log(props.value); 
-    //console.log(initprops.value); 
-  }
-    
   
   if(initprops.inputAttribute.type ==='checkbox') 
     return <input {...initprops.inputAttribute} {...{checked:initprops.value} }  /> 

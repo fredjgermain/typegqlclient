@@ -27,6 +27,7 @@ export interface IAdminTableContext {
 export const AdminTableContext = React.createContext({} as IAdminTableContext); 
 
 export function AdminTable() { 
+  console.log('adminTable'); 
   const {collectionAccessor} = useContext(AdminContext); 
   const result = useContext(FetcherContext); 
   const useedition = useEditEntry(); 

@@ -36,6 +36,7 @@ export type TAdminContext = {
 } 
 export const AdminContext = React.createContext({} as TAdminContext); 
 export function AdminPage() { 
+  console.log('AdminPage'); 
   const {dao, collectionAccessor, SetCollectionAccessor, fetchModels} = useAdminPage() 
   
   return <AdminContext.Provider value={{dao, collectionAccessor, SetCollectionAccessor}}> 
