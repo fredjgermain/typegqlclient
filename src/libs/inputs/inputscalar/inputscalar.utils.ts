@@ -21,7 +21,7 @@ export interface IInputScalar extends TActionAttributes {
 export function InitProps({inputAttribute = {}, ...props}:IInputScalar) { 
   // complete ttype definition 
   const valueType = props.valueType ?? GetTypeNameByValue(props.value); 
-  const defaultValue = props.defaultValue ?? GetDefaultValue(valueType); 
+  const defaultValue = props.defaultValue ?? GetDefaultValue(valueType) ?? ''; 
   let value = props.value ?? defaultValue; 
   if(valueType === 'date') 
     value = DateToString(value); 

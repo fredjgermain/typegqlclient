@@ -1,13 +1,13 @@
-import {useState} from 'react'; 
+import { useState } from 'react'; 
 import { Story } from '@storybook/react'; 
 
 
 // -------------------------------------------------------- 
-import { EntryEditor, IEditEntry } from '../editor/fieldeditor.component'; 
+import { EntryEditor } from '../entryreadereditor/entryeditor.component'; 
 
 
-
-function TestEditor({...props}:IEditEntry) { 
+type EntryEditParam = Parameters<typeof EntryEditor>[0]; 
+function TestEditor(props:EntryEditParam) { 
   const [entry, setEntry] = useState(props.entry); 
   const SetEntry = (newValue:IEntry) => setEntry(newValue); 
   const {ifields, ifieldsOptions} = props; 
@@ -23,7 +23,7 @@ export default {
   component: TestEditor, 
 } 
 
-const Template:Story<IEditEntry> = args => <TestEditor {...args} /> 
+const Template:Story<EntryEditParam> = args => <TestEditor {...args} /> 
 
 
 export const TestEditor_Default = Template.bind({}) 

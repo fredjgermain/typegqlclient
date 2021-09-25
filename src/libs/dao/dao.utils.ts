@@ -7,7 +7,7 @@ export type CrudResult = {items:IEntry[], errors:IError[]};
 export type ArgsSubfields = {subfields?:string[]} 
 export type ArgsModelName = {modelName:string} & ArgsSubfields 
 export type ArgsModelDescriptors = {modelsName?:string[]} & ArgsSubfields 
-export type ArgsInputs = ArgsModelName & {inputs:any[]} 
+export type ArgsInputs = ArgsModelName & {inputs:IEntry[]} 
 export type ArgsIds = ArgsModelName & {ids?:string[]} 
 
 

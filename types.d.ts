@@ -31,7 +31,7 @@ interface IField {
 
   label: string; 
   isRef?: boolean; 
-  options?: any; 
+  options?: IFieldOption; 
   abbrev?: boolean; 
   format?: string; 
   order?: number; 
@@ -44,6 +44,21 @@ interface IField {
   // abbrev: 
   
 }
+
+interface IFieldOption {
+  [key:string]:any; 
+  ref?: string; 
+  isArray?: boolean; 
+  label?: string; 
+  sortType?: string; 
+  defaultValue?: any; 
+  format?: string; 
+  order?: number; 
+  enum?: any[]; 
+  abbrev?: boolean; 
+  readable?: boolean; 
+  editable?: boolean; 
+}; 
 
 
 

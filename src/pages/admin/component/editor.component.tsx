@@ -2,9 +2,9 @@ import { useContext } from 'react';
 
 
 // ----------------------------------------------------------- 
-import { EntryEditor } from '../../../libs/editor/fieldeditor.component';
-import { IsEmpty } from '../../../libs/utils';
-import { AdminTableContext } from './admintable.component';
+//import { EntryEditor } from '../../../libs/editor/en.component'; 
+import { IsEmpty } from '../../../libs/utils'; 
+import { AdminTableContext } from './admintable.component'; 
 import { AdminContext } from '../admin.page'; 
 
 

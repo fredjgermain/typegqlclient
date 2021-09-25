@@ -77,7 +77,10 @@ export class Dao {
   public async Create({modelName, subfields, inputs}:ArgsInputs) { 
     const reducedSubfields = await this.GetReducedSubfields({modelName, subfields}); 
     const mutation = request.CREATE(modelName, reducedSubfields); 
-    const variables = {inputs}; 
+    const variables = {inputs:inputs.map( i => { 
+      const {_id, ...input} = i; 
+      return input; 
+    })}; 
 
     const {items, errors} = await this.client.mutate({mutation, variables}) 
       .then( res => ParseCrudResult(res.data) ) 
@@ -136,12 +139,22 @@ export class Dao {
 
   // Get Default Entry ....................................
   public GetDefaultEntry(model:ModelDescriptor):IEntry { 
-    const ifields = model.ifields.filter( f => !['_id', '_v'].includes(f.accessor) ); 
+    const ifields = model.ifields.filter( f => f.options?.readable || f.options?.editable ); 
     let defaultEntry = {} as IEntry; 
     ifields.forEach( f => defaultEntry[f.accessor] = f.type.defaultValue ) 
     return defaultEntry; 
   }
 
+
+  public async GetOptionsFromModels(model:IModel) { 
+    const ifields = model.ifields ?? []; 
+    let options = {} as {[key:string]:IOption[]} 
+    for(let i=0; i < ifields.length; i++) { 
+      const ifield = ifields[i]; 
+      options[ifield.accessor] = await this.GetOptionsFromIField(ifield); 
+    } 
+    return options; 
+  }
 
   // Get Options ..........................................
   public async GetOptionsFromIFields(ifields:IField[]):Promise<{[accessor:string]:IOption[]}> { 
@@ -155,7 +168,7 @@ export class Dao {
 
   public async GetOptionsFromIField(ifield:IField):Promise<IOption[]> { 
     if(ifield.isRef) 
-      return this.GetOptionsFromRef(ifield.options?.ref); 
+      return this.GetOptionsFromRef(ifield.options?.ref ?? ''); 
     
     // Get Options from Enums 
     const enums = ifield.type.enums ?? []; 

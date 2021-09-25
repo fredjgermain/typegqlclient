@@ -29,7 +29,7 @@ const Template:Story<IInputScalar> = args => <TestInput {...args} />
 
 export const TestInput_DefaultValueNull = Template.bind({}) 
 TestInput_DefaultValueNull.args = { 
-  value:'', 
+  value:undefined, 
   SetValue: (newValue:any) => console.log(newValue), 
   //onPressEnter: () => console.log('on Press Enter'), 
 } 
