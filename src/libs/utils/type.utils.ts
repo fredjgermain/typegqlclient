@@ -1,4 +1,4 @@
-import { DateToString } from "../date/date.utils";
+import { DateToString } from "./date.utils";
 
 export const TypeNames = ["string" , "number" , "bigint" , "boolean" , "symbol" , "undefined" , "object" , "function" , "array"]; 
 
