@@ -10,7 +10,7 @@ import {
   ArgsIds, ArgsInputs, ArgsModelDescriptors, ArgsModelName, 
   ModelDescriptor, 
 } from './dao.utils'; 
-import { IsEmpty } from "../utils"; 
+import { GetDefaultValue, IsEmpty } from "../utils"; 
 
 
 
@@ -141,7 +141,7 @@ export class Dao {
   public GetDefaultEntry(model:ModelDescriptor):IEntry { 
     const ifields = model.ifields.filter( f => f.options?.readable || f.options?.editable ); 
     let defaultEntry = {} as IEntry; 
-    ifields.forEach( f => defaultEntry[f.accessor] = f.type.defaultValue ) 
+    ifields.forEach( f => defaultEntry[f.accessor] = f.type.defaultValue ?? GetDefaultValue(f.type.name) ) 
     return defaultEntry; 
   }
 

@@ -1,23 +1,39 @@
 import React, { useContext } from 'react'; 
+import { InputSelect } from '../../inputs';
+import { PageOfPages, PagerBtns, usePager } from '../../pager';
 
 
 
 // -------------------------------------------------------------------- 
-import { Table, Rows, Row, RowContext, Cols, Col, ColContext } from '../table/_table'; 
-import { IsEmpty, ToArray } from '../utils'; 
-import { CrudCollectionContext } from './crudcollection.component'; 
+import { Table, Rows, Row, RowContext, Cols, Col, ColContext } from '../../table/_table'; 
+import { IsEmpty, ToArray } from '../../utils'; 
+import { CrudCollectionContext } from '../crudcollection.component'; 
+import { useColumnSelector } from '../hooks/usecolumnselector.hook';
 
 
 
+/** CrudCollectionTable =================================== 
+ * 
+ * @returns 
+ */ 
 export function CrudCollectionTable() { 
   const crudcollectionContext = useContext(CrudCollectionContext); 
   const { data:{entries, model} } = crudcollectionContext; 
-  
-  const rows = entries.map( entry => entry._id ); 
-  const cols = (model.ifields ?? []).map( f => f.accessor )
-    .filter( f => !f.includes('_') ); 
 
-  return <Table {...{Key:model.accessor}} > 
+  // Pager ................................................
+  const pager = usePager(entries, 10); 
+  const rows = (pager.page as IEntry[]).map( e => e._id ); 
+
+  // Columns ..............................................
+  const initCols = (model.ifields ?? []).map( f => f.accessor ) 
+    .filter( f => !f.includes('_') ); 
+  const {colSelection:cols, SetColSelection} = useColumnSelector(initCols); 
+  const options = initCols.map( col => { return {label:col, value:col } as IOption}) 
+
+
+  return <div> 
+    <InputSelect {...{value:cols, SetValue:SetColSelection, options, multiple:true}} /> 
+    <Table {...{Key:model.accessor}} > 
       <thead> 
         <Row {...{row:''}} > 
           <Cols {...{cols}}><Head/></Cols> 
@@ -33,6 +49,9 @@ export function CrudCollectionTable() {
         </Rows> 
       </tbody> 
     </Table> 
+    <PageOfPages {...pager} /> 
+    <PagerBtns {...pager} /> 
+  </div> 
 } 
 
 

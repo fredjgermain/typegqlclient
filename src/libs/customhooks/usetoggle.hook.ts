@@ -23,4 +23,4 @@ export function useToggle() {
   const toggleAttribute = {tabIndex:0, onClick, onBlur, onFocus}; 
 
   return {toggle, SetToggle, toggleAttribute}; 
-}
+} 
