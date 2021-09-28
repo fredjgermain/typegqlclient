@@ -1,6 +1,14 @@
 import { ApolloClient, NormalizedCacheObject } 
   from "@apollo/client"; 
 
+enum EnumMutation {
+  Create = 'Create', 
+  Update = 'Update', 
+  Delete = 'Delete',  
+}
+
+type MutationArgs = {action:EnumMutation, modelName:string, subfields?:string[], variables:any} 
+
 
 // -------------------------------------------------------- 
 import * as request from './gql'; 
@@ -10,8 +18,8 @@ import {
   ArgsIds, ArgsInputs, ArgsModelDescriptors, ArgsModelName, 
   ModelDescriptor, 
 } from './dao.utils'; 
-import { GetDefaultValue, IsEmpty } from "../utils"; 
-
+import { IsEmpty } from "../utils"; 
+import { Cacher } from './cacher.class'; 
 
 
 export class CrudError extends Error { 
@@ -32,9 +40,11 @@ type TIntrospect = {
 // Complete each methods to map it to the Apollo clients functions etc. 
 export class Dao { 
   private client:ApolloClient<NormalizedCacheObject>; 
+  private cacher:Cacher; 
 
   constructor(client:ApolloClient<NormalizedCacheObject>) { 
     this.client = client; 
+    this.cacher = new Cacher(client);
   } 
 
   // TypeInstrospection ......................................
@@ -72,28 +82,10 @@ export class Dao {
     .then( res => res.data ) 
     .catch( err => err ) 
   }
-
-  // CREATE ..................................................
-  public async Create({modelName, subfields, inputs}:ArgsInputs) { 
-    const reducedSubfields = await this.GetReducedSubfields({modelName, subfields}); 
-    const mutation = request.CREATE(modelName, reducedSubfields); 
-    const variables = {inputs:inputs.map( i => { 
-      const {_id, ...input} = i; 
-      return input; 
-    })}; 
-
-    const {items, errors} = await this.client.mutate({mutation, variables}) 
-      .then( res => ParseCrudResult(res.data) ) 
-      .catch( err => { return {items:[] as IEntry[], errors:[err]}} ) 
-
-    if(!IsEmpty(errors)) 
-      throw new CrudError(errors); 
-    return items; 
-  } 
-
+  
   // READ .................................................
   public async Read({modelName, subfields, ids}:ArgsIds) { 
-    const reducedSubfields = await this.GetReducedSubfields({modelName, subfields}); 
+    const reducedSubfields = this.cacher.GetReducedSubfields({modelName, subfields}); 
     const query = request.READ(modelName, reducedSubfields); 
     const variables = {ids}; 
 
@@ -106,107 +98,110 @@ export class Dao {
     return items; 
   } 
 
-  // UPDATE .................................................
+  private async Mutation({action, modelName, subfields, variables}:MutationArgs) { 
+    const reducedSubfields = this.cacher.GetReducedSubfields({modelName, subfields}); 
+    const mutation = (request as any)[action](modelName, reducedSubfields); 
+    
+    const {items, errors} = await this.client.mutate({mutation, variables}) 
+      .then( res => { 
+        const {items, errors} = ParseCrudResult(res.data); 
+        this.cacher[action]({modelName, inputs:items}); 
+        return {items, errors} 
+      }) 
+      .catch( err => { return {items:[] as IEntry[], errors:[err]}} ) 
+
+    if(!IsEmpty(errors)) 
+      throw new CrudError(errors); 
+    return items; 
+  }
+
+  // CREATE ..................................................
+  public async Create({modelName, subfields, inputs}:ArgsInputs) { 
+    const action = EnumMutation.Create; 
+    const variables = {inputs:inputs.map( i => { 
+      const {_id, ...input} = i; 
+      return input; 
+    })}; 
+    return await this.Mutation({action, modelName, subfields, variables}); 
+  }
+
+  // Update ..................................................
   public async Update({modelName, subfields, inputs}:ArgsInputs) { 
-    const reducedSubfields = await this.GetReducedSubfields({modelName, subfields}); 
-    const mutation = request.UPDATE(modelName, reducedSubfields); 
+    const action = EnumMutation.Update; 
     const variables = {inputs}; 
+    return await this.Mutation({action, modelName, subfields, variables}); 
+  }
 
-    const {items, errors} = await this.client.mutate({mutation, variables}) 
-      .then( res => ParseCrudResult(res.data) ) 
-      .catch( err => { return {items:[] as IEntry[], errors:[err]}} ) 
-
-    if(!IsEmpty(errors)) 
-      throw new CrudError(errors); 
-    return items; 
-  } 
-
-  // DELETE .................................................
+  // Delete ..................................................
   public async Delete({modelName, subfields, ids}:ArgsIds) { 
-    const reducedSubfields = await this.GetReducedSubfields({modelName, subfields}); 
-    const mutation = request.DELETE(modelName, reducedSubfields); 
+    const action = EnumMutation.Delete; 
     const variables = {ids}; 
-
-    const {items, errors} = await this.client.mutate({mutation, variables}) 
-      .then( res => ParseCrudResult(res.data) ) 
-      .catch( err => { return {items:[] as IEntry[], errors:[err]}} ) 
-
-    if(!IsEmpty(errors)) 
-      throw new CrudError(errors); 
-    return items; 
-  } 
-
+    return await this.Mutation({action, modelName, subfields, variables}); 
+  }
 
   // Get Default Entry ....................................
   public GetDefaultEntry(model:ModelDescriptor):IEntry { 
-    const ifields = model.ifields.filter( f => f.options?.readable || f.options?.editable ); 
-    let defaultEntry = {} as IEntry; 
-    ifields.forEach( f => defaultEntry[f.accessor] = f.type.defaultValue ?? GetDefaultValue(f.type.name) ) 
-    return defaultEntry; 
-  }
-
-
-  public async GetOptionsFromModels(model:IModel) { 
-    const ifields = model.ifields ?? []; 
-    let options = {} as {[key:string]:IOption[]} 
-    for(let i=0; i < ifields.length; i++) { 
-      const ifield = ifields[i]; 
-      options[ifield.accessor] = await this.GetOptionsFromIField(ifield); 
-    } 
-    return options; 
-  }
+    return this.cacher.GetDefaultEntry(model); 
+  } 
 
   // Get Options ..........................................
-  public async GetOptionsFromIFields(ifields:IField[]):Promise<{[accessor:string]:IOption[]}> { 
-    let options = {} as {[key:string]:IOption[]} 
-    for(let i=0; i < ifields.length; i++) { 
-      const ifield = ifields[i]; 
-      options[ifield.accessor] = await this.GetOptionsFromIField(ifield); 
-    } 
-    return options; 
+  public GetOptionsFromModel(model:IModel) { 
+    return this.cacher.GetOptionsFromModel(model); 
   }
 
-  public async GetOptionsFromIField(ifield:IField):Promise<IOption[]> { 
-    if(ifield.isRef) 
-      return this.GetOptionsFromRef(ifield.options?.ref ?? ''); 
-    
-    // Get Options from Enums 
-    const enums = ifield.type.enums ?? []; 
-    return enums.map( e => { 
-      return {value:e, label:e} as IOption; 
-    }) 
-  }
-
-  public async GetOptionsFromRef(modelName:string):Promise<IOption[]> { 
-    let entries = [] as IEntry[]; 
-    // subfield 'Abbrev' may not be available ... 
-    try { 
-      entries = await this.Read({modelName, subfields:['_id', 'abbrev']}); 
-    } catch(err) { 
-      entries = await this.Read({modelName, subfields:['_id']}); 
-    } 
-    return entries.map( entry => { 
-      return {value:entry._id, label:entry.abbrev} as IOption; 
-    }) 
+  public GetOptionsFromIField(ifield:IField):IOption[] { 
+    return this.cacher.GetOptionsFromIField(ifield); 
   } 
 
-  
-
-  // GetSubfields -----------------------------------------
-  private async GetReducedSubfields({modelName, subfields}:ArgsModelName) { 
-    const defaultSubfields = await this.IntrospectSubfields(modelName); 
-    return ReduceSubfields(subfields, defaultSubfields); 
-  }
-
-
-  private async IntrospectSubfields(modelName:string) { 
-    const models = await this.ModelDescriptors({modelsName:[modelName]}); 
-    const ifields = (models[0] as ModelDescriptor)?.ifields; 
-
-    const introspection = (await this.TypeIntrospection(modelName)) 
-    return introspection.fields.map( field => { 
-      const ifield = ifields.find( f => f.accessor === field.name ); 
-      return ifield?.isRef ? `${field.name} {_id}` : field.name 
-    }) ?? ['_id'] as string[]; 
-  } 
 } 
+
+
+
+
+  // public async Create({modelName, subfields, inputs}:ArgsInputs) { 
+  //   const reducedSubfields = this.cacher.GetReducedSubfields({modelName, subfields}); 
+  //   const mutation = request.CREATE(modelName, reducedSubfields); 
+  //   const variables = {inputs:inputs.map( i => { 
+  //     const {_id, ...input} = i; 
+  //     return input; 
+  //   })}; 
+
+  //   const {items, errors} = await this.client.mutate({mutation, variables}) 
+  //     .then( res => ParseCrudResult(res.data) ) 
+  //     .catch( err => { return {items:[] as IEntry[], errors:[err]}} ) 
+
+  //   if(!IsEmpty(errors)) 
+  //     throw new CrudError(errors); 
+  //   return items; 
+  // } 
+
+
+  // // UPDATE .................................................
+  // public async Update({modelName, subfields, inputs}:ArgsInputs) { 
+  //   const reducedSubfields = this.cacher.GetReducedSubfields({modelName, subfields}); 
+  //   const mutation = request.UPDATE(modelName, reducedSubfields); 
+  //   const variables = {inputs}; 
+
+  //   const {items, errors} = await this.client.mutate({mutation, variables}) 
+  //     .then( res => ParseCrudResult(res.data) ) 
+  //     .catch( err => { return {items:[] as IEntry[], errors:[err]}} ) 
+
+  //   if(!IsEmpty(errors)) 
+  //     throw new CrudError(errors); 
+  //   return items; 
+  // } 
+
+  // // DELETE .................................................
+  // public async Delete({modelName, subfields, ids}:ArgsIds) { 
+  //   const reducedSubfields = this.cacher.GetReducedSubfields({modelName, subfields}); 
+  //   const mutation = request.DELETE(modelName, reducedSubfields); 
+  //   const variables = {ids}; 
+
+  //   const {items, errors} = await this.client.mutate({mutation, variables}) 
+  //     .then( res => ParseCrudResult(res.data) ) 
+  //     .catch( err => { return {items:[] as IEntry[], errors:[err]}} ) 
+
+  //   if(!IsEmpty(errors)) 
+  //     throw new CrudError(errors); 
+  //   return items; 
+  // } 

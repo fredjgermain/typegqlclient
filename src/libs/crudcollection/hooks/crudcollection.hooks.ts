@@ -4,13 +4,20 @@ import { useContext, useState } from 'react';
 
 // --------------------------------------------------------
 import { DaoContext } from '../../dao/daocontexter.component';
+import { IsEmpty } from '../../utils';
 
+
+
+export enum EnumMode {create='create', update='update', delete='delete'}
+//type TMode = 'create' | 'update' | 'delete'; 
+type TCrud = typeof defaultCrud; 
+type TData = typeof defaultData; 
 
 const defaultCrud = { 
   busy: false, 
   ready: false, 
   success: false, 
-  mode:'create', 
+  mode: EnumMode.create as EnumMode, 
   entry:{} as IEntry, 
   feedback:[] as any[] 
 } 
@@ -22,29 +29,24 @@ const defaultData = {
   ifieldsOptions:{} as { [key:string]:IOption[] } 
 } 
 
-type TCrud = typeof defaultCrud; 
-type TData = typeof defaultData; 
-
 
 
 export function useCrud({modelName}:{modelName:string}) { 
   const {dao} = useContext(DaoContext); 
 
-  // Crud ------------------------------------------------- 
-  const [crud, setCrud] = useState(defaultCrud as TCrud); 
-  function SetCrud(newCrudStatus?:Partial<TCrud>) { 
-    newCrudStatus ? 
-      setCrud( prev => {return {...prev, ...newCrudStatus}} ): 
-      setCrud( defaultCrud ); 
+  const [crudState, setCrudState] = useState({crud:defaultCrud as TCrud, data:defaultData as TData}); 
+  function SetCrudState(newCrudState:{crud?:Partial<TCrud>, data?:Partial<TData>}) { 
+    setCrudState( prev => { 
+      //console.log(newCrudState.data?.entries); 
+      const crud = {...prev.crud, ...newCrudState.crud}; 
+      const data = {...prev.data, ...newCrudState.data}; 
+      return {crud, data}; 
+    }) 
   } 
+  const {crud, data} = crudState; 
+  function SetCrud(newCrud?:Partial<TCrud>) { SetCrudState({crud:newCrud}) } 
+  function SetData(newData?:Partial<TData>) { SetCrudState({data:newData}) } 
 
-  // data ------------------------------------------------- 
-  const [data, setData] = useState(defaultData as TData); 
-  function SetData(newData?:Partial<TData>) { 
-    newData ? 
-      setData( prev => {return {...prev, ...newData}} ): 
-      setData( defaultData ); 
-  } 
 
 
   // FETCH ------------------------------------------------ 
@@ -56,15 +58,15 @@ export function useCrud({modelName}:{modelName:string}) {
   function FetchUpdate() { Fetch(AsyncUpdate) } 
   function FetchDelete() { Fetch(AsyncDelete) } 
 
-  type AsyncAction = () => Promise<{data?:Partial<TData>, crud?:Partial<TCrud>}> 
-  function Fetch(func:AsyncAction) { 
+  type TAsyncAction = () => Promise<{data?:Partial<TData>, crud?:Partial<TCrud>}> 
+  function Fetch(func:TAsyncAction) { 
     // reset for new fetch 
     SetCrud({ busy:true, ready:false, success:false }) 
 
     func() 
       .then( res => { 
-        SetCrud( {...(res.crud ?? {}), ...{busy:false, ready:true, success:true}} ) 
-        SetData(res.data); 
+        const crud = {...(res.crud ?? {}), ...{busy:false, ready:true, success:true}} 
+        SetCrudState({data:res.data, crud}) 
       }) 
       .catch( err => { 
         SetCrud({busy:false, ready:true, success:false, feedback:[err]}) 
@@ -72,31 +74,36 @@ export function useCrud({modelName}:{modelName:string}) {
   } 
 
   async function AsyncModelEntries() { 
-    const {data:{model, defaultEntry}} = await AsyncModel(); 
-    const {data:{entries, ifieldsOptions}} = await AsyncRead(model); 
-    return {data:{model, defaultEntry, entries, ifieldsOptions}}; 
+    const asyncmodel = await AsyncModel(); 
+    const asyncread = await AsyncRead(asyncmodel.data.model); 
+    const data = {...asyncmodel.data, ...asyncread.data}; 
+    const crud = {...asyncmodel.crud, ...asyncread.crud}; 
+    return {data, crud}; 
   } 
 
   async function AsyncModel() { 
     const [model] = await dao.ModelDescriptors({modelsName:[modelName]}); 
     const defaultEntry = dao.GetDefaultEntry(model); 
-    return {data:{model, defaultEntry}}; 
+    return {data:{model, defaultEntry}, crud:{entry:defaultEntry}}; 
   } 
 
   async function AsyncRead(model?:IModel) { 
+    const data = crudState.data; 
     const _model = model ?? data?.model; 
     let {entries, ifieldsOptions} = defaultData; 
-    if(_model) { 
+    if(!IsEmpty(_model)) { 
       entries = await dao.Read({modelName}); 
-      ifieldsOptions = await dao.GetOptionsFromIFields(_model.ifields); 
+      console.log(entries); 
+      ifieldsOptions = await dao.GetOptionsFromModel(_model); 
     } 
-    return {data:{entries, ifieldsOptions}}
+    return {data:{entries, ifieldsOptions}, crud:{}} 
   } 
 
   async function AsyncCreate() { 
     const inputs = [crud.entry as IEntry]; 
     const feedback = await dao.Create({modelName, inputs}); 
-    const {data} = await AsyncRead(); 
+    const entries = await dao.Read({modelName}); 
+    const data = {...crudState.data, } 
     return {data, crud:{feedback}} 
   } 
 
@@ -117,156 +124,12 @@ export function useCrud({modelName}:{modelName:string}) {
 
   function Submit() { 
     const {mode} = crud; 
-    mode === 'create' ? FetchCreate() : 
-    mode === 'update' ? FetchUpdate() : 
-    mode === 'delete' ? FetchDelete() : () => {} ;
-  }
-
-
-  // function Submit() { 
-  //   const {entry, mode} = crud; 
-  //   const inputs = [entry as IEntry]; 
-  //   const ids = inputs.map( e => e?._id ?? ''); 
-
-  //   SetCrud({busy:true, ready:false, success:false, feedback:[]}) 
-
-  //   const action = 
-  //     mode === 'create' ? dao.Create({modelName, inputs}) : 
-  //     mode === 'update' ? dao.Update({modelName, inputs}) : 
-  //     mode === 'delete' ? dao.Delete({modelName, ids}) : 
-  //     ( async () => [] as IEntry[] )(); 
-
-  //   action 
-  //     .then( feedback => { 
-
-  //       // useAsyncEntries to refresh entries. 
-  //       AsyncRead() 
-  //         .then( data => { 
-  //           SetData({...data}) 
-  //           SetCrud({busy:false, ready:true, success:true, feedback}) 
-  //         }) 
-  //     }) // success update entries with modification ?? or read again 
-  //     .catch( feedback => { 
-  //       SetCrud({busy:false, ready:true, success:false, feedback}) 
-  //     }) 
-  //     // error update entries with modification ?? or read again 
-  // } 
+    mode === EnumMode.create ? FetchCreate() : 
+    mode === EnumMode.update ? FetchUpdate() : 
+    mode === EnumMode.delete ? FetchDelete() : 
+      (() => {})(); 
+  } 
 
   return { data, crud, SetData, SetCrud, FetchModelEntries, FetchModel, FetchRead, Submit } 
 } 
 
-
-// function useCrudStatus() { 
-//   const defaultCrudStatus = { 
-//     mode:'create', 
-//     entry:{} as IEntry, 
-//     busy: false, 
-//     ready: false, 
-//     success: false, 
-//     feedback:[] as any[] 
-//   } 
-//   type TCrudStatus = typeof defaultCrudStatus; 
-//   const [crudStatus, setCrudStatus] = useState(defaultCrudStatus); 
-
-//   function SetCrudStatus(newCrudStatus?:Partial<TCrudStatus>) { 
-//     if(!newCrudStatus) 
-//       setCrudStatus(defaultCrudStatus); 
-//     setCrudStatus( prev => { return {...prev, ...newCrudStatus} }) 
-//   } 
-
-//   return {crudStatus, SetCrudStatus}; 
-// } 
-
-
-
-// function useDataFetcher(modelName:string) { 
-//   const {dao} = useContext(DaoContext); 
-//   const defaultData = { 
-//     model:{} as IModel, 
-//     entries:[] as IEntry[], 
-//     defaultEntry:{} as IEntry, 
-//     ifieldsOptions:{} as { [key:string]:IOption[] } 
-//   } 
-
-//   type TData = typeof defaultData; 
-//   const [data, setData] = useState(defaultData); 
-//   function SetData(newData:Partial<TData>) { 
-//     if(!newData) 
-//       setData(newData); 
-//     setData( prev => { return {...prev, ...newData} }) 
-//   } 
-
-//   async function FetchData() { 
-//     const {model, defaultEntry} = await FetchModel(); 
-//     const {entries, ifieldsOptions} = await FetchEntriesOptions(model); 
-//     return {model, defaultEntry, entries, ifieldsOptions}; 
-//   } 
-
-//   async function FetchModel() { 
-//     const [model] = await dao.ModelDescriptors({modelsName:[modelName]}); 
-//     const defaultEntry = dao.GetDefaultEntry(model); 
-//     return {model, defaultEntry}; 
-//   } 
-
-//   async function FetchEntriesOptions(model?:IModel) { 
-//     const _model = model ?? data.model; 
-//     let {entries, ifieldsOptions} = defaultData; 
-//     if(!_model) 
-//       return {entries, ifieldsOptions}; 
-//     entries = await dao.Read({modelName}); 
-//     ifieldsOptions = await dao.GetOptionsFromIFields(_model.ifields); 
-//     return {entries, ifieldsOptions}; 
-//   } 
-
-//   return {data, SetData, FetchData, FetchModel, FetchEntriesOptions} 
-// } 
-
-
-
-// export function useCrud({modelName}:{modelName:string}) { 
-//   const {dao} = useContext(DaoContext); 
-//   const {crudStatus, SetCrudStatus} = useCrudStatus(); 
-//   const usedata = useDataFetcher(modelName); 
-//   const {data, SetData, FetchData, FetchEntriesOptions} = usedata; 
-  
-//   useEffect(() => { 
-//     FetchData() 
-//       .then( res => { 
-//         SetCrudStatus({entry:res.defaultEntry}) 
-//         SetData(res) 
-//       }) 
-//   }, [modelName]); 
-
-
-
-//   function Submit() { 
-//     const {entry, mode} = crudStatus; 
-//     const inputs = [entry]; 
-//     const ids = inputs.map( e => e?._id ?? ''); 
-
-//     SetCrudStatus({busy:true, ready:false, success:false, feedback:[]}) 
-
-//     const action = 
-//       mode === 'create' ? dao.Create({modelName, inputs}) : 
-//       mode === 'update' ? dao.Update({modelName, inputs}) : 
-//       mode === 'delete' ? dao.Delete({modelName, ids}) : 
-//       ( async () => [] as IEntry[] )(); 
-
-//     action 
-//       .then( feedback => { 
-//         FetchEntriesOptions() 
-//           .then( res => { 
-//             SetData({...res}) 
-//             SetCrudStatus({busy:false, ready:true, success:true, feedback}) 
-//           }) 
-//       }) // success update entries with modification ?? or read again 
-//       .catch( feedback => SetCrudStatus({busy:false, ready:true, success:false, feedback}) ) // error update entries with modification ?? or read again 
-//   } 
-
-//   /*function RefreshEntriesOptions() { 
-//     FetchEntriesOptions() 
-//       .then( res => ) 
-//   }*/
-
-//   return { crudStatus, SetCrudStatus, ...usedata, Submit }  
-// } 

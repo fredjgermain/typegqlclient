@@ -14,7 +14,7 @@ export function CrudEntryEditor() {
   const {data, crud, SetCrud} = useContext(CrudCollectionContext); 
   const {model, entries} = data; 
 
-  const entry = crud.entry ?? {} as IEntry; 
+  const entry = crud.entry ?? data.defaultEntry; 
   function SetEntry(entry:IEntry) { 
     SetCrud({entry}) 
   } 
@@ -23,8 +23,6 @@ export function CrudEntryEditor() {
   // add option 'editable' to those editable ifields 
   const ifields = (model?.ifields ?? [] as IField[]).filter( f => f.options?.readable || f.options?.editable ) 
   const ifieldsOptions = data.ifieldsOptions ?? {}; 
-
-  console.log(entries); 
 
   return <div>
     <div> 

@@ -8,6 +8,7 @@ import { PageOfPages, PagerBtns, usePager } from '../../pager';
 import { Table, Rows, Row, RowContext, Cols, Col, ColContext } from '../../table/_table'; 
 import { IsEmpty, ToArray } from '../../utils'; 
 import { CrudCollectionContext } from '../crudcollection.component'; 
+import { EnumMode } from '../hooks/crudcollection.hooks';
 import { useColumnSelector } from '../hooks/usecolumnselector.hook';
 
 
@@ -57,17 +58,17 @@ export function CrudCollectionTable() {
 
 
 function BtnSelectEntry() { 
-  const {crudStatus, SetCrudStatus, data:{entries, defaultEntry}} = useContext(CrudCollectionContext); 
+  const {crud, SetCrud, data:{entries, defaultEntry}} = useContext(CrudCollectionContext); 
   const {row} = useContext(RowContext); 
   const entry = entries.find( e => e._id === row ) ?? defaultEntry; 
 
-  function Select(mode:string) { 
-    SetCrudStatus({...crudStatus, entry, mode}) 
+  function Select(mode:EnumMode) { 
+    SetCrud({...crud, entry, mode}) 
   } 
   
   return <span> 
-    <button onClick={() => Select('update')}>Update</button> 
-    <button onClick={() => Select('delete')}>Delete</button> 
+    <button onClick={() => Select(EnumMode.update)}>Update</button> 
+    <button onClick={() => Select(EnumMode.delete)}>Delete</button> 
   </span>
 } 
 
