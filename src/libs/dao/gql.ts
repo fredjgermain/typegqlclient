@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client"; 
 
-export function TYPE() { 
+export function Type() { 
   return gql` 
     query __type($name: String!) { 
       __type(name:$name) { 
@@ -14,7 +14,7 @@ export function TYPE() {
 
 
 // VALIDATE ===============================================
-export function VALIDATE(modelName:string) { 
+export function Validate(modelName:string) { 
   return gql` 
     query Validate($inputs: [ObjectScalar!]!) { 
       Validate${modelName}(inputs:$inputs) 
@@ -25,7 +25,7 @@ export function VALIDATE(modelName:string) {
 
 // MODELDESCRIPTORS ===============================================
 // ModelDescriptors(modelsName: [String!]): [ModelDescriptor!]!
-export function MODELDESCRIPTORS(subfields:string) { 
+export function ModelDescriptors(subfields:string) { 
   return gql` 
     query ModelDescriptors($modelsName: [String!]) { 
       ModelDescriptors(modelsName:$modelsName) ${subfields} 
@@ -35,7 +35,7 @@ export function MODELDESCRIPTORS(subfields:string) {
 
 
 // CREATE ================================================= 
-export function CREATE(modelName:string, subfields:string) { 
+export function Create(modelName:string, subfields:string) { 
   return gql` 
     mutation Create($inputs: [ObjectScalar!]!) { 
       Create${modelName}(inputs:$inputs) { 
@@ -48,7 +48,7 @@ export function CREATE(modelName:string, subfields:string) {
 
 
 // READ =================================================== 
-export function READ(modelName:string, subfields:string) {
+export function Read(modelName:string, subfields:string) {
   return gql` 
     query Read($ids: [String!]) { 
       Read${modelName}(ids:$ids) { 
@@ -61,7 +61,7 @@ export function READ(modelName:string, subfields:string) {
 
 
 // UPDATE =================================================
-export function UPDATE(modelName:string, subfields:string) {
+export function Update(modelName:string, subfields:string) {
   return gql` 
     mutation Update($inputs: [ObjectScalar!]!) { 
       Update${modelName}(inputs:$inputs) { 
@@ -74,7 +74,7 @@ export function UPDATE(modelName:string, subfields:string) {
 
 
 // DELETE =================================================== 
-export function DELETE(modelName:string, subfields:string) {
+export function Delete(modelName:string, subfields:string) {
   return gql` 
     mutation Delete($ids: [String!]!) { 
       Delete${modelName}(ids:$ids) { 

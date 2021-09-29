@@ -29,7 +29,7 @@ function TestCrud() {
   const [step, setStep] = useState(0); 
   const SetStep = (step:number) => setStep(step) 
 
-  const query = request.READ('Form', '{_id}'); 
+  const query = request.Read('Form', '{_id}'); 
 
   /*const query = gql` 
     query Read($ids: [String!]) { 

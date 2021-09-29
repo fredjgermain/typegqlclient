@@ -1,7 +1,7 @@
 import { ApolloClient, NormalizedCacheObject } 
   from "@apollo/client"; 
 
-  
+
 
 // ---------------------------------------------------------
 import * as request from './gql'; 
@@ -32,11 +32,13 @@ export class Cacher{
   // GetSubfields -----------------------------------------
   public GetReducedSubfields({modelName, subfields}:ArgsModelName) { 
     const defaultSubfields = this.IntrospectSubfields(modelName); 
+    
     return ReduceSubfields(subfields, defaultSubfields); 
   }
 
 
   private IntrospectSubfields(modelName:string) { 
+    
     const models = this.ModelDescriptors({modelsName:[modelName]}); 
     const ifields = (models[0] as ModelDescriptor)?.ifields; 
 
@@ -50,11 +52,11 @@ export class Cacher{
 
   // TypeInstrospection ......................................
   public TypeIntrospection(name:string):TIntrospect { 
-    const query = request.TYPE(); 
+    const query = request.Type(); 
     const variables = {name}; 
     try{ 
       const res = this.client.readQuery({query, variables}) 
-      return ParseTypeIntrospection(res.data); 
+      return ParseTypeIntrospection(res); 
     }catch(err) { 
       throw err; 
     }
@@ -64,12 +66,12 @@ export class Cacher{
   // MODEL .................................................. 
   public ModelDescriptors({subfields, modelsName}:ArgsModelDescriptors) { 
     const defaultSubfields = ["_id accessor label description ifields"]; 
-    const query = request.MODELDESCRIPTORS( ReduceSubfields(subfields, defaultSubfields) ); 
+    const query = request.ModelDescriptors( ReduceSubfields(subfields, defaultSubfields) ); 
     const variables = {modelsName}; 
 
     try {
       const res = this.client.readQuery({query, variables}) 
-      return ParseModelDescriptors(res.data); 
+      return ParseModelDescriptors(res); 
     } catch(err) { 
       throw err; 
     } 
@@ -77,7 +79,8 @@ export class Cacher{
   
   private ReadQuery({modelName, subfields}:{modelName:string, subfields?:string[]}) { 
     const reducedSubfields = this.GetReducedSubfields({modelName, subfields}); 
-    return request.READ(modelName, reducedSubfields); 
+    
+    return request.Read(modelName, reducedSubfields); 
   } 
 
   // CREATE ..................................................
@@ -85,14 +88,15 @@ export class Cacher{
     const query = this.ReadQuery({modelName}); 
     const read = this.Read({modelName}); 
     const items = [...read, ...inputs]; 
-
     let data = {} as any; 
-    data[modelName] = {items}; 
+    data['Read'+modelName] = {items, errors:[]}; 
     return this.client.cache.writeQuery({query, data}); 
   } 
 
   public Read({modelName, subfields, ids}:ArgsIds) { 
+    
     const query = this.ReadQuery({modelName, subfields}); 
+    
     return ParseCrudResult(this.client.cache.readQuery({query})).items; 
   } 
 

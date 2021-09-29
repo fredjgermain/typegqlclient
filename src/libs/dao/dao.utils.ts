@@ -32,10 +32,11 @@ export function ParseTypeIntrospection(queryResult:any) {
  */
 export function ParseModelDescriptors(queryResult:any):ModelDescriptor[] { 
   const results = Object.values(queryResult).flat() as any[]; 
-  return results.map( item => { 
+  const parsed = results.map( item => { 
     const {_id, accessor, label, description, ifields} = item; 
     return {_id, accessor, label, description, ifields} as ModelDescriptor; 
   }); 
+  return parsed; 
 } 
 
 

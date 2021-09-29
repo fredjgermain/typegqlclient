@@ -8,6 +8,7 @@ import { CrudCollectionTable } from './components/table.component';
 import { CollectionDescription } from './components/collectiondescription.component';
 import { CrudEntryEditor } from './components/crudentryeditor.component';
 import { DaoContext } from '../dao/daocontexter.component';
+import { client } from '../dao/apolloclient';
 
 
 
@@ -19,8 +20,9 @@ export function CrudCollection({modelName}:{modelName:string}) {
 
   async function Test() {
     const modelName = 'Form'; 
-    //const [model] = await dao.ModelDescriptors({modelsName:[modelName]}) 
-    const read0 = await dao.Read({modelName})     
+    const [model] = await dao.ModelDescriptors({modelsName:[modelName]}) 
+    const read0 = await dao.Read({modelName}) 
+    console.log(read0); 
 
     const inputs = [
       {	_id:'', 
