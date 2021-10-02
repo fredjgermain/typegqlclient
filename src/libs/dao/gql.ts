@@ -1,5 +1,7 @@
 import { gql } from "@apollo/client"; 
 
+
+// type introspection =====================================
 export function Type() { 
   return gql` 
     query __type($name: String!) { 
@@ -38,10 +40,7 @@ export function ModelDescriptors(subfields:string) {
 export function Create(modelName:string, subfields:string) { 
   return gql` 
     mutation Create($inputs: [ObjectScalar!]!) { 
-      Create${modelName}(inputs:$inputs) { 
-        items ${subfields} 
-        errors 
-      } 
+      Create${modelName}(inputs:$inputs) ${subfields} 
     }` 
 } 
 
@@ -51,10 +50,7 @@ export function Create(modelName:string, subfields:string) {
 export function Read(modelName:string, subfields:string) {
   return gql` 
     query Read($ids: [String!]) { 
-      Read${modelName}(ids:$ids) { 
-        items ${subfields} 
-        errors 
-      } 
+      Read${modelName}(ids:$ids) ${subfields} 
     }` 
 } 
 
@@ -64,10 +60,7 @@ export function Read(modelName:string, subfields:string) {
 export function Update(modelName:string, subfields:string) {
   return gql` 
     mutation Update($inputs: [ObjectScalar!]!) { 
-      Update${modelName}(inputs:$inputs) { 
-        items ${subfields} 
-        errors 
-      } 
+      Update${modelName}(inputs:$inputs) ${subfields} 
     }` 
 } 
 
@@ -77,9 +70,6 @@ export function Update(modelName:string, subfields:string) {
 export function Delete(modelName:string, subfields:string) {
   return gql` 
     mutation Delete($ids: [String!]!) { 
-      Delete${modelName}(ids:$ids) { 
-        items ${subfields} 
-        errors 
-      } 
+      Delete${modelName}(ids:$ids) ${subfields} 
     }` 
 } 

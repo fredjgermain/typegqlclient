@@ -8,7 +8,7 @@ import { PageOfPages, PagerBtns, usePager } from '../../pager';
 import { Table, Rows, Row, RowContext, Cols, Col, ColContext } from '../../table/_table'; 
 import { IsEmpty, ToArray } from '../../utils'; 
 import { CrudCollectionContext } from '../crudcollection.component'; 
-import { EnumMode } from '../hooks/crudcollection.hooks';
+import { EnumMode } from '../hooks/usecrud.hooks';
 import { useColumnSelector } from '../hooks/usecolumnselector.hook';
 
 
@@ -23,14 +23,13 @@ export function CrudCollectionTable() {
 
   // Pager ................................................
   const pager = usePager(entries, 10); 
+  console.log(pager.page);
+
   const rows = (pager.page as IEntry[]).map( e => e._id ); 
 
-  // Columns ..............................................
-  const initCols = (model.ifields ?? []).map( f => f.accessor ) 
-    .filter( f => !f.includes('_') ); 
-  const {colSelection:cols, SetColSelection} = useColumnSelector(initCols); 
-  const options = initCols.map( col => { return {label:col, value:col } as IOption}) 
 
+  // Columns ..............................................
+  const {colSelection:cols, SetColSelection, options} = useColumnSelector(model); 
 
   return <div> 
     <InputSelect {...{value:cols, SetValue:SetColSelection, options, multiple:true}} /> 
@@ -58,12 +57,12 @@ export function CrudCollectionTable() {
 
 
 function BtnSelectEntry() { 
-  const {crud, SetCrud, data:{entries, defaultEntry}} = useContext(CrudCollectionContext); 
+  const {status, SetStatus, data:{entries, defaultEntry}} = useContext(CrudCollectionContext); 
   const {row} = useContext(RowContext); 
   const entry = entries.find( e => e._id === row ) ?? defaultEntry; 
 
   function Select(mode:EnumMode) { 
-    SetCrud({...crud, entry, mode}) 
+    SetStatus({...status, entry, mode}) 
   } 
   
   return <span> 

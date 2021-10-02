@@ -1,5 +1,5 @@
-import { useState } from "react"; 
-
+import { useEffect, useState } from "react"; 
+import { ReduceToString } from "../../utils";
 
 
 /** useColumnsSelector ==================================== 
@@ -7,13 +7,22 @@ import { useState } from "react";
  * @param initColSelection 
  * @returns 
  */ 
-export function useColumnSelector(initColSelection:string[]) { 
-  const [colSelection, setColSelection] = useState(initColSelection); 
+export function useColumnSelector(model:IModel) { 
+  const initColumnSelection = (model?.ifields ?? [])
+    .map( f => f.accessor )
+    .filter( f => !f.includes('_') )
+  const options = initColumnSelection.map( col => { return {label:col, value:col } as IOption}) 
+
+  const [colSelection, setColSelection] = useState(initColumnSelection); 
   function SetColSelection(newColSelection?:string[]) { 
     newColSelection ? 
       setColSelection(newColSelection): 
-      setColSelection(initColSelection); 
+      setColSelection(initColumnSelection); 
   } 
+
+  useEffect(() => { 
+    setColSelection(initColumnSelection); 
+  }, [model.accessor]) 
   
-  return {colSelection, SetColSelection} 
+  return {colSelection, SetColSelection, options} 
 } 

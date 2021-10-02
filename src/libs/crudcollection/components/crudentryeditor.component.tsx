@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 
 
@@ -11,12 +11,12 @@ import { CrudCollectionContext } from '../crudcollection.component';
 
 
 export function CrudEntryEditor() {
-  const {data, crud, SetCrud} = useContext(CrudCollectionContext); 
-  const {model, entries} = data; 
+  const {data, status} = useContext(CrudCollectionContext); 
+  const {model} = data; 
 
-  const entry = crud.entry ?? data.defaultEntry; 
+  const [entry, setEntry] = useState(status.entry ?? data.defaultEntry); 
   function SetEntry(entry:IEntry) { 
-    SetCrud({entry}) 
+    setEntry(entry); 
   } 
 
   // filter readable and editable ifields 
@@ -32,6 +32,6 @@ export function CrudEntryEditor() {
     <CrudFeedback/> 
     <EntryEditor {...{entry, SetEntry, ifields, ifieldsOptions}} /> 
 
-    <CrudCollectionSubmitBtn/>  
+    <CrudCollectionSubmitBtn {...{entry}} /> 
   </div>
 }

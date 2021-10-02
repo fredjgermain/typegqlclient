@@ -41,15 +41,16 @@ export function ParseModelDescriptors(queryResult:any):ModelDescriptor[] {
 
 
 
-/** ParseCrudResult ....................................... 
- * 
- * @param queryResult 
- * @returns CrudResult {items, errors} 
- */
-export function ParseCrudResult(queryResult:any):CrudResult { 
-  const [parsed] = Object.values(queryResult) as CrudResult[]; 
-  return {items:Remove__typename(parsed.items) as IEntry[], errors:parsed.errors}; 
+export function ParseEntries(queryResult:any):IEntry[] { 
+  const [parsed] = Object.values(queryResult); 
+  return parsed as IEntry[]; 
 }
+
+
+
+export function ParseCrudError(error:any[]) { 
+  console.log(error[0]?.graphQLErrors?.extensions?.exception) 
+} 
 
 
 
@@ -61,6 +62,18 @@ export function ParseCrudResult(queryResult:any):CrudResult {
 function Remove__typename(items:any[]) { 
   return items.map( ({__typename, ...item}:any) => item ) 
 }
+
+
+/** ParseCrudResult ....................................... 
+ * 
+ * @param queryResult 
+ * @returns CrudResult {items, errors} 
+ */
+ export function ParseCrudResult(queryResult:any):CrudResult { 
+  const [parsed] = Object.values(queryResult) as CrudResult[]; 
+  return {items:Remove__typename(parsed.items) as IEntry[], errors:parsed.errors}; 
+}
+
 
 
 

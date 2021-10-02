@@ -1,14 +1,14 @@
 import { useContext } from "react"; 
 import { CrudCollectionContext } from "../crudcollection.component"; 
-import { EnumMode } from '../hooks/crudcollection.hooks'; 
+import { EnumMode } from '../hooks/usecrud.hooks'; 
 
 
-export function CrudCollectionSubmitBtn() { 
-  const {crud:{mode}, SetCrud, Submit} = useContext(CrudCollectionContext); 
+export function CrudCollectionSubmitBtn({entry}:{entry:IEntry}) { 
+  const {status:{mode}, SetStatus, Submit} = useContext(CrudCollectionContext); 
 
   return <span> 
-    <button onClick={Submit}>{mode.toUpperCase()}</button> 
+    <button onClick={() => Submit(entry)}>{mode.toUpperCase()}</button> 
     { (mode=== EnumMode.update || mode=== EnumMode.delete) 
-      && <button onClick={() => SetCrud()}>Cancel</button> } 
+      && <button onClick={() => SetStatus()}>Cancel</button> } 
   </span> 
 }

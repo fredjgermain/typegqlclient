@@ -6,7 +6,7 @@ import { ApolloClient, NormalizedCacheObject }
 // -------------------------------------------------------- 
 import * as request from './gql'; 
 import { 
-  ParseModelDescriptors, ParseCrudResult, ParseTypeIntrospection, 
+  ParseModelDescriptors, ParseCrudResult, ParseTypeIntrospection, ParseEntries, 
   ReduceSubfields, 
   ArgsIds, ArgsInputs, ArgsModelDescriptors, ArgsModelName, 
   ModelDescriptor, 
@@ -15,13 +15,13 @@ import { IsEmpty } from "../utils";
 import { Cacher } from './cacher.class'; 
 
 
-enum EnumMutation {
+enum EnumMutation { 
   Create = 'Create', 
   Update = 'Update', 
-  Delete = 'Delete',  
+  Delete = 'Delete', 
 }
 
-type MutationArgs = {action:EnumMutation, modelName:string, subfields?:string[], variables:any} 
+type FetchingArgs = {action:EnumMutation, modelName:string, subfields?:string[], variables:any} 
 
 
 export class CrudError extends Error { 
@@ -107,49 +107,34 @@ export class Dao {
     const reducedSubfields = await this.GetReducedSubfields({modelName, subfields}); 
     const query = request.Read(modelName, reducedSubfields); 
     const variables = {ids}; 
-
-    const {items, errors} = await this.client.query({query, variables}) 
-      .then( res => ParseCrudResult(res.data) ) 
-      .catch( err => { return {items:[] as IEntry[], errors:[err]}} )     
-
-    if(!IsEmpty(errors)) 
-      throw new CrudError(errors); 
-    return items; 
+    
+    try{ 
+      const res = await this.client.query({query, variables}) 
+      return ParseEntries(res.data) 
+    } catch(err) { 
+      throw err; 
+    }
   } 
 
-  private async Mutation({action, modelName, subfields, variables}:MutationArgs) { 
-    const reducedSubfields = await this.GetReducedSubfields({modelName, subfields}); 
 
+  // Mutation ..................................................
+  private async Mutation({action, modelName, subfields, variables}:FetchingArgs) { 
+    const reducedSubfields = await this.GetReducedSubfields({modelName, subfields}); 
     const mutation = (request as any)[action](modelName, reducedSubfields); 
     
-    const {items, errors} = await this.client.mutate({mutation, variables}) 
-      .then( res => { return ParseCrudResult(res.data) }) 
-      .catch( err => { return {items:[] as IEntry[], errors:[err]}} ) 
+    try { 
+      const res = await this.client.mutate({mutation, variables})
+      const inputs = ParseEntries( res.data ); 
 
-    //console.log(items, errors); 
+      // Use this line if removing 'network-only' query policy 
+      //this.cacher[action]({modelName, inputs}); 
 
-    if(!IsEmpty(errors)) 
-      throw new CrudError(errors); 
-      
-    const read = ParseCrudResult(this.client.cache.readQuery({query:request.Read(modelName, reducedSubfields)})); 
-    const existing = read.items; 
-    
-    const newItems = [...existing, ...items].map( i => {
-      i.__typename = modelName; 
-      return i; 
-    })
-
-
-    this.client.cache.writeQuery({ 
-      query:request.Read(modelName, reducedSubfields), 
-      data:{['Read'+modelName]:{__typename:'CrudResultForm', items:newItems, errors:[]}}, 
-    }) 
-    
-
-    //this.cacher[action]({modelName, inputs:items}); 
-    //this.cacher[action]({modelName, inputs:items}); 
-    return items; 
+      return inputs; 
+    } catch(err) { 
+      throw err; 
+    } 
   }
+
 
 
   // CREATE ..................................................
@@ -192,53 +177,3 @@ export class Dao {
 
 } 
 
-
-
-
-  // public async Create({modelName, subfields, inputs}:ArgsInputs) { 
-  //   const reducedSubfields = this.cacher.GetReducedSubfields({modelName, subfields}); 
-  //   const mutation = request.CREATE(modelName, reducedSubfields); 
-  //   const variables = {inputs:inputs.map( i => { 
-  //     const {_id, ...input} = i; 
-  //     return input; 
-  //   })}; 
-
-  //   const {items, errors} = await this.client.mutate({mutation, variables}) 
-  //     .then( res => ParseCrudResult(res.data) ) 
-  //     .catch( err => { return {items:[] as IEntry[], errors:[err]}} ) 
-
-  //   if(!IsEmpty(errors)) 
-  //     throw new CrudError(errors); 
-  //   return items; 
-  // } 
-
-
-  // // UPDATE .................................................
-  // public async Update({modelName, subfields, inputs}:ArgsInputs) { 
-  //   const reducedSubfields = this.cacher.GetReducedSubfields({modelName, subfields}); 
-  //   const mutation = request.UPDATE(modelName, reducedSubfields); 
-  //   const variables = {inputs}; 
-
-  //   const {items, errors} = await this.client.mutate({mutation, variables}) 
-  //     .then( res => ParseCrudResult(res.data) ) 
-  //     .catch( err => { return {items:[] as IEntry[], errors:[err]}} ) 
-
-  //   if(!IsEmpty(errors)) 
-  //     throw new CrudError(errors); 
-  //   return items; 
-  // } 
-
-  // // DELETE .................................................
-  // public async Delete({modelName, subfields, ids}:ArgsIds) { 
-  //   const reducedSubfields = this.cacher.GetReducedSubfields({modelName, subfields}); 
-  //   const mutation = request.DELETE(modelName, reducedSubfields); 
-  //   const variables = {ids}; 
-
-  //   const {items, errors} = await this.client.mutate({mutation, variables}) 
-  //     .then( res => ParseCrudResult(res.data) ) 
-  //     .catch( err => { return {items:[] as IEntry[], errors:[err]}} ) 
-
-  //   if(!IsEmpty(errors)) 
-  //     throw new CrudError(errors); 
-  //   return items; 
-  // } 

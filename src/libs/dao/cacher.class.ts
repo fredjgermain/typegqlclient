@@ -6,7 +6,8 @@ import { ApolloClient, NormalizedCacheObject }
 // ---------------------------------------------------------
 import * as request from './gql'; 
 import { 
-  ParseModelDescriptors, ParseCrudResult, ParseTypeIntrospection, 
+  ParseModelDescriptors, ParseCrudResult, 
+  ParseTypeIntrospection, ParseEntries, 
   ReduceSubfields, 
   ArgsIds, ArgsInputs, ArgsModelDescriptors, ArgsModelName, 
   ModelDescriptor, 
@@ -32,7 +33,6 @@ export class Cacher{
   // GetSubfields -----------------------------------------
   public GetReducedSubfields({modelName, subfields}:ArgsModelName) { 
     const defaultSubfields = this.IntrospectSubfields(modelName); 
-    
     return ReduceSubfields(subfields, defaultSubfields); 
   }
 
@@ -79,48 +79,43 @@ export class Cacher{
   
   private ReadQuery({modelName, subfields}:{modelName:string, subfields?:string[]}) { 
     const reducedSubfields = this.GetReducedSubfields({modelName, subfields}); 
-    
     return request.Read(modelName, reducedSubfields); 
   } 
 
   // CREATE ..................................................
   public Create({modelName, inputs}:{modelName:string, inputs:IEntry[]}) { 
     const query = this.ReadQuery({modelName}); 
-    const read = this.Read({modelName}); 
-    const items = [...read, ...inputs]; 
-    let data = {} as any; 
-    data['Read'+modelName] = {items, errors:[]}; 
+    const existing = this.Read({modelName}); 
+    const entries = [...existing, ...inputs]; 
+
+    const data = {[`Read${modelName}`]:entries} 
     return this.client.cache.writeQuery({query, data}); 
   } 
 
+  // READ ------------------------------------------------- 
   public Read({modelName, subfields, ids}:ArgsIds) { 
-    
     const query = this.ReadQuery({modelName, subfields}); 
-    
-    return ParseCrudResult(this.client.cache.readQuery({query})).items; 
+    return ParseEntries( this.client.cache.readQuery({query}) ); 
   } 
 
   // UPDATE ..................................................
   public Update({modelName, inputs}:{modelName:string, inputs:IEntry[]}) { 
     const query = this.ReadQuery({modelName}); 
-    const read = this.Read({modelName}); 
-    const items = read.map( e => 
-      inputs.find( i => i._id === e._id ) ?? e ); 
+    const existing = this.Read({modelName}); 
+    const entries = existing.map( e => inputs.find( i => i._id === e._id ) ?? e ); 
 
-    let data = {} as any; 
-    data[modelName] = {items}; 
+    const data = {[`Read${modelName}`]:entries}; 
     return this.client.cache.writeQuery({query, data}); 
   } 
 
   // DELETE ..................................................
   public Delete({modelName, inputs}:{modelName:string, inputs:IEntry[]}) { 
     const query = this.ReadQuery({modelName}); 
-    const read = this.Read({modelName}); 
+    const existing = this.Read({modelName}); 
     const ids = inputs.map( i => i._id); 
-    const items = read.filter( e => ids.find( i => i != e._id ) ); 
+    const entries = existing.filter( e => ids.find( i => i != e._id ) ); 
 
-    let data = {} as any; 
-    data[modelName] = {items}; 
+    const data = {[`Read${modelName}`]:entries}; 
     return this.client.cache.writeQuery({query, data}); 
   } 
 
