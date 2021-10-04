@@ -3,10 +3,12 @@ import React, { useContext, useEffect } from 'react';
 
 
 // -------------------------------------------------------- 
-import { useCrud } from './hooks/usecrud.hooks'; 
+import { useCrud } from './hooks/usecrud.hook'; 
 import { CrudCollectionTable } from './components/table.component'; 
 import { CollectionDescription } from './components/collectiondescription.component';
 import { CrudEntryEditor } from './components/crudentryeditor.component';
+import { IsEmpty } from '../utils';
+import { CrudFeedback } from './components/feedback.component';
 
 
 // --------------------------------------------------------
@@ -14,19 +16,28 @@ export const CrudCollectionContext = React.createContext({} as ReturnType<typeof
 export function CrudCollection({modelName}:{modelName:string}) { 
   const usecrudcontext = useCrud({modelName});
 
+  const InitFetch = async () => { 
+    await usecrudcontext.FetchModel(); 
+    await usecrudcontext.FetchEntries(); 
+  }
 
   useEffect(() => { 
-    usecrudcontext.FetchModelEntries(); 
+   InitFetch() 
   }, []); 
 
+  if(IsEmpty(usecrudcontext.data.model)) 
+    return <div>Loading model ...</div> 
+
   return <CrudCollectionContext.Provider value={usecrudcontext} > 
-    {usecrudcontext.status.ready && <div> 
-      <CollectionDescription /> 
-      <CrudEntryEditor /> 
+    <div>
+      <CollectionDescription/> 
+      <CrudFeedback/> 
+      <CrudEntryEditor/> 
       <CrudCollectionTable /> 
-    </div> }
+    </div>
   </CrudCollectionContext.Provider> 
 } 
+
 
 
 

@@ -1,15 +1,15 @@
 import React, { useContext } from 'react'; 
-import { InputSelect } from '../../inputs';
-import { PageOfPages, PagerBtns, usePager } from '../../pager';
-
 
 
 // -------------------------------------------------------------------- 
+import { EnumCrud } from '../../dao/dao.class';
+import { InputSelect } from '../../inputs';
+import { PageOfPages, PagerBtns, usePager } from '../../pager';
+
 import { Table, Rows, Row, RowContext, Cols, Col, ColContext } from '../../table/_table'; 
 import { IsEmpty, ToArray } from '../../utils'; 
 import { CrudCollectionContext } from '../crudcollection.component'; 
-import { EnumMode } from '../hooks/usecrud.hooks';
-import { useColumnSelector } from '../hooks/usecolumnselector.hook';
+import { useColumnSelector } from '../hooks/usecolumnselector.hook'; 
 
 
 
@@ -57,17 +57,17 @@ export function CrudCollectionTable() {
 
 
 function BtnSelectEntry() { 
-  const {status, SetStatus, data:{entries, defaultEntry}} = useContext(CrudCollectionContext); 
+  const {data, SetData, data:{entries, defaultEntry}} = useContext(CrudCollectionContext); 
   const {row} = useContext(RowContext); 
   const entry = entries.find( e => e._id === row ) ?? defaultEntry; 
 
-  function Select(mode:EnumMode) { 
-    SetStatus({...status, entry, mode}) 
+  function Select(mode:EnumCrud) { 
+    SetData({entry, mode}) 
   } 
   
   return <span> 
-    <button onClick={() => Select(EnumMode.update)}>Update</button> 
-    <button onClick={() => Select(EnumMode.delete)}>Delete</button> 
+    <button onClick={() => Select(EnumCrud.Update)}>Update</button> 
+    <button onClick={() => Select(EnumCrud.Delete)}>Delete</button> 
   </span>
 } 
 

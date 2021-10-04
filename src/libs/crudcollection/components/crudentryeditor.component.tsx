@@ -1,37 +1,26 @@
-import React, { useContext, useEffect, useState } from 'react';
-
+import React from 'react';
 
 
 // -------------------------------------------------------- 
 import { EntryEditor } from '../../entryreadereditor/entryeditor.component'; 
-import { CrudFeedback } from './feedback.component'; 
-import { CrudCollectionSubmitBtn } from './submitbtn.component';
-import { CrudCollectionContext } from '../crudcollection.component';
+import { useCrudEntry } from '../hooks/usecrudentry.hook'; 
+import { CrudCollectionSubmitBtn } from './submitbtn.component'; 
 
 
+export const CrudEntryContext = React.createContext({} as ReturnType<typeof useCrudEntry>); 
+export function CrudEntryEditor() { 
+  const usecrudentrycontext = useCrudEntry(); 
+  const {entry, SetEntry, ifields, ifieldsOptions} = usecrudentrycontext; 
 
-export function CrudEntryEditor() {
-  const {data, status} = useContext(CrudCollectionContext); 
-  const {model} = data; 
-
-  const [entry, setEntry] = useState(status.entry ?? data.defaultEntry); 
-  function SetEntry(entry:IEntry) { 
-    setEntry(entry); 
-  } 
-
-  // filter readable and editable ifields 
-  // add option 'editable' to those editable ifields 
-  const ifields = (model?.ifields ?? [] as IField[]).filter( f => f.options?.readable || f.options?.editable ) 
-  const ifieldsOptions = data.ifieldsOptions ?? {}; 
-
-  return <div>
-    <div> 
-      Entry <br/> 
-      {JSON.stringify(entry)} 
-    </div> 
-    <CrudFeedback/> 
-    <EntryEditor {...{entry, SetEntry, ifields, ifieldsOptions}} /> 
-
-    <CrudCollectionSubmitBtn {...{entry}} /> 
-  </div>
+  return <CrudEntryContext.Provider value={usecrudentrycontext}> 
+    <div>
+      <div> 
+        Entry <br/> 
+        {JSON.stringify(entry)} 
+      </div> 
+      <EntryEditor {...{entry, SetEntry, ifields, ifieldsOptions}} /> 
+      <CrudCollectionSubmitBtn /> 
+    </div>
+  </CrudEntryContext.Provider> 
 }
+

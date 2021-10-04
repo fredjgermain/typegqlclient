@@ -6,22 +6,22 @@ import { ApolloClient, NormalizedCacheObject }
 // -------------------------------------------------------- 
 import * as request from './gql'; 
 import { 
-  ParseModelDescriptors, ParseCrudResult, ParseTypeIntrospection, ParseEntries, 
+  ParseModelDescriptors, ParseTypeIntrospection, ParseEntries, 
   ReduceSubfields, 
   ArgsIds, ArgsInputs, ArgsModelDescriptors, ArgsModelName, 
   ModelDescriptor, 
 } from './dao.utils'; 
-import { IsEmpty } from "../utils"; 
 import { Cacher } from './cacher.class'; 
 
 
-enum EnumMutation { 
+export enum EnumCrud { 
   Create = 'Create', 
+  Read = 'Read', 
   Update = 'Update', 
   Delete = 'Delete', 
 }
 
-type FetchingArgs = {action:EnumMutation, modelName:string, subfields?:string[], variables:any} 
+type FetchingArgs = {action:EnumCrud, modelName:string, subfields?:string[], variables:any} 
 
 
 export class CrudError extends Error { 
@@ -139,7 +139,7 @@ export class Dao {
 
   // CREATE ..................................................
   public async Create({modelName, subfields, inputs}:ArgsInputs) { 
-    const action = EnumMutation.Create; 
+    const action = EnumCrud.Create; 
     const variables = {inputs:inputs.map( i => { 
       const {_id, ...input} = i; 
       return input; 
@@ -149,14 +149,14 @@ export class Dao {
 
   // Update ..................................................
   public async Update({modelName, subfields, inputs}:ArgsInputs) { 
-    const action = EnumMutation.Update; 
+    const action = EnumCrud.Update; 
     const variables = {inputs}; 
     return await this.Mutation({action, modelName, subfields, variables}); 
   }
 
   // Delete ..................................................
   public async Delete({modelName, subfields, ids}:ArgsIds) { 
-    const action = EnumMutation.Delete; 
+    const action = EnumCrud.Delete; 
     const variables = {ids}; 
     return await this.Mutation({action, modelName, subfields, variables}); 
   }

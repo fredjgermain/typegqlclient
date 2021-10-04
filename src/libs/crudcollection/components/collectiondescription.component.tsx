@@ -7,9 +7,7 @@ export function CollectionDescription() {
   const { data:{model} } = crudcollectionContext; 
 
   return <div> 
-    <h4>{model?.label}</h4> 
-    <p> 
-      {model?.description} 
-    </p> 
+    <h4>{model.label}</h4> 
+    <p>{model.description}</p> 
   </div>
 }
