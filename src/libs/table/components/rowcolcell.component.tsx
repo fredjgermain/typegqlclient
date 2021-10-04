@@ -56,8 +56,8 @@ export function Col({index, col, children}:React.PropsWithChildren<TCol>) {
 
 
 // HEADS -----------------------------------------------------
-export const THeadsContext = React.createContext({} as {cols:string[]}) 
-export function THeads({cols, children}:React.PropsWithChildren<{cols:string[]}>) { 
+export const THeadsContext = React.createContext({} as {cols:React.Key[]}) 
+export function THeads({cols, children}:React.PropsWithChildren<{cols:React.Key[]}>) { 
   return <THeadsContext.Provider value={{cols}}> 
     {cols.map( (col, index) => { 
       return <THead key={col} {...{index, col}}>{children}</THead> 
@@ -66,8 +66,8 @@ export function THeads({cols, children}:React.PropsWithChildren<{cols:string[]}>
 } 
 
 export const THeadContext = React.createContext({} as TCol) 
-export function THead({col, children}:React.PropsWithChildren<TCol>) { 
-  return <th><THeadContext.Provider value={{col}}> 
+export function THead({index, col, children}:React.PropsWithChildren<TCol>) { 
+  return <th><THeadContext.Provider value={{index, col}}> 
     {children} 
   </THeadContext.Provider></th> 
 }

@@ -21,7 +21,7 @@ const defaultData = {
 } 
 
 export function useCrud({modelName}:{modelName:string}) { 
-  console.log('useCrud'); 
+  //console.log('useCrud'); 
   const {dao} = useContext(DaoContext); 
 
   const [data, setData] = useState(defaultData); 

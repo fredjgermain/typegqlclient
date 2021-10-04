@@ -8,7 +8,7 @@ import { IsEmpty } from '../../utils';
 
 
 export function useCrudEntry() { 
-  console.log('useCrudEntry'); 
+  //console.log('useCrudEntry'); 
   const {data, Cancel:_Cancel, Submit:_Submit } = useContext(CrudCollectionContext); 
   const {model} = data; 
 

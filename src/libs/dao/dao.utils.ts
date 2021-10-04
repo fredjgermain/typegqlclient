@@ -48,9 +48,9 @@ export function ParseEntries(queryResult:any):IEntry[] {
 
 
 
-export function ParseCrudError(error:any[]) { 
-  console.log(error[0]); 
-  //console.log(error[0]?.graphQLErrors?.extensions?.exception) 
+export function ParseCrudError(error:any) { 
+  const [errors] = error.graphQLErrors[0]?.extensions?.exception?.errprops; 
+  return errors.errors; 
 } 
 
 

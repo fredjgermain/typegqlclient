@@ -2,11 +2,14 @@ import React, { useContext } from 'react';
 
 
 // -------------------------------------------------------------------- 
-import { EnumCrud } from '../../dao/dao.class';
-import { InputSelect } from '../../inputs';
-import { PageOfPages, PagerBtns, usePager } from '../../pager';
+import { EnumCrud } from '../../dao/dao.class'; 
+import { InputSelect } from '../../inputs'; 
+import { PageOfPages, PagerBtns, usePager } from '../../pager'; 
 
-import { Table, Rows, Row, RowContext, Cols, Col, ColContext } from '../../table/_table'; 
+import { Table, 
+  THeads, THead, 
+  Rows, Row, RowContext, 
+  Cols, Col, ColContext, THeadContext } from '../../table/_table'; 
 import { IsEmpty, ToArray } from '../../utils'; 
 import { CrudCollectionContext } from '../crudcollection.component'; 
 import { useColumnSelector } from '../hooks/usecolumnselector.hook'; 
@@ -22,8 +25,8 @@ export function CrudCollectionTable() {
   const { data:{entries, model} } = crudcollectionContext; 
 
   // Pager ................................................
-  const pager = usePager(entries, 10); 
-  console.log(pager.page);
+  const pager = usePager(entries, 2); 
+  //console.log(pager.page);
 
   const rows = (pager.page as IEntry[]).map( e => e._id ); 
 
@@ -36,8 +39,8 @@ export function CrudCollectionTable() {
     <Table {...{Key:model.accessor}} > 
       <thead> 
         <Row {...{row:''}} > 
-          <Cols {...{cols}}><Head/></Cols> 
-          <Col {...{col:'Btn'}}>BTN</Col> 
+          <THeads {...{cols}}><Head/></THeads> 
+          <THead {...{col:'Btn'}}>BTN</THead> 
         </Row> 
       </thead> 
       <tbody> 
@@ -57,7 +60,7 @@ export function CrudCollectionTable() {
 
 
 function BtnSelectEntry() { 
-  const {data, SetData, data:{entries, defaultEntry}} = useContext(CrudCollectionContext); 
+  const {SetData, data:{entries, defaultEntry}} = useContext(CrudCollectionContext); 
   const {row} = useContext(RowContext); 
   const entry = entries.find( e => e._id === row ) ?? defaultEntry; 
 
@@ -74,7 +77,7 @@ function BtnSelectEntry() {
 
 function Head() { 
   const {data:{model}} = useContext(CrudCollectionContext); 
-  const {index} = useContext(ColContext); 
+  const {index} = useContext(THeadContext); 
   const ifield = model.ifields[index ?? 0]; 
   const label = ifield?.label[0]; 
 
