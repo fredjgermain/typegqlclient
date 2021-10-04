@@ -9,8 +9,7 @@ import { IsEmpty } from '../../utils';
 
 // --------------------------------------------------------
 export function CrudFeedback() { 
-  const {data:{model:{label}, feedback:{action, success, feedback}}} = useContext(CrudCollectionContext); 
-
+  const {data:{feedback:{success, feedback}}} = useContext(CrudCollectionContext); 
 
   if(IsEmpty(feedback)) 
     return <div></div> 
