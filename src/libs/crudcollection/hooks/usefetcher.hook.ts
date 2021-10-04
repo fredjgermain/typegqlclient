@@ -2,7 +2,6 @@ import { useState } from "react";
 
 
 
-
 export function useFetcher() { 
   type TStatus = typeof defaultStatus; 
   const defaultStatus = { 

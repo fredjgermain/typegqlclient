@@ -11,7 +11,6 @@ import { IsEmpty } from '../utils';
 import { CrudFeedback } from './components/feedback.component';
 
 
-// --------------------------------------------------------
 export const CrudCollectionContext = React.createContext({} as ReturnType<typeof useCrud>); 
 export function CrudCollection({modelName}:{modelName:string}) { 
   const usecrudcontext = useCrud({modelName});
