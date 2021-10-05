@@ -6,7 +6,7 @@ import { ApolloClient, NormalizedCacheObject }
 // ---------------------------------------------------------
 import * as request from './gql'; 
 import { 
-  ParseModelDescriptors, ParseCrudResult, 
+  ParseModelDescriptors,  
   ParseTypeIntrospection, ParseEntries, 
   ReduceSubfields, 
   ArgsIds, ArgsInputs, ArgsModelDescriptors, ArgsModelName, 
@@ -70,7 +70,9 @@ export class Cacher{
     const variables = {modelsName}; 
 
     try {
+      console.log(this.client.cache); 
       const res = this.client.readQuery({query, variables}) 
+      console.log(res); 
       return ParseModelDescriptors(res); 
     } catch(err) { 
       throw err; 
@@ -121,7 +123,7 @@ export class Cacher{
 
 
   // Get Default Entry ....................................
-  public GetDefaultEntry(model:ModelDescriptor):IEntry { 
+  public GetDefaultEntry(model:IModel):IEntry { 
     const ifields = model.ifields.filter( f => f.options?.readable || f.options?.editable ); 
     let defaultEntry = {} as IEntry; 
     ifields.forEach( f => defaultEntry[f.accessor] = f.type.defaultValue ?? GetDefaultValue(f.type.name) ) 
@@ -168,6 +170,7 @@ export class Cacher{
     } catch(err) { 
       entries = this.Read({modelName, subfields:['_id']}); 
     } 
+    console.log(entries); 
     return entries.map( entry => { 
       return {value:entry._id, label:entry.abbrev} as IOption; 
     }) 

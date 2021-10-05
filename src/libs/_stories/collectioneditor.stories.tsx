@@ -14,10 +14,10 @@ export default {
 } 
 
 function TemplateComponent() { 
-  const modelName = 'Patient'; 
+  const modelsName = ['A', 'B', 'C']; 
 
   return <DaoContexter {...{client}} > 
-    <CrudCollection {...{modelName}} /> 
+    <CrudCollection {...{modelsName}} /> 
   </DaoContexter> 
 } 
 

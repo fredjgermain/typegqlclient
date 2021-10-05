@@ -19,7 +19,9 @@ export function DisplayArray(props:{values:any[], options?:IOption[]}, reducer?:
   return <span>{`[${reducedToString}] + ${remainder.length}]`}</span>; 
 } 
 
-
+export function DisplayRef() { 
+  
+} 
 
 export function DisplayScalar(props:{value:any[], options?:IOption[]}) {
   const value = props.options?.find( o => 

@@ -11,7 +11,8 @@ import {
   ArgsIds, ArgsInputs, ArgsModelDescriptors, ArgsModelName, 
   ModelDescriptor, 
 } from './dao.utils'; 
-import { Cacher } from './cacher.class'; 
+//import { Cacher } from './cacher.class'; 
+import { GetDefaultValue } from "../utils";
 
 
 export enum EnumCrud { 
@@ -42,24 +43,24 @@ type TIntrospect = {
 // Complete each methods to map it to the Apollo clients functions etc. 
 export class Dao { 
   private client:ApolloClient<NormalizedCacheObject>; 
-  private cacher:Cacher; 
+  //private cacher:Cacher; 
 
   constructor(client:ApolloClient<NormalizedCacheObject>) { 
     this.client = client; 
-    this.cacher = new Cacher(client);
+    //this.cacher = new Cacher(client);
   } 
 
   // GetSubfields -----------------------------------------
   private async GetReducedSubfields({modelName, subfields}:ArgsModelName) { 
-    const defaultSubfields = await this.IntrospectSubfields(modelName); 
+    const [model] = await this.ModelDescriptors({modelsName:[modelName]}); 
+    const defaultSubfields = await this.IntrospectSubfields(model); 
     return ReduceSubfields(subfields, defaultSubfields); 
   }
 
-  private async IntrospectSubfields(modelName:string) { 
-    const models = await this.ModelDescriptors({modelsName:[modelName]}); 
-    const ifields = (models[0] as ModelDescriptor)?.ifields; 
-
-    const introspection = await (this.TypeIntrospection(modelName)) 
+  private async IntrospectSubfields(model:IModel):Promise<string[]> { 
+    const {accessor, ifields} = model; 
+    const introspection = await (this.TypeIntrospection(accessor)) 
+    // Returns nested subfields in case of a nested field
     return introspection.fields.map( field => { 
       const ifield = ifields.find( f => f.accessor === field.name ); 
       return ifield?.isRef ? `${field.name} {_id}` : field.name 
@@ -162,18 +163,56 @@ export class Dao {
   }
 
   // Get Default Entry ....................................
-  public GetDefaultEntry(model:ModelDescriptor):IEntry { 
-    return this.cacher.GetDefaultEntry(model); 
+  public GetDefaultEntry(model:IModel):IEntry { 
+    const ifields = model.ifields.filter( f => f.options?.readable || f.options?.editable ); 
+    let defaultEntry = {} as IEntry; 
+    ifields.forEach( f => defaultEntry[f.accessor] = f.type.defaultValue ?? GetDefaultValue(f.type.name) ) 
+    return defaultEntry; 
   } 
 
   // Get Options ..........................................
-  public GetOptionsFromModel(model:IModel) { 
-    return this.cacher.GetOptionsFromModel(model); 
+  public async GetOptionsFromModel(model:IModel) { 
+    const ifields = model.ifields ?? []; 
+    let options = {} as {[key:string]:IOption[]} 
+    for(let i=0; i < ifields.length; i++) { 
+      const ifield = ifields[i]; 
+      options[ifield.accessor] = await this.GetOptionsFromIField(ifield); 
+    } 
+    return options; 
   }
 
-  public GetOptionsFromIField(ifield:IField):IOption[] { 
-    return this.cacher.GetOptionsFromIField(ifield); 
+  public async GetOptionsFromIField(ifield:IField):Promise<IOption[]> { 
+    if(ifield.isRef) 
+      return await this.GetOptionsFromRef(ifield.options?.ref ?? ''); 
+    // Get Options from Enums 
+    const enums = ifield.type.enums ?? []; 
+    return enums.map( e => { 
+      return {value:e, label:e} as IOption; 
+    }) 
+  }
+
+  public async GetOptionsFromRef(modelName:string):Promise<IOption[]> { 
+    const abbrevSubfield = await this.GetAbbrevIField(modelName); 
+    console.log(abbrevSubfield); 
+    const subfields = abbrevSubfield === '_id' ? [abbrevSubfield] : ['_id', abbrevSubfield]; 
+    const entries = await this.Read({modelName, subfields}); 
+
+    const options = entries.map( entry => { 
+      return {value:entry._id, label:entry[abbrevSubfield]} as IOption; 
+    }) 
+    console.log(options); 
+    return options;
   } 
+
+  public async GetAbbrevIField(modelName:string):Promise<string> { 
+    const [model] = await this.ModelDescriptors({modelsName:[modelName]}); 
+    const defaultSubfields = await this.IntrospectSubfields(model); 
+    const abbrevSubfield = defaultSubfields.find( f => f === 'abbrev') ?? 
+      model.ifields.find( e => e.type.name === 'string' && !e.accessor.includes('_') )?.accessor ?? 
+      model.ifields.find( e => e.type.name === 'number' && !e.accessor.includes('_') )?.accessor ?? 
+      '_id'; 
+    return abbrevSubfield; 
+  }
 
 } 
 

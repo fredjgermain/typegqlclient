@@ -11,5 +11,4 @@ export function CrudCollectionSubmitBtn() {
     <button onClick={Submit}>{mode.toUpperCase()}</button> 
     <button onClick={Cancel}>Cancel</button> 
   </span> 
-  return <div></div>
 }

@@ -19,8 +19,7 @@ export type ArgsIds = ArgsModelName & {ids?:string[]}
  */
 export function ParseTypeIntrospection(queryResult:any) { 
   const [result] = Object.values(queryResult).flat() as any[]; 
-  const {__typename, ...introspection} = result; 
-  return introspection; 
+  return result; 
 }
 
 

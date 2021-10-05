@@ -1,11 +1,11 @@
-import { useContext, useState } from 'react'; 
+import { useContext, useEffect, useState } from 'react'; 
 
 
 
 // --------------------------------------------------------
 import { DaoContext } from '../../dao/daocontexter.component'; 
 import { EnumCrud } from '../../dao/dao.class'; 
-import { IsEmpty } from '../../utils'; 
+import { IsEmpty } from '../../utils';
 
 
 type TData = typeof defaultData; 
@@ -20,25 +20,29 @@ const defaultData = {
   feedback: {action: EnumCrud.Create, success:false, feedback:{} as any}, 
 } 
 
-export function useCrud({modelName}:{modelName:string}) { 
+export function useCrudCollection() { 
   //console.log('useCrud'); 
   const {dao} = useContext(DaoContext); 
-
+  
   const [data, setData] = useState(defaultData); 
   function SetData(newData:Partial<TData>) { 
     const _data = newData ?? defaultData; // update with newData or reset to defaultData 
     setData( prev => { return {...prev, ..._data} }) 
   } 
 
-  async function FetchModel() { 
-    const [model] = await dao.ModelDescriptors({modelsName:[modelName]}); 
-    const data:Partial<TData> = IsEmpty(model) ? 
-      {...defaultData} : 
-      {model, defaultEntry:dao.GetDefaultEntry(model), ifieldsOptions:dao.GetOptionsFromModel(model) } 
-    SetData(data); 
-  } 
+  async function SetModel(model:IModel) { 
+    if(IsEmpty(model)) return; 
+    const newData:Partial<TData> = {  
+      model, defaultEntry: dao.GetDefaultEntry(model), 
+      ifieldsOptions: await dao.GetOptionsFromModel(model), 
+      entries: await dao.Read({modelName:model.accessor}) 
+    }
+    SetData(newData); 
+  }
 
   async function FetchEntries() { 
+    const modelName = data.model.accessor; 
+    if(!modelName) return; 
     await dao.Read({modelName}) 
       .then( entries => SetData({entries}) ) 
       .catch( errors => {
@@ -48,6 +52,8 @@ export function useCrud({modelName}:{modelName:string}) {
   } 
 
   async function FetchMutation({action, variables}:{action:EnumCrud, variables:any}) { 
+    const modelName = data.model.accessor; 
+    if(!modelName) return; 
     const mutationPromise = (dao as any)[action]({modelName, ...variables}) as Promise<IEntry[]>; 
     await mutationPromise 
       .then( results => { 
@@ -72,7 +78,7 @@ export function useCrud({modelName}:{modelName:string}) {
     SetData({mode, entry}); 
   } 
 
-  return {defaultData, data, SetData, FetchModel, FetchEntries, FetchMutation, Submit, Cancel} 
+  return {defaultData, data, SetData, SetModel, FetchEntries, FetchMutation, Submit, Cancel} 
 }
 
 

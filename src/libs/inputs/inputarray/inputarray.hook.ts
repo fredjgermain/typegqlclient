@@ -1,7 +1,7 @@
 import React, { useState } from 'react'; 
 
 // --------------------------------------------------------
-import { GetDefaultValue } from '../../utils'; 
+import { GetDefaultValue, IsEmpty } from '../../utils'; 
 import { IInputScalar } from '../inputscalar/inputscalar'; 
 
 
@@ -20,7 +20,7 @@ export function useInputArray({inputAttribute = {}, ...props}:IInputArray) {
   // complete ttype definition 
   const valueType = props.valueType ?? 'string'; 
   const defaultValue = props.defaultValue ?? GetDefaultValue(valueType); 
-  const values = props.values ?? []; 
+  const values = IsEmpty(props.values) ? []: props.values; 
   const SetValues = props.SetValues; 
 
   function ElementArgs(at?:number):IInputScalar { 

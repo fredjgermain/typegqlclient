@@ -26,10 +26,7 @@ export function CrudCollectionTable() {
 
   // Pager ................................................
   const pager = usePager(entries, 2); 
-  //console.log(pager.page);
-
   const rows = (pager.page as IEntry[]).map( e => e._id ); 
-
 
   // Columns ..............................................
   const {colSelection:cols, SetColSelection, options} = useColumnSelector(model); 
@@ -79,7 +76,7 @@ function Head() {
   const {data:{model}} = useContext(CrudCollectionContext); 
   const {index} = useContext(THeadContext); 
   const ifield = model.ifields[index ?? 0]; 
-  const label = ifield?.label[0]; 
+  const label = ifield?.label[0] ?? ifield.accessor; 
 
   return <span>{label}</span> 
 } 
@@ -107,15 +104,3 @@ function Cell() {
   
   return <span>{JSON.stringify(_value)}</span> 
 }
-
-
-
-function DisplayModel() { 
-  const {data:{model}} = useContext(CrudCollectionContext); 
-  if(IsEmpty(model)) 
-    return <div></div> 
-  return <div> 
-    MODEL : {model?.label[0]} <br/> 
-    {model?.description[0]} 
-  </div> 
-} 
