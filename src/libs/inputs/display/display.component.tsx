@@ -10,6 +10,8 @@ export function DisplayArray(props:{values:any[], options?:IOption[]}, reducer?:
   const values = props.values.map( value => { 
     return props.options?.find( o => 
       o .value === value )?.label ?? value} ); 
+
+  console.log(reducer); 
   
   const [reduced, remainder] = Filter(values, reducer ?? (() => true)); 
   const reducedToString = ReduceToString(reduced); 
@@ -19,9 +21,9 @@ export function DisplayArray(props:{values:any[], options?:IOption[]}, reducer?:
   return <span>{`[${reducedToString}] + ${remainder.length}]`}</span>; 
 } 
 
-export function DisplayRef() { 
-  
-} 
+/*export function DisplayRef(props:{value:any[], options?:IOption[]}) { 
+  const value = props.value; 
+} */
 
 export function DisplayScalar(props:{value:any[], options?:IOption[]}) {
   const value = props.options?.find( o => 

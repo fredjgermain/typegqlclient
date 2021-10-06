@@ -9,10 +9,8 @@ import {
   ParseModelDescriptors, ParseTypeIntrospection, ParseEntries, 
   ReduceSubfields, 
   ArgsIds, ArgsInputs, ArgsModelDescriptors, ArgsModelName, 
-  ModelDescriptor, 
 } from './dao.utils'; 
-//import { Cacher } from './cacher.class'; 
-import { GetDefaultValue } from "../utils";
+import { GetDefaultValue } from "../utils"; 
 
 
 export enum EnumCrud { 
@@ -43,11 +41,9 @@ type TIntrospect = {
 // Complete each methods to map it to the Apollo clients functions etc. 
 export class Dao { 
   private client:ApolloClient<NormalizedCacheObject>; 
-  //private cacher:Cacher; 
 
   constructor(client:ApolloClient<NormalizedCacheObject>) { 
     this.client = client; 
-    //this.cacher = new Cacher(client);
   } 
 
   // GetSubfields -----------------------------------------
@@ -55,7 +51,7 @@ export class Dao {
     const [model] = await this.ModelDescriptors({modelsName:[modelName]}); 
     const defaultSubfields = await this.IntrospectSubfields(model); 
     return ReduceSubfields(subfields, defaultSubfields); 
-  }
+  } 
 
   private async IntrospectSubfields(model:IModel):Promise<string[]> { 
     const {accessor, ifields} = model; 
@@ -76,8 +72,8 @@ export class Dao {
       return ParseTypeIntrospection(res.data); 
     }catch(err) { 
       throw err; 
-    }
-  }
+    } 
+  } 
 
   // MODEL .................................................. 
   public async ModelDescriptors({subfields, modelsName}:ArgsModelDescriptors) { 
@@ -85,7 +81,7 @@ export class Dao {
     const query = request.ModelDescriptors( ReduceSubfields(subfields, defaultSubfields) ); 
     const variables = {modelsName}; 
 
-    try {
+    try { 
       const res = await this.client.query({query, variables}) 
       return ParseModelDescriptors(res.data); 
     } catch(err) { 
@@ -193,14 +189,14 @@ export class Dao {
 
   public async GetOptionsFromRef(modelName:string):Promise<IOption[]> { 
     const abbrevSubfield = await this.GetAbbrevIField(modelName); 
-    console.log(abbrevSubfield); 
+    //console.log(abbrevSubfield); 
     const subfields = abbrevSubfield === '_id' ? [abbrevSubfield] : ['_id', abbrevSubfield]; 
     const entries = await this.Read({modelName, subfields}); 
 
     const options = entries.map( entry => { 
       return {value:entry._id, label:entry[abbrevSubfield]} as IOption; 
     }) 
-    console.log(options); 
+    //console.log(options); 
     return options;
   } 
 

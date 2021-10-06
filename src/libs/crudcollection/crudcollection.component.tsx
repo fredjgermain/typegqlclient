@@ -31,7 +31,6 @@ export function CrudCollection({modelsName}:{modelsName:string[]}) {
       <InputSelect {...{value:data.model, SetValue:SetSelectedModel, options }} /> 
       <br/>
       {JSON.stringify(data.defaultEntry)} 
-      {JSON.stringify(data.entries?.length)} 
       <div key={data.model.accessor}> 
         <CollectionDescription/> 
         <CrudFeedback/> 

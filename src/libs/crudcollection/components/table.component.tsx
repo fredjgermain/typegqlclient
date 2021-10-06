@@ -3,6 +3,7 @@ import React, { useContext } from 'react';
 
 // -------------------------------------------------------------------- 
 import { EnumCrud } from '../../dao/dao.class'; 
+import { FieldReader } from '../../entryreadereditor/fieldreader.component';
 import { InputSelect } from '../../inputs'; 
 import { PageOfPages, PagerBtns, usePager } from '../../pager'; 
 
@@ -74,8 +75,10 @@ function BtnSelectEntry() {
 
 function Head() { 
   const {data:{model}} = useContext(CrudCollectionContext); 
-  const {index} = useContext(THeadContext); 
+  const {col, index} = useContext(THeadContext); 
   const ifield = model.ifields[index ?? 0]; 
+
+  console.log(col, ifield.accessor); 
   const label = ifield?.label[0] ?? ifield.accessor; 
 
   return <span>{label}</span> 
@@ -91,7 +94,11 @@ function Cell() {
   const value = entry[col]; 
   const ifield = model.ifields[index ?? 0]; 
   const options = ifieldsOptions[ifield.accessor]; 
+
+  console.log(col);
   
+  return <FieldReader {...{entry, ifield, options}} /> 
+
   let _value = value; 
   if(ifield.isRef && ifield.type.isArray) { 
     _value = ToArray(value).map( v => { 
