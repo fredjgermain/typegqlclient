@@ -2,18 +2,19 @@ import { useContext } from 'react';
 
 
 // --------------------------------------------------------
-import { CrudCollectionContext } from '../crudcollection.component'; 
 import { ParseCrudError } from '../../dao/dao.utils'; 
 import { IsEmpty } from '../../utils'; 
+import { CrudEntryContext, ModelSelectorContext } from '../hooks/usecollectionselector.hook';
 
 
 
 const pastParticiple = {Create:'created', Read:'read', Update:'updated', Delete:'deleted'} 
 // --------------------------------------------------------
 export function CrudFeedback() { 
-  const {data:{feedback:{success, feedback}}} = useContext(CrudCollectionContext); 
+  const {crudEntry:{feedback}} = useContext(CrudEntryContext); 
+  const {success} = feedback; 
 
-  if(IsEmpty(feedback)) 
+  //if(IsEmpty(feedback)) 
     return <div></div> 
   
   if(success) 
@@ -22,8 +23,10 @@ export function CrudFeedback() {
 } 
 
 
+
 export function CrudFeedback_Success() { 
-  const {data:{model:{label}, feedback:{action, feedback}}} = useContext(CrudCollectionContext); 
+  const {modelsData:{model:{label}}} = useContext(ModelSelectorContext); 
+  const {crudEntry:{feedback:{action, feedback}}} = useContext(CrudEntryContext); 
   const abbrevs = (feedback as IEntry[]).map( e => e.abbrev); 
 
   return <div> 
@@ -32,8 +35,10 @@ export function CrudFeedback_Success() {
 } 
 
 
+
 export function CrudFeedback_Error() { 
-  const {data:{model:{label}, feedback:{action, feedback}}} = useContext(CrudCollectionContext); 
+  const {modelsData:{model:{label}}} = useContext(ModelSelectorContext); 
+  const {crudEntry:{feedback:{action, feedback}}} = useContext(CrudEntryContext); 
 
   const errors = ParseCrudError(feedback) as any[]; 
 

@@ -1,14 +1,13 @@
 import { useContext } from "react"; 
-import { CrudCollectionContext } from "../crudcollection.component"; 
-import { CrudEntryContext } from "./crudentryeditor.component";
+import { CrudEntryContext } from "../hooks/usecollectionselector.hook"; 
+//import { CrudEntryContext, CrudEntryEditor } from "./crudentryeditor.component"; 
 
 
 export function CrudCollectionSubmitBtn() { 
-  const {data:{mode}} = useContext(CrudCollectionContext); 
-  const {Submit, Cancel} = useContext(CrudEntryContext); 
+  const {crudEntry:{action}, Submit, Cancel } = useContext(CrudEntryContext); 
 
   return <span> 
-    <button onClick={Submit}>{mode.toUpperCase()}</button> 
+    <button onClick={Submit}>{action.toUpperCase()}</button> 
     <button onClick={Cancel}>Cancel</button> 
   </span> 
-}
+} 

@@ -30,6 +30,8 @@ export function useCrudCollection() {
     setData( prev => { return {...prev, ..._data} }) 
   } 
 
+  
+
   async function SetModel(model:IModel) { 
     if(IsEmpty(model)) return; 
     const newData:Partial<TData> = {  

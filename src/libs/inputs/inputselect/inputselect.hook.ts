@@ -53,7 +53,7 @@ export function useInputSelect(props:IInputSelect) {
 export interface IInputSelect { 
   value:any; 
   placeholder?:string; 
-  SetValue: (newValues:any[]) => void; 
+  SetValue: (newValues:any|any[]) => void; 
   options: IOption[]; 
   multiple?: boolean; 
   sizeFunc?: (value:any) => number; 

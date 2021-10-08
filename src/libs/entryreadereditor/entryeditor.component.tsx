@@ -6,7 +6,7 @@ import { FieldEditor } from './fieldeditor.component';
 // !!! ENTRY MUST NOT BE UNDEFINED OR NULL  !!!
 
 
-export function EntryEditor({entry, SetEntry, ifieldsOptions, ifields}:{ 
+export function EntryEditor({entry, SetEntry, ifieldsOptions, ifields = []}:{ 
     entry:IEntry, 
     SetEntry:(newEntry:IEntry)=>void, 
     ifieldsOptions: {[key:string]:IOption[]}, 

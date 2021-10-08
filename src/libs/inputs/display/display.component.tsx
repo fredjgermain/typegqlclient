@@ -6,12 +6,12 @@ import { Filter, IsEmpty, Predicate, ReduceToString, StringifyEach } from "../..
 
 
 
-export function DisplayArray(props:{values:any[], options?:IOption[]}, reducer?:Predicate<any>) { 
-  const values = props.values.map( value => { 
+export function DisplayArray(props:{values:any[], options?:IOption[], reducer?:Predicate<any>}) { 
+  const values = (props.values ?? []).map( value => { 
     return props.options?.find( o => 
       o .value === value )?.label ?? value} ); 
 
-  console.log(reducer); 
+  const reducer = IsEmpty(props.reducer) ? () => true: props.reducer; 
   
   const [reduced, remainder] = Filter(values, reducer ?? (() => true)); 
   const reducedToString = ReduceToString(reduced); 

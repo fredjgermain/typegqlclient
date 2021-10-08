@@ -11,8 +11,7 @@ import { Table,
   THeads, THead, 
   Rows, Row, RowContext, 
   Cols, Col, ColContext, THeadContext } from '../../table/_table'; 
-import { IsEmpty, ToArray } from '../../utils'; 
-import { CrudCollectionContext } from '../crudcollection.component'; 
+import { CrudEntryContext, ModelSelectorContext, SelectEntryActionContext } from '../hooks/usecollectionselector.hook';
 import { useColumnSelector } from '../hooks/usecolumnselector.hook'; 
 
 
@@ -22,8 +21,8 @@ import { useColumnSelector } from '../hooks/usecolumnselector.hook';
  * @returns 
  */ 
 export function CrudCollectionTable() { 
-  const crudcollectionContext = useContext(CrudCollectionContext); 
-  const { data:{entries, model} } = crudcollectionContext; 
+  const modelSelectorContext = useContext(ModelSelectorContext); 
+  const { modelsData:{entries, model} } = modelSelectorContext; 
 
   // Pager ................................................
   const pager = usePager(entries, 2); 
@@ -58,12 +57,14 @@ export function CrudCollectionTable() {
 
 
 function BtnSelectEntry() { 
-  const {SetData, data:{entries, defaultEntry}} = useContext(CrudCollectionContext); 
+  const modelSelectorContext = useContext(ModelSelectorContext); 
+  const { SetSelectEntry } = useContext(SelectEntryActionContext); 
+  const { modelsData:{entries, defaultEntry} } = modelSelectorContext; 
   const {row} = useContext(RowContext); 
   const entry = entries.find( e => e._id === row ) ?? defaultEntry; 
 
-  function Select(mode:EnumCrud) { 
-    SetData({entry, mode}) 
+  function Select(action:EnumCrud) { 
+    SetSelectEntry({entry, action}) 
   } 
   
   return <span> 
@@ -73,41 +74,28 @@ function BtnSelectEntry() {
 } 
 
 
+
 function Head() { 
-  const {data:{model}} = useContext(CrudCollectionContext); 
-  const {col, index} = useContext(THeadContext); 
-  const ifield = model.ifields[index ?? 0]; 
+  const modelSelectorContext = useContext(ModelSelectorContext); 
+  const { modelsData:{model} } = modelSelectorContext;   
+  const {col} = useContext(THeadContext); 
+  const ifield = model.ifields.find( f => f.accessor === col) ?? {} as IField; 
+  const label = ifield?.label ?? ifield.accessor; 
 
-  console.log(col, ifield.accessor); 
-  const label = ifield?.label[0] ?? ifield.accessor; 
-
-  return <span>{label}</span> 
+  return <span>{JSON.stringify(label)}</span> 
 } 
 
 
 
 function Cell() { 
-  const {data:{model, entries, ifieldsOptions}} = useContext(CrudCollectionContext); 
+  const {modelsData:{model, entries, ifieldsOptions}} = useContext(ModelSelectorContext); 
   const {row} = useContext(RowContext); 
-  const {col, index} = useContext(ColContext); 
+  const {col} = useContext(ColContext); 
   const entry = (entries.find( entry => entry._id === row ) ?? {}) as IEntry; 
-  const value = entry[col]; 
-  const ifield = model.ifields[index ?? 0]; 
+  const ifield = model.ifields.find( f => f.accessor === col) ?? {} as IField; 
   const options = ifieldsOptions[ifield.accessor]; 
 
-  console.log(col);
-  
   return <FieldReader {...{entry, ifield, options}} /> 
+} 
 
-  let _value = value; 
-  if(ifield.isRef && ifield.type.isArray) { 
-    _value = ToArray(value).map( v => { 
-      return options.find( o => o.value === v._id) as IOption; 
-    }).map( o => o.label ) 
-  } 
 
-  else if(ifield.isRef) 
-    _value = options.find( o => o.value === value?._id)?.label; 
-  
-  return <span>{JSON.stringify(_value)}</span> 
-}
