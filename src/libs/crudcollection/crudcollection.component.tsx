@@ -1,25 +1,52 @@
 // -------------------------------------------------------- 
+import { useContext } from 'react';
+import { InputSelect } from '../inputs';
+import { IsEmpty } from '../utils'; 
 import { CrudEntryEditor } from './components/crudentryeditor.component'; 
-import { CrudCollectionTable } from './components/table.component';
-import { useModelSelector, useSelectEntryAction, 
-  ModelSelectorContext, SelectEntryActionContext } 
-  from './hooks/usecollectionselector.hook'; 
+import { CrudCollectionTable } from './components/table.component'; 
+import { EntrySelectorContext, useEntrySelector } from './hooks/useentryselector'; 
+import { ModelSelectorContext, useModelSelector } from './hooks/usemodelselector.hook'; 
+import { ModelsFetcherContext, useModelsFetcher } from './hooks/usemodelsfetcher.hook'; 
 
 
 
-export function CrudCollection({modelsName}:{modelsName:string[]}) { 
-  const usemodelselector = useModelSelector(modelsName); 
-  const {modelsData:{model, defaultEntry}} = usemodelselector; 
-  const useselectentryaction = useSelectEntryAction({entry:defaultEntry}); 
+export function ModelFetcher({modelsName}:{modelsName:string[]}) { 
+  const usemodelfetcher = useModelsFetcher(modelsName); 
 
-  return <ModelSelectorContext.Provider value={usemodelselector} > 
-      <usemodelselector.ModelSelector/> 
-      <SelectEntryActionContext.Provider key={model.accessor} value={useselectentryaction} > 
-        <CrudEntryEditor /> 
-        <CrudCollectionTable /> 
-      </SelectEntryActionContext.Provider> 
-  </ModelSelectorContext.Provider> 
+  if(IsEmpty(usemodelfetcher.models)) 
+    return <div>Fetching models ...</div> 
+
+  return <ModelsFetcherContext.Provider value={usemodelfetcher} > 
+    <ModelSelector /> 
+  </ModelsFetcherContext.Provider> 
 } 
+
+
+
+export function ModelSelector() { 
+  const {models} = useContext(ModelsFetcherContext); 
+  const usemodelselector = useModelSelector(models); 
+  const {modelData:{model}, SelectModelArgs} = usemodelselector; 
+
+  return <div> 
+    <InputSelect {...SelectModelArgs} /> 
+    { !IsEmpty(model) && 
+      <ModelSelectorContext.Provider key={model.accessor} value={usemodelselector} > 
+        <EntrySelector /> 
+      </ModelSelectorContext.Provider> 
+    } 
+  </div> 
+} 
+
+export function EntrySelector () { 
+  const {modelData:{defaultEntry}} = useContext(ModelSelectorContext); 
+  const useentryselector = useEntrySelector({entry:defaultEntry}); 
+
+  return <EntrySelectorContext.Provider value={useentryselector} > 
+    <CrudEntryEditor /> 
+    <CrudCollectionTable /> 
+  </EntrySelectorContext.Provider> 
+}
 
 
 // export const CrudCollectionContext = React.createContext({} as ReturnType<typeof useCrudCollection>); 

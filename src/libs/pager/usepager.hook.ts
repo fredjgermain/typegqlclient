@@ -1,4 +1,4 @@
-import { useState } from 'react'; 
+import { useEffect, useState } from 'react'; 
 
 // ---------------------------------------------------------
 import { Predicate, Group } from '../utils'; 
@@ -14,13 +14,22 @@ import { Predicate, Group } from '../utils';
  */
 export function usePager(ts:any[], pageBreak:Predicate<any>|number) { 
   const pages = Paging(ts, pageBreak); 
-  const [from, to] = [0, pages.length]; 
   const [pageIndex, setPageIndex] = useState(0); 
-  
-  function SetPageIndex(newIndex:number) { 
-    if( from <= newIndex && newIndex < to && newIndex !== pageIndex ) 
+  function SetPageIndex(newIndex:number = 0) { 
+    if( PageIndexIsInRange(newIndex) && newIndex !== pageIndex ) 
       setPageIndex(newIndex); 
   } 
+
+  function PageIndexIsInRange(index:number) { 
+    return 0 <= index && index < pages.length; 
+  } 
+
+  // restricts pageIndex within page indexes range 
+  useEffect(() => { 
+    if(!PageIndexIsInRange(pageIndex)) {
+      SetPageIndex(pages.length-1); 
+    }
+  }, [pages.length]); 
 
   //const [pageIndex, setPageIndex] = useRange(0, pages.length-1); 
   const page = pages[pageIndex] ?? []; 

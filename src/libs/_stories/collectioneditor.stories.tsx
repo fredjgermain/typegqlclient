@@ -3,7 +3,7 @@ import { Story } from '@storybook/react';
 
 // ------------------------------------------------------- 
 import { client } from '../../libs/dao/apolloclient'; 
-import { CrudCollection } from '../crudcollection/crudcollection.component'; 
+import { ModelFetcher } from '../crudcollection/crudcollection.component'; 
 import { DaoContexter } from '../dao/daocontexter.component'; 
 
 
@@ -17,7 +17,7 @@ function TemplateComponent() {
   const modelsName = ['A', 'B', 'C']; 
 
   return <DaoContexter {...{client}} > 
-    <CrudCollection {...{modelsName}} /> 
+    <ModelFetcher {...{modelsName}} /> 
   </DaoContexter> 
 } 
 

@@ -1,10 +1,14 @@
 import React, { useContext } from 'react'; 
-import { CrudCollectionContext } from '../crudcollection.component';
+import { IsEmpty } from '../../utils';
+import { ModelSelectorContext } from '../hooks/usemodelselector.hook';
 
 
 export function CollectionDescription() { 
-  const crudcollectionContext = useContext(CrudCollectionContext); 
-  const { data:{model} } = crudcollectionContext; 
+  const modelselector = useContext(ModelSelectorContext); 
+  const { modelData:{model} } = modelselector; 
+
+  if(IsEmpty(model)) 
+    return <div></div> 
 
   return <div> 
     <h4>{model.label}</h4> 

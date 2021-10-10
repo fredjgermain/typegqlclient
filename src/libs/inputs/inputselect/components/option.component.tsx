@@ -14,8 +14,8 @@ type IOptionGroup = IOption[] | Predicate<IOption> | boolean;
 export function OptionGroup({options}:{options?:IOptionGroup}) { 
   const _options = GetOptions(options); 
   return <div>
-    {_options.map( option => { 
-      return <Option key={option.value} {...{option}} />
+    {_options.map( (option, i) => { 
+      return <Option key={i} {...{option}} />
     })}
   </div> 
 } 

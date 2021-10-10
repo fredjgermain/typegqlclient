@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'; 
+import React from 'react'; 
 import { useInputSelect, IInputSelect } from '../inputselect.hook'; 
 import { Options, OptionGroup } from './option.component'; 
 import { DisplaySelection, Selection } from './selection.component'; 

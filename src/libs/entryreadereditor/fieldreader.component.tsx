@@ -9,7 +9,7 @@ export function FieldReader({entry, ifield, options}:{
   const value = entry[ifield.accessor] ?? ifield.type.defaultValue; 
   const label = `${ifield.label[0] ?? ifield.accessor} : `; 
 
-  console.log(ifield.accessor, options); 
+  //console.log(ifield.accessor, options); 
 
   const DisplayComponent = 
     ifield.type.isArray ? <DisplayArray {...{values:value, options}} /> : 
