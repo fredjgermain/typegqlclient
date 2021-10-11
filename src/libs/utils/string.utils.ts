@@ -1,3 +1,31 @@
+import { IsEmpty } from "./value.utils"; 
+
+
+/** Capitalize a string ==================================
+ * 
+ * @param str 
+ * @returns 
+ */
+export function Capitalize(str:string):string { 
+  return `${str[0].toUpperCase()}${str.substr(1, str.length-1)}` 
+}
+
+
+
+/** Label ================================================
+ * Return a readable label from an ifield. 
+ * @param ifield 
+ * @returns 
+ */
+export function Label(ifield:IField):string { 
+  return !IsEmpty(ifield.label) ? 
+    Array.isArray(ifield.label) ? 
+      ifield.label[0] : 
+      ifield.label : 
+    ifield.accessor ; 
+} 
+
+
 /** StringInterpolation ===================================
  * Evaluate a string interpolation template and replace it with its proper values. 
  * @param values 

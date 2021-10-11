@@ -15,6 +15,7 @@ import { Table,
 import { useColumnSelector } from '../hooks/usecolumnselector.hook'; 
 import { ModelSelectorContext } from '../hooks/usemodelselector.hook';
 import { EntrySelectorContext } from '../hooks/useentryselector';
+import { Capitalize, Label } from '../../utils';
 
 
 
@@ -81,10 +82,10 @@ function Head() {
   const modelSelectorContext = useContext(ModelSelectorContext); 
   const { modelData:{model} } = modelSelectorContext; 
   const {col} = useContext(THeadContext); 
+  
   const ifield = model.ifields.find( f => f.accessor === col) ?? {} as IField; 
-  const label = ifield?.label ?? ifield.accessor; 
-
-  return <span>{JSON.stringify(label)}</span> 
+  const label = Label(ifield); 
+  return <span>{Capitalize(label)}</span> 
 } 
 
 

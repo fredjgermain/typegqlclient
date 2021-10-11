@@ -3,7 +3,7 @@ import { useContext } from 'react';
 
 // --------------------------------------------------------
 import { ParseCrudError } from '../../dao/dao.utils'; 
-import { IsEmpty } from '../../utils';
+import { IsEmpty, Label } from '../../utils';
 import { CrudEntryContext } from '../hooks/usecrudentry.hook';
 import { ModelSelectorContext } from '../hooks/usemodelselector.hook';
 
@@ -12,29 +12,26 @@ import { ModelSelectorContext } from '../hooks/usemodelselector.hook';
 const pastParticiple = {Create:'created', Read:'read', Update:'updated', Delete:'deleted'} 
 // --------------------------------------------------------
 export function CrudFeedback() { 
-  const {crudEntry:{feedback}} = useContext(CrudEntryContext); 
-  const {success} = feedback; 
+  const {crudEntry:{feedback:{feedback, success}}} = useContext(CrudEntryContext); 
 
-  if(IsEmpty(feedback)) 
-    return <div></div> 
   
-  return <div>{JSON.stringify(feedback)}</div> 
-  
-  // if(success) 
-  //   return <CrudFeedback_Success /> 
-  // return <CrudFeedback_Error /> 
+  if(success) 
+    return <CrudFeedback_Success /> 
+  if(!IsEmpty(feedback)) 
+    return <CrudFeedback_Error /> 
+  return <div></div> 
 } 
 
 
 
 export function CrudFeedback_Success() { 
   const {modelData:{model}} = useContext(ModelSelectorContext); 
+  const {label} = model; 
   const {crudEntry:{feedback:{action, feedback}}} = useContext(CrudEntryContext); 
-  const abbrevs = (feedback as IEntry[]).map( e => e.abbrev); 
+  //const abbrevs = (feedback as IEntry[]).map( e => e.abbrev); 
 
   return <div> 
-    {JSON.stringify(model)} 
-    {/* {label[0]} {JSON.stringify(abbrevs)} has been successfully {pastParticiple[action]} !  */}
+    {label[0]} has been successfully {pastParticiple[action]} ! 
   </div> 
 } 
 
