@@ -22,7 +22,7 @@ import { CrudEntryContext } from '../hooks/usecrudentry.hook';
  * 
  * @returns 
  */ 
-export function CrudCollectionTable() { 
+export function CrudTable() { 
   const {crudEntry:{model, entries}} = useContext(CrudEntryContext); 
 
   // Pager ................................................

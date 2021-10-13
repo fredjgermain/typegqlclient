@@ -22,7 +22,7 @@ export function CrudFeedback() {
 
 
 
-export function CrudFeedback_Success() { 
+function CrudFeedback_Success() { 
   const {crudEntry:{model, feedback:{action}}} = useContext(CrudEntryContext); 
   const {label} = model; 
 
@@ -33,7 +33,7 @@ export function CrudFeedback_Success() {
 
 
 
-export function CrudFeedback_Error() { 
+function CrudFeedback_Error() { 
   const {crudEntry:{model:{label}, feedback:{action, feedback}}} = useContext(CrudEntryContext); 
 
   const errors = ParseCrudError(feedback) as any[]; 

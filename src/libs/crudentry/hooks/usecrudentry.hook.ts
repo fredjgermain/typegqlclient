@@ -73,5 +73,9 @@ export function useCrudEntry(model:IModel) {
     SetCrudEntry({entry, action}) 
   } 
 
-  return {crudEntry, SelectEntry, Submit, Cancel} 
+  function SetEntry(entry:IEntry) { 
+    SetCrudEntry({entry}); 
+  } 
+
+  return {crudEntry, SelectEntry, SetEntry, Submit, Cancel} 
 }

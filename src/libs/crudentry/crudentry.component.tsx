@@ -1,4 +1,5 @@
 import React from "react"; 
+import { IsEmpty } from "../utils";
 import { useCrudEntry, CrudEntryContext } from "./hooks/usecrudentry.hook"; 
 
 
@@ -7,7 +8,7 @@ export function CrudEntry({model, children}:React.PropsWithChildren<{model:IMode
   const crudentrycontext = useCrudEntry(model); 
 
   return <CrudEntryContext.Provider value={crudentrycontext} > 
-    {children} 
+  {!IsEmpty(model) && children} 
   </CrudEntryContext.Provider> 
 } 
 
