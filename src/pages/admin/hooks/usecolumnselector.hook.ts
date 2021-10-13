@@ -18,6 +18,10 @@ export function useColumnSelector(ifields:IField[]) {
       setColSelection(initColumnSelection); 
   } 
   const options = initColumnSelection.map( col => { return {label:col, value:col } as IOption}) 
+
+  /*useEffect(() => { 
+    setColSelection(initColumnSelection); 
+  }, [ReduceToString(ifields.map(f => f.accessor))]) */
   
   return {colSelection, SetColSelection, options} 
 } 
