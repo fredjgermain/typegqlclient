@@ -7,10 +7,9 @@ import '../inputselect.css';
 
 
 
-/*
+/* 
 U+2335 COUNTERSINK wide 'v' ?? 
-
-*/
+*/ 
 type IUseSelect = ReturnType<typeof useInputSelect>; 
 export const InputSelectContext = React.createContext({} as IUseSelect); 
 export function InputSelect({children, ...props}:React.PropsWithChildren<IInputSelect>) { 
