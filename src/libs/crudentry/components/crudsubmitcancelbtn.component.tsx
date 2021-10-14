@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { CrudEntryContext } from "../hooks/usecrudentry.hook"; 
 
 
-export function SubmitCancelBtn() {
+export function CrudSubmitCancelBtn() {
   const {crudEntry:{action}, Submit, Cancel} = useContext(CrudEntryContext); 
 
   return <span> 

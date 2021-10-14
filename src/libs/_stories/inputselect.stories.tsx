@@ -25,6 +25,13 @@ export default {
 const Template:Story<IInputSelect> = args => <TestInput {...args} /> 
 
 
+const optionsObj = [ 
+  {label:'option 0', value:{_id:0}}, 
+  {label:'option 1', value:{_id:1}}, 
+  {label:'option 2', value:{_id:2}}, 
+  {label:'option 3', value:{_id:3}} 
+] as IOption[]; 
+
 const optionsString = [ 
   {label:'option 0', value:'0'}, 
   {label:'option 1', value:'1'}, 
@@ -39,10 +46,23 @@ TestInput_singlestringValue.args = {
   options:optionsString, 
 } 
 
-
 export const TestInput_multiplestringValue = Template.bind({}) 
 TestInput_multiplestringValue.args = { 
   value:[], 
   options:optionsString, 
+  multiple:true, 
+} 
+
+export const TestInput_singleObject = Template.bind({}) 
+TestInput_singleObject.args = { 
+  value:undefined, 
+  options:optionsObj, 
+  multiple:false, 
+} 
+
+export const TestInput_multipleObject = Template.bind({}) 
+TestInput_multipleObject.args = { 
+  value:[], 
+  options:optionsObj, 
   multiple:true, 
 } 

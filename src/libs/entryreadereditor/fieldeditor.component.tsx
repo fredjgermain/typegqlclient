@@ -30,8 +30,8 @@ export function FieldEditor({entry, SetEntry, ifield, options}:{
   // InputSelect / InputArray / InputScalar 
   const InputComponent = 
     !IsEmpty(options) ? <InputSelect {...{value, SetValue, options, multiple:ifield.type.isArray}} /> : 
-    ifield.type.isArray ? <InputArray {...{values:value, SetValues:SetValue, valueType}} /> : 
-      <InputScalar {...{value, SetValue, valueType}} /> 
+      ifield.type.isArray ? <InputArray {...{values:value, SetValues:SetValue, valueType}} /> : 
+        <InputScalar {...{value, SetValue, valueType}} /> 
 
   if(!ifield.options?.editable) 
     return <FieldReader {...{entry, ifield, options}} /> 

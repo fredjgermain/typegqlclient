@@ -27,17 +27,19 @@ export function useCrudEntry(model:IModel) {
     feedback: {action: EnumCrud.Create, success:false, feedback:{} as any}, 
   } 
   const [crudEntry, setCrudEntry] = useState(defaultCrudEntry); 
-  function SetCrudEntry(newCrudEntry:Partial<TCrudEntry> = defaultCrudEntry) { 
-    setCrudEntry( prev => { return {...prev, ...newCrudEntry}}); 
+  function SetCrudEntry(newCrudEntry:Partial<TCrudEntry>) { 
+    setCrudEntry( prev => { return {...prev, ...newCrudEntry} }); 
   } 
+
 
   // Initialize CrudEntry State 
   async function InitCrudEntry() { 
     if(IsEmpty(model)) return; 
     const defaultEntry = dao.GetDefaultEntry(model); 
+    const entry = defaultEntry; 
     const ifieldsOptions = await dao.GetOptionsFromModel(model); 
     const entries = await dao.Read({modelName:model.accessor}); 
-    SetCrudEntry({defaultEntry, entries, ifieldsOptions}) 
+    SetCrudEntry({entry, defaultEntry, entries, ifieldsOptions}) 
   } 
 
   useEffect( () => { InitCrudEntry() }, []) 
@@ -50,7 +52,8 @@ export function useCrudEntry(model:IModel) {
       .then( async results => { 
         const feedback = {action, success:true, feedback:results}; 
         const entries = await dao.Read({modelName}); 
-        SetCrudEntry({...defaultCrudEntry, feedback, entries}); 
+        const entry = crudEntry.defaultEntry; 
+        SetCrudEntry({action:defaultCrudEntry.action, entry, feedback, entries}); 
       }) 
       .catch( errors => { 
         const feedback = {action, success:false, feedback:errors}; 
@@ -65,8 +68,9 @@ export function useCrudEntry(model:IModel) {
   } 
 
   function Cancel() { 
-    const {action, feedback, entry} = defaultCrudEntry; 
-    SetCrudEntry({action, feedback, entry}); 
+    const {action, feedback} = defaultCrudEntry; 
+    const entry = crudEntry.defaultEntry; 
+    SetCrudEntry({action, entry, feedback}); 
   } 
 
   function SelectEntry({entry, action}:{entry:IEntry, action:EnumCrud}) { 

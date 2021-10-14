@@ -189,14 +189,13 @@ export class Dao {
 
   public async GetOptionsFromRef(modelName:string):Promise<IOption[]> { 
     const abbrevSubfield = await this.GetAbbrevIField(modelName); 
-    //console.log(abbrevSubfield); 
-    const subfields = abbrevSubfield === '_id' ? [abbrevSubfield] : ['_id', abbrevSubfield]; 
+    let subfields = abbrevSubfield === '_id' ? [] : [abbrevSubfield]; 
+    subfields = ['__typename', '_id', ...subfields]; 
     const entries = await this.Read({modelName, subfields}); 
-
     const options = entries.map( entry => { 
-      return {value:entry._id, label:entry[abbrevSubfield]} as IOption; 
+      const {__typename, _id} = entry; 
+      return {value:{__typename, _id}, label:entry[abbrevSubfield]} as IOption; 
     }) 
-    //console.log(options); 
     return options;
   } 
 

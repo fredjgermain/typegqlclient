@@ -3,11 +3,10 @@ import { Story } from '@storybook/react';
 
 // ------------------------------------------------------- 
 import { client } from '../../libs/dao/apolloclient'; 
-import { CrudEntry } from '../crudentry/crudentry.component';
 
 import { DaoContexter } from '../dao/daocontexter.component'; 
-import { InputSelect } from '../inputs';
-import { useModelSelector } from '../crudentry'; 
+import { InputSelect } from '../inputs'; 
+import { CrudEditor, CrudEntry, CrudFeedback, CrudTable, SubmitCancelBtn, useModelSelector } from '../crudentry'; 
 
 
 
@@ -25,12 +24,15 @@ function TemplateComponent() {
 function ModelSelector() { 
   const modelsName = ['A', 'B', 'C']; 
   const {modelSelector:{model}, SelectModelArgs} = useModelSelector(modelsName); 
-  
+
   return <div> 
     <InputSelect {...SelectModelArgs} /> <br/> 
-    {<CrudEntry {...{model}}> 
-
-      {JSON.stringify(model)} 
+    {<CrudEntry key={model.accessor} {...{model}}> 
+      <h4>{JSON.stringify(model.accessor)}</h4> 
+      <CrudFeedback/> 
+      <CrudEditor/> 
+      <SubmitCancelBtn/> 
+      <CrudTable/> 
     </CrudEntry>} 
   </div> 
 } 
