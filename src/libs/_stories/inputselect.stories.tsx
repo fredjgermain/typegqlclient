@@ -1,10 +1,12 @@
-import {useState} from 'react'; 
+import React, {useState} from 'react'; 
 import { Story } from '@storybook/react'; 
 
 
 // -------------------------------------------------------- 
-import { IInputSelect, InputSelect } from '../inputs/inputselect/inputselect'; 
+import { InputSelect } from '../inputs/inputselect/inputselect'; 
 
+
+type IInputSelect = React.ComponentProps<typeof InputSelect>; 
 function TestInput(props:IInputSelect) { 
   const [value, setValue] = useState(props.value); 
   const SetValue = (newValue:any[]) => setValue(newValue); 

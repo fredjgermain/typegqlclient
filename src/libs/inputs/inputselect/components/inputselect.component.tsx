@@ -1,18 +1,18 @@
 import React from 'react'; 
-import { useInputSelect, IInputSelect } from '../inputselect.hook'; 
+import { useInputSelect } from '../inputselect.hook'; 
 import { Options, OptionGroup } from './option.component'; 
 import { DisplaySelection, Selection } from './selection.component'; 
 
 import '../inputselect.css'; 
 
-
-
 /* 
 U+2335 COUNTERSINK wide 'v' ?? 
 */ 
-type IUseSelect = ReturnType<typeof useInputSelect>; 
-export const InputSelectContext = React.createContext({} as IUseSelect); 
-export function InputSelect({children, ...props}:React.PropsWithChildren<IInputSelect>) { 
+
+
+export const InputSelectContext = React.createContext({} as ReturnType<typeof useInputSelect>); 
+export function InputSelect({children, ...props}:React.PropsWithChildren<(Parameters<typeof useInputSelect>[0])>) { 
+
   const context = useInputSelect(props); 
   const className = 'select-main'; 
 

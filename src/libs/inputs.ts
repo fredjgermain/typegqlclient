@@ -10,4 +10,3 @@ export type { IInputScalar } from './inputs/inputscalar/inputscalar';
 
 // InputSelect
 export { InputSelect } from './inputs/inputselect/inputselect'; 
-export type { IInputSelect } from './inputs/inputselect/inputselect'; 

@@ -2,7 +2,14 @@
 import { Filter, ToArray, IsEmpty, Pick, ReduceToString } from '../../utils'; 
 import { useToggle } from '../../customhooks/usetoggle.hook'; 
 
-
+type IInputSelect = { 
+  value:any; 
+  placeholder?:string; 
+  SetValue: (newValues:any|any[]) => void; 
+  options: IOption[]; 
+  multiple?: boolean; 
+  sizeFunc?: (value:any) => number; 
+} 
 
 /** useInputSelect ======================================== 
  * 
@@ -56,11 +63,3 @@ export function useInputSelect(props:IInputSelect) {
 
 
 
-export interface IInputSelect { 
-  value:any; 
-  placeholder?:string; 
-  SetValue: (newValues:any|any[]) => void; 
-  options: IOption[]; 
-  multiple?: boolean; 
-  sizeFunc?: (value:any) => number; 
-} 
