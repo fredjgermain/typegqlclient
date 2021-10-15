@@ -1,0 +1,190 @@
+/* 
+https://colorhunt.co/palette/273933 
+  darkgrayblue: #222831
+  gray:         #393e46
+  blue:         #00adb5
+  almostwhite:  #eeeeee
+*/
+
+
+/* TYPO ------------------------------------- */
+h1, h2, h3, h4, h5, h6 { 
+  margin: 0; 
+  color: #222831; 
+}
+
+h1 { 
+  color: #00adb5; 
+  border-bottom: 1px solid #222831; 
+  font-size: 1.5em; 
+} 
+h2 { 
+  font-size: 1.3em; 
+  text-decoration: underline; 
+} 
+h3 { font-size: 1.1em; } 
+h4 { font-size: 1em; } 
+h5 { font-size: 1em; } 
+h6 { font-size: 1em; } 
+
+em { 
+  color: #222831; 
+  font-weight: bold; 
+} 
+
+a { 
+  color: #222831; 
+  text-decoration: underline; 
+} 
+a:hover { text-decoration: none; } 
+
+p {
+  margin:0;
+  margin-bottom:1em;
+}
+
+
+/* GENERAL ======================================= */ 
+ul { 
+  margin:0em; 
+  padding-left: 1em; 
+} 
+
+li { 
+  margin-left: 1.5em; 
+  list-style: square; 
+} 
+
+main { 
+  padding: 1em; 
+} 
+
+
+/* BLOCK -------------------------------------------- */
+.roundbox { 
+  margin-top: 1em; 
+  margin-bottom: 1em; 
+  padding: 0.5em; 
+  border-radius: 0.5em; 
+  border: 1px solid #222831; 
+} 
+
+.pager { 
+  margin-top: 1em; 
+  margin-bottom: 1em; 
+}
+
+
+/* QUESTIONNAIRE =================================== */
+.questionItem {
+  margin-bottom: 0.5em;
+}
+
+
+/* FOOTER ========================================== */
+footer { 
+  text-align: center; 
+  border-top: 1px solid #222831; 
+  margin: 1em; 
+} 
+
+
+
+/* THANK YOU ====================================== */
+.thankyou { 
+  margin: 1em; 
+  text-align: center; 
+}
+
+/* LANDING ========================================= */ 
+.landing {
+  margin: 1em; 
+  text-align: center; 
+}
+
+/* NAV ============================================= */
+nav { 
+  background-color: #eeeeee; 
+  border-bottom: 1px solid #222831;
+  padding: 1em; 
+  text-align: right; 
+} 
+
+nav span { 
+  margin-left:1em; 
+  text-shadow: 1em; 
+  font-weight: bolder; 
+} 
+
+/* FEEDBACK ======================================= */ 
+.instruction {
+  color: #222831; 
+  font-style: italic; 
+}
+
+.optional {
+  color: blue; 
+  font-style: italic; 
+}
+
+.success { 
+  color: green; 
+  font-weight: bold; 
+} 
+
+.note { 
+  color: purple; 
+  font-style: italic; 
+} 
+
+.warning { 
+  color: rgb(100, 93, 33); 
+  font-style: italic; 
+} 
+
+.error {
+  color: brown; 
+  font-style: italic; 
+}
+
+
+/* TABLE ===================================== */
+.buttonload {
+  background-color: #222831; /* Green background */
+  border: none; /* Remove borders */
+  color: white; /* White text */
+  padding: 12px 24px; /* Some padding */
+  font-size: 16px; /* Set a font-size */
+}
+
+/* Add a right margin to each icon */
+.fa {
+  margin-left: -12px;
+  margin-right: 8px;
+}
+
+
+table { 
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif; 
+  border-collapse: collapse; 
+  width: 100%; 
+  font-size: 12px; 
+} 
+
+table td, table th {
+  border: 1px solid #ddd;
+  padding: 2px;
+  text-align: center;
+}
+
+table tr:nth-child(even){background-color: #f2f2f2;}
+
+table tr:hover {background-color: #ddd;}
+
+table th {
+  padding-top: 5px; 
+  padding-bottom: 5px; 
+  background-color: #222831; 
+  color: #eeeeee;
+}
+

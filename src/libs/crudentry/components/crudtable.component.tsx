@@ -7,6 +7,8 @@ import { FieldReader } from '../../entryreadereditor/fieldreader.component';
 import { InputSelect } from '../../inputs'; 
 import { PageOfPages, PagerBtns, usePager } from '../../pager'; 
 
+import style from '../../../css/main.module.css'; 
+
 import { Table, 
   THeads, THead, THeadContext, 
   Rows, Row, RowContext, 
@@ -33,6 +35,7 @@ export function CrudTable() {
   const {colSelection:cols, SetColSelection, options} = useColumnSelector(model.ifields); 
 
   return <div> 
+    <h4 className={style.instruction}>Select the columns you wish to display</h4> 
     <InputSelect {...{value:cols, SetValue:SetColSelection, options, multiple:true}} /> 
     <Table {...{Key:model.accessor}} > 
       <thead> 

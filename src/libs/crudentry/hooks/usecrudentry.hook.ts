@@ -15,6 +15,15 @@ export function useCrudEntry(model:IModel) {
 
 
   // State ------------------------------------------------
+  type TFeedback = { 
+    action:EnumCrud, 
+    input:any, 
+    success:boolean, 
+    feedback:any, 
+  } 
+
+  //{action: EnumCrud.Create, entry:{} as IEntry, success:false, feedback:{} as any}, 
+
   type TCrudEntry = typeof defaultCrudEntry; 
   const defaultCrudEntry = { 
     model:model, 
@@ -23,8 +32,8 @@ export function useCrudEntry(model:IModel) {
     entries: {} as IEntry[], 
 
     entry:{} as IEntry, 
-    action: EnumCrud.Create as EnumCrud, 
-    feedback: {action: EnumCrud.Create, success:false, feedback:{} as any}, 
+    action: EnumCrud.Read as EnumCrud, 
+    feedback: {action:EnumCrud.Create, input:{}, success:false, feedback:{}} as TFeedback, 
   } 
   const [crudEntry, setCrudEntry] = useState(defaultCrudEntry); 
   function SetCrudEntry(newCrudEntry:Partial<TCrudEntry>) { 
@@ -50,13 +59,13 @@ export function useCrudEntry(model:IModel) {
     const mutationPromise = (dao as any)[action]({modelName, ...variables}) as Promise<IEntry[]>; 
     await mutationPromise 
       .then( async results => { 
-        const feedback = {action, success:true, feedback:results}; 
+        const feedback = {action, success:true, feedback:results, input:results[0]}; 
         const entries = await dao.Read({modelName}); 
         const entry = crudEntry.defaultEntry; 
         SetCrudEntry({action:defaultCrudEntry.action, entry, feedback, entries}); 
       }) 
       .catch( errors => { 
-        const feedback = {action, success:false, feedback:errors}; 
+        const feedback = {action, success:false, feedback:errors, input:variables}; 
         SetCrudEntry({feedback}) 
       })
   }
