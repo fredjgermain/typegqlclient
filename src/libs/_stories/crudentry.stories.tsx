@@ -1,5 +1,5 @@
 import { Story } from '@storybook/react'; 
-
+import React, { useContext } from 'react';
 
 // ------------------------------------------------------- 
 import { client } from '../../libs/dao/apolloclient'; 
@@ -7,9 +7,9 @@ import { DaoContexter } from '../dao/daocontexter.component';
 
 import style from '../../css/main.module.css'; 
 import { InputSelect } from '../inputs'; 
-import { CrudEditor, CrudEntryContexter, CrudFeedback, CrudTable, useModelSelector, CrudEntryContext } from '../crudentry'; 
-import { EntryEditor } from '../entryreadereditor/entryeditor.component';
-
+import { CrudEditor, CrudEntryContexter, 
+  CrudFeedback, CrudTable, useModelSelector, CrudEntryContext } 
+  from '../crudentry'; 
 
 
 export default { 
@@ -56,6 +56,11 @@ function ModelSelector() {
         <h3>Collection reader for {label}</h3> 
         <CrudTable/> 
       </div> 
+      <FunctionAsChildTest> 
+        { (value:any) => { 
+          return <div>{JSON.stringify(value)}</div> 
+        }} 
+      </FunctionAsChildTest> 
     </CrudEntryContexter>} 
   </div> 
 } 
@@ -68,6 +73,14 @@ function ModelDescriptor({model}:{model:IModel}) {
   </div> 
 } 
 
+function FunctionAsChildTest({children}:{children:Function}) { 
+  const childrenFunc = children; 
+  const context = useContext(CrudEntryContext); 
+
+  return <div> 
+    {childrenFunc(context)} 
+  </div> 
+}
 
 const Template:Story<any> = (args) => <TemplateComponent {...args} /> 
 
