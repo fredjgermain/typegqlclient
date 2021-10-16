@@ -3,12 +3,13 @@ import { IsEmpty } from "../utils";
 import { useCrudEntry, CrudEntryContext } from "./hooks/usecrudentry.hook"; 
 
 
+type TCrudEntryProps = Parameters<typeof useCrudEntry>[0] 
+export function CrudEntryContexter({children, ...props}:React.PropsWithChildren<TCrudEntryProps>) { 
 
-export function CrudEntryContexter({model, children}:React.PropsWithChildren<{model:IModel}>) { 
-  const crudentrycontext = useCrudEntry(model); 
+  const crudentrycontext = useCrudEntry(props); 
 
   return <CrudEntryContext.Provider value={crudentrycontext} > 
-    {!IsEmpty(model) && children} 
+    {!IsEmpty(props.model) && children} 
   </CrudEntryContext.Provider> 
 } 
 

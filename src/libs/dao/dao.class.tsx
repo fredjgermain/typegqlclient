@@ -10,7 +10,7 @@ import {
   ReduceSubfields, 
   ArgsIds, ArgsInputs, ArgsModelDescriptors, ArgsModelName, 
 } from './dao.utils'; 
-import { GetDefaultValue } from "../utils"; 
+import { GetDefaultValue, IsEmpty } from "../utils"; 
 
 
 export enum EnumCrud { 
@@ -178,8 +178,12 @@ export class Dao {
   }
 
   public async GetOptionsFromIField(ifield:IField):Promise<IOption[]> { 
-    if(ifield.isRef) 
-      return await this.GetOptionsFromRef(ifield.options?.ref ?? ''); 
+    if(ifield.isRef) {
+      const modelName = ifield.options?.ref ?? ''; 
+      const [model] = await this.ModelDescriptors({modelsName:[modelName]}); 
+      if(IsEmpty(model)) return []; 
+      return await this.GetOptionsFromRef(model); 
+    }
     // Get Options from Enums 
     const enums = ifield.type.enums ?? []; 
     return enums.map( e => { 
@@ -187,8 +191,9 @@ export class Dao {
     }) 
   }
 
-  public async GetOptionsFromRef(modelName:string):Promise<IOption[]> { 
-    const abbrevSubfield = await this.GetAbbrevIField(modelName); 
+  public async GetOptionsFromRef(model:IModel):Promise<IOption[]> { 
+    const abbrevSubfield = await this.GetAbbrevIField(model); 
+    const modelName = model.accessor; 
     let subfields = abbrevSubfield === '_id' ? [] : [abbrevSubfield]; 
     subfields = ['__typename', '_id', ...subfields]; 
     const entries = await this.Read({modelName, subfields}); 
@@ -199,8 +204,7 @@ export class Dao {
     return options;
   } 
 
-  public async GetAbbrevIField(modelName:string):Promise<string> { 
-    const [model] = await this.ModelDescriptors({modelsName:[modelName]}); 
+  public async GetAbbrevIField(model:IModel):Promise<string> { 
     const defaultSubfields = await this.IntrospectSubfields(model); 
     const abbrevSubfield = defaultSubfields.find( f => f === 'abbrev') ?? 
       model.ifields.find( e => e.type.name === 'string' && !e.accessor.includes('_') )?.accessor ?? 

@@ -9,46 +9,50 @@ import { IsEmpty } from "../../utils";
 
 
 export const CrudEntryContext = React.createContext({} as ReturnType<typeof useCrudEntry>); 
-export function useCrudEntry(model:IModel) { 
+export function useCrudEntry({
+    model, 
+    entry = {} as IEntry, 
+    defaultEntry = {} as IEntry, 
+    action = EnumCrud.Read, 
+    abbrevfield = '' 
+  }:{ 
+    model:IModel, 
+    entry?:IEntry, 
+    defaultEntry?:IEntry, 
+    action?:EnumCrud, 
+    abbrevfield?:string 
+  }) { 
+
+  type TCrudEntry = typeof defaultCrudEntry; 
+  const defaultCrudEntry = { model, entry, defaultEntry, action, abbrevfield, 
+    entries: [] as IEntry[], 
+    feedback: { 
+      action:EnumCrud.Create, 
+      input:{} as any, 
+      success:false, 
+      feedback:{} as any
+    }, 
+    ifieldsOptions: {} as { [key:string]:IOption[] }, 
+  } 
+
   const {dao} = useContext(DaoContext); 
   const modelName = model?.accessor ?? ''; 
 
-
   // State ------------------------------------------------
-  type TFeedback = { 
-    action:EnumCrud, 
-    input:any, 
-    success:boolean, 
-    feedback:any, 
-  } 
-
-  //{action: EnumCrud.Create, entry:{} as IEntry, success:false, feedback:{} as any}, 
-
-  type TCrudEntry = typeof defaultCrudEntry; 
-  const defaultCrudEntry = { 
-    model:model, 
-    defaultEntry:{} as IEntry, 
-    ifieldsOptions: {} as { [key:string]:IOption[] }, 
-    entries: {} as IEntry[], 
-
-    entry:{} as IEntry, 
-    action: EnumCrud.Read as EnumCrud, 
-    feedback: {action:EnumCrud.Create, input:{}, success:false, feedback:{}} as TFeedback, 
-  } 
   const [crudEntry, setCrudEntry] = useState(defaultCrudEntry); 
   function SetCrudEntry(newCrudEntry:Partial<TCrudEntry>) { 
     setCrudEntry( prev => { return {...prev, ...newCrudEntry} }); 
   } 
 
-
   // Initialize CrudEntry State 
   async function InitCrudEntry() { 
     if(IsEmpty(model)) return; 
-    const defaultEntry = dao.GetDefaultEntry(model); 
-    const entry = defaultEntry; 
-    const ifieldsOptions = await dao.GetOptionsFromModel(model); 
+    const defaultEntry = IsEmpty(defaultCrudEntry.defaultEntry) ? dao.GetDefaultEntry(model): defaultCrudEntry.defaultEntry; 
+    const entry = IsEmpty(defaultCrudEntry.entry) ? defaultEntry: defaultCrudEntry.entry; 
+    const abbrevfield = IsEmpty(defaultCrudEntry.abbrevfield) ? await dao.GetAbbrevIField(model): defaultCrudEntry.abbrevfield; 
     const entries = await dao.Read({modelName:model.accessor}); 
-    SetCrudEntry({entry, defaultEntry, entries, ifieldsOptions}) 
+    const ifieldsOptions = await dao.GetOptionsFromModel(model); 
+    SetCrudEntry({entry, defaultEntry, entries, ifieldsOptions, abbrevfield}) 
   } 
 
   useEffect( () => { InitCrudEntry() }, []) 

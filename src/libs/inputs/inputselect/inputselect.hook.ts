@@ -29,7 +29,6 @@ export function useInputSelect(props:IInputSelect) {
   }
 
   const selection = PickSelectedOptions(props.value, props.options); 
-  console.log(selection); 
 
   // SelectValue ................................
   function SelectValue (newValue:any) { 
