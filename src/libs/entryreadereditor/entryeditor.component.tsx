@@ -14,9 +14,12 @@ export function EntryEditor({entry, SetEntry, ifieldsOptions, ifields = []}:{
   }) { 
   return <div> 
       {ifields.map( ifield => { 
+        const label = `${ifield.label[0] ?? ifield.accessor} : `; 
         const options = ifieldsOptions[ifield.accessor] ?? [] as IOption[]; 
         const fieldArgs = {entry, SetEntry, ifield, options} 
-        return <FieldEditor key={ifield.accessor} {...fieldArgs} /> 
+        return <div key={ifield.accessor}> 
+          {label} <FieldEditor {...fieldArgs} /> 
+        </div>
       })} 
     </div> 
 } 

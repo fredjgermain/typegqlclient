@@ -7,15 +7,10 @@ export function FieldReader({entry, ifield, options}:{
     options:IOption[], 
   }) { 
   const value = entry[ifield.accessor] ?? ifield.type.defaultValue; 
-  const label = `${ifield.label[0] ?? ifield.accessor} : `; 
-
-  //console.log(ifield.accessor, options); 
 
   const DisplayComponent = 
     ifield.type.isArray ? <DisplayArray {...{values:value, options}} /> : 
       <DisplayScalar {...{value, options}} /> 
 
-  return <div> 
-    {label} {DisplayComponent} 
-  </div> 
+  return <span>{DisplayComponent}</span>
 } 

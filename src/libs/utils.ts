@@ -8,7 +8,7 @@ export { Capitalize, Label, StringInterpolation, ReduceToString, SplitWithRegex,
 export { DaysPerMonth, IsLeapYear, IsToday, ParseDate } 
   from './utils/date.utils'; 
 
-export { Copy, DeepCopy, IsEmpty, IsNaN, IsNull } 
+export { Copy, DeepCopy, IsEmpty, IsNaN, IsNull, AreEqual } 
   from './utils/value.utils'; 
 
 export { GetDefaultValue, GetTypeNameByValue, GetTType, GetTTypeFromValue, IsInDomain, TypeNames } 

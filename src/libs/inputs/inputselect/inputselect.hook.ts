@@ -1,5 +1,5 @@
 // --------------------------------------------------------
-import { Filter, ToArray, IsEmpty, Pick, ReduceToString } from '../../utils'; 
+import { Filter, ToArray, IsEmpty, Pick, AreEqual } from '../../utils'; 
 import { useToggle } from '../../customhooks/usetoggle.hook'; 
 
 type IInputSelect = { 
@@ -46,11 +46,6 @@ export function useInputSelect(props:IInputSelect) {
     // Close options after selection an option in a SingleSelector
     if(!props.multiple) 
       SetToggle(false); 
-  } 
-
-  function AreEqual(a:any, b:any) { 
-    //console.log(a, b); 
-    return ReduceToString(a) === ReduceToString(b); 
   } 
 
   function IsSelected(option:IOption) { 

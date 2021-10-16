@@ -88,6 +88,20 @@ export function DeepCopy(source:any):any {
 
 
 
+/** AreEqual ============================================== 
+ * Compare both operand. 
+ * Convert both operand to a string and compare them. 
+ * 
+ * @param a 
+ * @param b 
+ * @returns 
+ */
+export function AreEqual(a:any, b:any) { 
+  return a === b || ReduceToString(a) === ReduceToString(b); 
+} 
+
+
+
 // /** GetValueAt ============================================
 //  * Get a single nested value form an object by listing the nested keys. 
 //  * @param source 

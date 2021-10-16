@@ -1,24 +1,25 @@
 import { Story } from '@storybook/react'; 
-import { ApolloProvider } from "@apollo/client"; 
 
 
-// // ------------------------------------------------------- 
-// import { client } from '../../libs/dao/apolloclient'; 
-// import { AdminPage } from '../admin/admin.page'; 
+// ------------------------------------------------------- 
+import { client } from '../../libs/dao/apolloclient'; 
+import { AdminPage } from '../admin/admin.page'; 
+import { DaoContexter } from '../../libs/dao/daocontexter.component';
 
 
 
-// export default { 
-//   title: 'AdminPage', 
-//   component: TemplateComponent, 
-// } 
+export default { 
+  title: 'AdminPage', 
+  component: TemplateComponent, 
+} 
 
-// function TemplateComponent() { 
-//   return <ApolloProvider {...{client}} > 
-//     <AdminPage/> 
-//   </ApolloProvider> 
-// } 
+function TemplateComponent() { 
+  return <DaoContexter {...{client}} > 
+    <AdminPage/> 
+  </DaoContexter> 
+} 
 
-// const Template:Story<any> = (args) => <TemplateComponent {...args} /> 
 
-// export const TestAdminPage = Template.bind({}) 
+const Template:Story<any> = (args) => <TemplateComponent {...args} /> 
+
+export const TestAdminPage = Template.bind({}) 

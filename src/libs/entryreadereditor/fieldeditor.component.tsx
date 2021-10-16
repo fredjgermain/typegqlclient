@@ -24,7 +24,6 @@ export function FieldEditor({entry, SetEntry, ifield, options}:{
     SetEntry(modEntry); 
   } 
 
-  const label = `${ifield.label[0] ?? ifield.accessor} : `; 
   const valueType = ifield.type.name; 
 
   // InputSelect / InputArray / InputScalar 
@@ -35,9 +34,7 @@ export function FieldEditor({entry, SetEntry, ifield, options}:{
 
   if(!ifield.options?.editable) 
     return <FieldReader {...{entry, ifield, options}} /> 
-  return <div> 
-    {label} {InputComponent} 
-  </div> 
+  return <span>{InputComponent}</span>
 } 
 
 

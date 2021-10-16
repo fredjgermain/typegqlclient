@@ -26,7 +26,7 @@ export function CrudEditor() {
   </CrudEntryContext.Consumer>
 } 
 
-// With useContext
+
 // export function CrudEditor() { 
 //   const {crudEntry:{action, model:{ifields}, entry, ifieldsOptions}, SetEntry} = useContext(CrudEntryContext); 
 
