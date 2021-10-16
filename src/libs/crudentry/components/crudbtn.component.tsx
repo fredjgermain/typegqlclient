@@ -3,13 +3,13 @@ import { EnumCrud } from "../../dao/dao.class";
 
 
 // --------------------------------------------------------
-import { Capitalize } from "../../utils";
+import { Capitalize } from "../../utils"; 
 import { CrudEntryContext } from "../hooks/usecrudentry.hook"; 
 
 
 export function CrudCreateBtn() { 
-  const {crudEntry:{defaultEntry}, SelectEntry} = useContext(CrudEntryContext); 
-  return <button onClick={() => SelectEntry({entry:defaultEntry, action:EnumCrud.Create})}>Create new entry</button> 
+  const {SelectEntry} = useContext(CrudEntryContext); 
+  return <button onClick={() => SelectEntry({action:EnumCrud.Create})}>Create new entry</button> 
 } 
 
 

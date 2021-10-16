@@ -86,13 +86,17 @@ export function useCrudEntry({
     SetCrudEntry({action, entry, feedback}); 
   } 
 
-  function SelectEntry({entry, action}:{entry:IEntry, action:EnumCrud}) { 
-    SetCrudEntry({entry, action}) 
+  function SelectEntry({
+      entry = defaultCrudEntry.defaultEntry, 
+      action = defaultCrudEntry.action}:{ 
+        entry?:IEntry, action?:EnumCrud}) { 
+    const feedback = defaultCrudEntry.feedback; 
+    SetCrudEntry({entry, action, feedback}) 
   } 
 
   function SetEntry(entry:IEntry) { 
     SetCrudEntry({entry}); 
   } 
 
-  return {crudEntry, SelectEntry, SetEntry, Submit, Cancel} 
+  return {crudEntry, SelectEntry, SetEntry, Submit, Cancel, SetCrudEntry} 
 }

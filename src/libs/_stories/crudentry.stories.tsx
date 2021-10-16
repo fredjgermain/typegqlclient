@@ -1,5 +1,4 @@
 import { Story } from '@storybook/react'; 
-import React, { useContext } from 'react';
 
 
 // ------------------------------------------------------- 
@@ -9,7 +8,7 @@ import { DaoContexter } from '../dao/daocontexter.component';
 import style from '../../css/main.module.css'; 
 import { InputSelect } from '../inputs'; 
 import { CrudEditor, CrudEntryContexter, CrudFeedback, CrudTable, useModelSelector, CrudEntryContext } from '../crudentry'; 
-
+import { EntryEditor } from '../entryreadereditor/entryeditor.component';
 
 
 
@@ -23,6 +22,7 @@ function TemplateComponent() {
     <ModelSelector/> 
   </DaoContexter> 
 } 
+
 
 function ModelSelector() { 
   const modelsName = ['A', 'B', 'C']; 
@@ -46,7 +46,6 @@ function ModelSelector() {
           <li>Use "Update" and "Delete" buttons on the right end side of the table below either Update or Delete the corresponding entry from <em>{label}</em>.</li> 
           <li>Use either the "Confirm" "Create, Update, Delete" button below to confirm the creation, update, or deletion of the corresponding entry. </li>
         </ul> 
-        <FromArgs {...{useArgs: useArgsFromContext, Component:TestJsx}} /> 
 
         <hr/> 
         <CrudFeedback/> 
@@ -61,29 +60,7 @@ function ModelSelector() {
   </div> 
 } 
 
-export function FromArgs({useArgs, Component}:{useArgs:() => any, Component:React.JSXElementConstructor<any>}) { 
-  return <Component {...useArgs()} /> 
-} 
-
-
-function useArgsFromContext() { 
-  const {crudEntry:{model}} = useContext(CrudEntryContext); 
-  return {model}; 
-} 
-
-export function TestJsx({model}:{model:IModel}) { 
-  return <div>{model.accessor}</div> 
-} 
-
-// export function FromContext({context, ...props}:{context:React.Context<any>, argsfunc:() => any, component:any}) { 
-//   console.log(context); 
-//   const contextvalues = useContext(context); 
-//   console.log(contextvalues); 
-//   const args = props.argsfunc(); 
-//   return <div>{JSON.stringify(contextvalues)}</div> 
-// } 
-
-export function ModelDescriptor({model}:{model:IModel}) { 
+function ModelDescriptor({model}:{model:IModel}) { 
   const {label, description} = model; 
   return <div> 
     <h3>{label}</h3> 

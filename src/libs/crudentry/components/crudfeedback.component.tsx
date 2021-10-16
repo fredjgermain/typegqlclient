@@ -35,7 +35,6 @@ function CrudSuccess() {
 
 function CrudError() { 
   const {crudEntry:{model:{label}, feedback:{action, feedback}}} = useContext(CrudEntryContext); 
-
   const errors = ParseCrudError(feedback) as any[]; 
 
   return <div> 
