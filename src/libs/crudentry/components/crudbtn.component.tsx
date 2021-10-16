@@ -14,10 +14,11 @@ export function CrudCreateBtn() {
 
 
 export function CrudConfirmCancelBtn() {
-  const {crudEntry:{action}, Submit, Cancel} = useContext(CrudEntryContext); 
+  const {crudEntry:{action}, Submit, Cancel, EntryValidation} = useContext(CrudEntryContext); 
+  const valid = EntryValidation(); 
 
   return <span> 
-      <button onClick={Submit}>{Capitalize(`Confirm ${action}`)}</button> 
-      <button onClick={Cancel}>Cancel</button> 
-    </span> 
+    <button onClick={Submit} disabled={!valid}>{Capitalize(`Confirm ${action}`)}</button> 
+    <button onClick={Cancel}>Cancel</button> 
+  </span> 
 }

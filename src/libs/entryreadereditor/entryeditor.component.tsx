@@ -14,14 +14,20 @@ export function EntryEditor({entry, SetEntry, ifieldsOptions, ifields = []}:{
   }) { 
   return <div> 
       {ifields.map( ifield => { 
-        console.log(ifield); 
         const label = `${ifield.label[0] ?? ifield.accessor} : `; 
         const options = ifieldsOptions[ifield.accessor] ?? [] as IOption[]; 
         const fieldArgs = {entry, SetEntry, ifield, options} 
-        //const annotations = ifield.options.
         return <div key={ifield.accessor}> 
-          {label} <FieldEditor {...fieldArgs} /> 
+          {label} <FieldAnnotations {...{ifield}} /> <FieldEditor {...fieldArgs} /> 
         </div>
       })} 
     </div> 
 } 
+
+
+function FieldAnnotations({ifield}:{ifield:IField}) { 
+  const {required, unique} = (ifield.options ?? {}) as IFieldOption; 
+  const requiredAnnotation = required ? '*': ''; 
+  const uniqueAnnotation = unique ? '!': ''; 
+  return <span>{`${requiredAnnotation} ${uniqueAnnotation}`}</span> 
+}

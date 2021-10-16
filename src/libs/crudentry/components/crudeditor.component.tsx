@@ -1,5 +1,3 @@
-import React, { useContext } from "react";
-
 // --------------------------------------------------------
 import { EnumCrud } from "../../dao/dao.class"; 
 import { EntryEditor } from "../../entryreadereditor/entryeditor.component"; 
@@ -13,7 +11,11 @@ export function CrudEditor() {
 
   return <CrudEntryContext.Consumer> 
     {value => {
-      const {crudEntry:{action, model:{ifields}, entry, ifieldsOptions}, SetEntry} = value; 
+      const {crudEntry:{action, model, entry, ifieldsOptions}, SetEntry} = value; 
+      const _idfield = model.ifields.filter( f => f.accessor === '_id') ?? []; 
+      const editablefields = model.ifields.filter( f => f.options?.editable ); 
+      const ifields = [ ..._idfield, ...editablefields] 
+      
       return <div>
         {action === EnumCrud.Read ? 
         <CrudCreateBtn/> : 

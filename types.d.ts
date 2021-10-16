@@ -31,7 +31,7 @@ interface IField {
 
   label: string; 
   isRef?: boolean; 
-  options?: any; 
+  options?: IFieldOption; 
 
   // required?: boolean; 
   // unique?: boolean; 

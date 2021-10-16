@@ -7,7 +7,7 @@ import { CrudEntryContexter, CrudTable,
 
 import { ModelDescriptor } from './components/modeldescriptor.component'; 
 import { ModelSelector } from './components/modelselector.component'; 
-import { CrudEditor } from './components/crudeditor.component'; 
+import { CrudEditorSection } from './components/crudeditor.component'; 
 
 
 
@@ -16,15 +16,18 @@ export function AdminPage() {
   const usemodelselector = useModelSelector(modelsName); 
   const {modelSelector:{model}} = usemodelselector; 
 
-  return <div className={style.roundbox}> 
-    <ModelSelector {...{usemodelselector}}/> 
-    <CrudEntryContexter key={model.accessor} {...{model}}> 
-      <hr/>
-      <ModelDescriptor/> 
-      <hr/>
-      <CrudEditor/> 
-      <hr/>
-      <CrudTable/> 
-    </CrudEntryContexter> 
-  </div> 
+  return <div>
+    <h1>Admin page</h1> <br/> 
+    <div className={style.roundbox}> 
+      <ModelSelector {...{usemodelselector}}/> 
+      <CrudEntryContexter key={model.accessor} {...{model}}> 
+        <hr/>
+        <ModelDescriptor/> 
+        <hr/>
+        <CrudEditorSection/> 
+        <hr/>
+        <CrudTable/> 
+      </CrudEntryContexter> 
+    </div> 
+  </div>
 } 

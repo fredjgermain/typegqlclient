@@ -86,6 +86,7 @@ export function useCrudEntry({
     SetCrudEntry({action, entry, feedback}); 
   } 
 
+  // Set/SelectEntry --------------------------------------
   function SelectEntry({
       entry = defaultCrudEntry.defaultEntry, 
       action = defaultCrudEntry.action}:{ 
@@ -98,5 +99,20 @@ export function useCrudEntry({
     SetCrudEntry({entry}); 
   } 
 
-  return {crudEntry, SelectEntry, SetEntry, Submit, Cancel, SetCrudEntry} 
+  // Validation -------------------------------------------
+  function EntryValidation() { 
+    const editableFields = crudEntry.model.ifields.filter( f => f.options?.editable ) 
+    return editableFields.every( f => FieldValidation(f) ) 
+  } 
+
+  function FieldValidation(ifield:IField) { 
+    const value = crudEntry.entry[ifield.accessor]; 
+    if(ifield.options?.required && IsEmpty(value)) 
+      return false; 
+    if( ifield.options?.regex && !(new RegExp(ifield.options.regex).test(value ?? '')) ) 
+      return false; 
+    return true; 
+  }
+
+  return {crudEntry, SelectEntry, SetEntry, EntryValidation, FieldValidation, Submit, Cancel} 
 }
