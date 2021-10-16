@@ -31,22 +31,19 @@ interface IField {
 
   label: string; 
   isRef?: boolean; 
-  options?: IFieldOption; 
-  abbrev?: boolean; 
-  format?: string; 
-  order?: number; 
+  options?: any; 
+
+  // required?: boolean; 
+  // unique?: boolean; 
+  // regex?: string; 
 
   // required?: boolean; 
   // unique?: boolean; 
   // regex: string ?? 
-  // format: string ?? 
-  // validators: any[];
-  // abbrev: 
-  
+  // validators: any[]; 
 }
 
 interface IFieldOption {
-  [key:string]:any; 
   ref?: string; 
   isArray?: boolean; 
   label?: string; 
@@ -55,9 +52,12 @@ interface IFieldOption {
   format?: string; 
   order?: number; 
   enum?: any[]; 
-  abbrev?: boolean; 
   readable?: boolean; 
   editable?: boolean; 
+  required?: boolean; 
+  unique?: boolean; 
+  regex?: string; 
+  [key:string]:any; 
 }; 
 
 
@@ -88,19 +88,12 @@ interface IMongoField {
   path:string;  // accessor 
   instance:string; 
   validators: any; 
-  options: { 
-    ref?: string; 
-    label?: string; 
-    sortType?: string; 
-    defaultValue?: any; 
-    format?: string; 
-    enum?: any[]; 
-    abbrev?: boolean; 
-    [key:string]:any; 
-  }; 
+  options?: IFieldOption; 
   $embeddedSchemaType?:{ 
     instance:string; 
   }; 
   [key:string]:any; 
 }
+
+
 
