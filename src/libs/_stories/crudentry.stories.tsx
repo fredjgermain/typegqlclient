@@ -36,7 +36,7 @@ function ModelSelector() {
       <InputSelect {...SelectModelArgs} /> 
     </div> 
 
-    {<CrudEntryContexter key={accessor} {...{model}}> 
+    <CrudEntryContexter key={accessor} {...{model}}> 
       <hr/> 
       <ModelDescriptor {...{model}}/> 
       <div className={style.roundbox}> 
@@ -61,7 +61,7 @@ function ModelSelector() {
           return <div>{JSON.stringify(value)}</div> 
         }} 
       </FunctionAsChildTest> 
-    </CrudEntryContexter>} 
+    </CrudEntryContexter>
   </div> 
 } 
 
