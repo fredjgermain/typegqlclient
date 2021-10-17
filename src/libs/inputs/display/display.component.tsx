@@ -2,14 +2,20 @@
 
 
 // -------------------------------------------------------- 
-import { Filter, IsEmpty, Predicate, ReduceToString, StringifyEach } from "../../utils"; 
+import { Filter, IsEmpty, PickOptions, Predicate, ReduceToString, StringifyEach } from "../../utils"; 
 
 
-
+/** 
+ * values, defaults to [] 
+ * options, defaults to [] 
+ * reducer, default to () => true ... determines how the array should be reduced if it is too long to be display properly 
+ * @param props 
+ * @returns 
+ */
 export function DisplayArray(props:{values:any[], options?:IOption[], reducer?:Predicate<any>}) { 
-  const values = (props.values ?? []).map( value => { 
-    return props.options?.find( o => 
-      o .value === value )?.label ?? value} ); 
+  const values = !IsEmpty(props.options) ? 
+    PickOptions(props.values, props.options ?? []).map(o => o.label): 
+    props.values ?? []; 
 
   const reducer = IsEmpty(props.reducer) ? () => true: props.reducer; 
   
@@ -21,14 +27,10 @@ export function DisplayArray(props:{values:any[], options?:IOption[], reducer?:P
   return <span>{`[${reducedToString}] + ${remainder.length}]`}</span>; 
 } 
 
-/*export function DisplayRef(props:{value:any[], options?:IOption[]}) { 
-  const value = props.value; 
-} */
 
 export function DisplayScalar(props:{value:any[], options?:IOption[]}) {
-  console.log(props.value, props.options); 
-
-  const value = props.options?.find( o => 
-    o.value === props.value )?.label ?? props.value; 
+  const value = !IsEmpty(props.options) ? 
+    PickOptions(props.value, props.options ?? []).map(o => o.label).shift(): 
+    props.value; 
   return <span>{StringifyEach(value)}</span> 
 }
