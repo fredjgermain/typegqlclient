@@ -2,13 +2,12 @@ import React, { useContext } from 'react';
 
 // -------------------------------------------------------- 
 import style from '../../css/main.module.css'; 
-import { CrudEntryContexter, CrudTable, 
-  useModelSelector } from '../../libs/crudentry'; 
+import { CrudEntryContexter, useModelSelector } from '../../libs/crudentry'; 
 
 import { ModelDescriptor } from './components/modeldescriptor.component'; 
 import { ModelSelector } from './components/modelselector.component'; 
 import { CrudEditorSection } from './components/crudeditor.component'; 
-
+import { CrudTable } from './components/crudtable.component';
 
 
 export function AdminPage() { 
@@ -18,13 +17,14 @@ export function AdminPage() {
 
   return <div>
     <h1>Admin page</h1> <br/> 
+    {usemodelselector.modelSelector.model.accessor} 
     <div className={style.roundbox}> 
       <ModelSelector {...{usemodelselector}}/> 
       <CrudEntryContexter key={model.accessor} {...{model}}> 
         <hr/>
-        <ModelDescriptor/> 
-        <hr/>
         <CrudEditorSection/> 
+        <hr/>
+        <ModelDescriptor/> 
         <hr/>
         <CrudTable/> 
       </CrudEntryContexter> 

@@ -1,5 +1,5 @@
 // --------------------------------------------------------
-import { ToArray, AreEqual, PickOptions, SelectUnselect } from '../../utils'; 
+import { AreEqual, PickOptions, SelectUnselect } from '../../utils'; 
 import { useToggle } from '../../customhooks/usetoggle.hook'; 
 
 type IInputSelect = { 
@@ -29,7 +29,7 @@ export function useInputSelect(props:IInputSelect) {
 
   // SelectValue ................................
   function SelectValue (newValue:any) { 
-    const selectedValues = SelectUnselect(newValue, props.value); 
+    const selectedValues = SelectUnselect(newValue, selection); 
     const selectedOptions = PickOptions(selectedValues, props.options); 
 
     props.SetValue(props.multiple ? 
