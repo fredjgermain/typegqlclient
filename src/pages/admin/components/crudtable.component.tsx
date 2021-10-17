@@ -29,7 +29,7 @@ export function CrudTable() {
   const {colSelection:cols, SetColSelection, options} = useColumnSelector(model.ifields); 
 
   return <div> 
-    <h4 className={style.instruction}>Select the </h4> 
+    <h4 className={style.instruction}>Select the columns you wish to display</h4> 
     <InputSelect {...{value:cols, SetValue:SetColSelection, options, multiple:true}} /> 
     <Table {...{Key:model.accessor}} > 
       <thead> 
