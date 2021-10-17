@@ -26,6 +26,8 @@ export function DisplayArray(props:{values:any[], options?:IOption[], reducer?:P
 } */
 
 export function DisplayScalar(props:{value:any[], options?:IOption[]}) {
+  console.log(props.value, props.options); 
+
   const value = props.options?.find( o => 
     o.value === props.value )?.label ?? props.value; 
   return <span>{StringifyEach(value)}</span> 

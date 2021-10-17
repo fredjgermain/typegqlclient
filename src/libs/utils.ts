@@ -11,6 +11,10 @@ export { DaysPerMonth, IsLeapYear, IsToday, ParseDate }
 export { Copy, DeepCopy, IsEmpty, IsNaN, IsNull, AreEqual } 
   from './utils/value.utils'; 
 
+
+// Data Utils 
+export { PickOptions, SelectUnselect } from './utils/ioption.utils'; 
+
 export { GetDefaultValue, GetTypeNameByValue, GetTType, GetTTypeFromValue, IsInDomain, TypeNames } 
   from './utils/type.utils'; 
 export type { TType } from './utils/type.utils'; 

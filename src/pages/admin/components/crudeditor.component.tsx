@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'; 
 
 // -------------------------------------------------------- 
-import { CrudEntryContext, 
-  CrudFeedback, CrudCreateBtn, CrudConfirmCancelBtn } 
+import { CrudEntryContext, CrudFeedback, 
+  CrudCreateBtn, CrudConfirmCancelBtn } 
   from '../../../libs/crudentry'; 
 import { EnumCrud } from '../../../libs/dao/dao.class'; 
 import { FieldEditor } from '../../../libs/entryreadereditor/fieldeditor.component'; 
@@ -16,15 +16,15 @@ export function CrudEditorSection() {
     <CrudEditor_TitleInstructions/> 
     <br/> 
     <CrudFeedback/> 
-    {action != EnumCrud.Read && <br/> } 
-    {action != EnumCrud.Read && <CrudEntryEditor /> } 
     <br/> 
+    {action != EnumCrud.Read && <CrudEntryEditor /> } 
+    {action != EnumCrud.Read && <br/> } 
     {action === EnumCrud.Read ? <CrudCreateBtn/> : <CrudConfirmCancelBtn/> } 
   </div> 
 } 
 
 
-function CrudEntryEditor() {
+function CrudEntryEditor() { 
   const {crudEntry:{model}} = useContext(CrudEntryContext); 
   //const _idfield = model.ifields.filter( f => f.accessor === '_id') ?? []; 
   const editablefields = model.ifields.filter( f => f.options?.editable ); 
