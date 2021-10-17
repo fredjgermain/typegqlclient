@@ -10,8 +10,7 @@ export function CrudEditor_TitleInstructions() {
 
   const instructions = { 
     Read: [ 
-      'Click the "Create new entry" button to open then entry editor;', 
-      'Or, click the "Update" or "Delete" buttons to open then entry editor.', 
+      'Click the "Create new entry" button to open then entry editor', 
     ], 
     Create: [ 
       '"*" Indicates a fields is required and cannot left empty.', 

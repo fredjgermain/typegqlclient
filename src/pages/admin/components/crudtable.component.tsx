@@ -29,8 +29,14 @@ export function CrudTable() {
   const {colSelection:cols, SetColSelection, options} = useColumnSelector(model.ifields); 
 
   return <div> 
-    <h4 className={style.instruction}>Select the columns you wish to display</h4> 
+    <ul className={style.instruction}> 
+      <li>Click the "Update/Delete" buttons in the right end side below to open then entry editor and edit the corresponding entry.</li> 
+      <li>Select the columns you wish to display.</li> 
+    </ul> 
+    
     <InputSelect {...{value:cols, SetValue:SetColSelection, options, multiple:true}} /> 
+
+    <h4>This collection has a total of "{entries.length}" items.</h4> 
     <Table {...{Key:model.accessor}} > 
       <thead> 
         <Row {...{row:''}} > 
