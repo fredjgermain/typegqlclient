@@ -29,12 +29,8 @@ export function useInputSelect(props:IInputSelect) {
 
   // SelectValue ................................
   function SelectValue (newValue:any) { 
-    const selectedValues = SelectUnselect(newValue, selection); 
-    const selectedOptions = PickOptions(selectedValues, props.options); 
-
-    props.SetValue(props.multiple ? 
-      selectedOptions.map(o => o.value): 
-      selectedOptions.shift()?.value); 
+    const selectedValues = SelectUnselect(newValue, selection.map(o => o.value)); 
+    props.SetValue( props.multiple ? selectedValues: [...selectedValues].pop() ); 
     // Close options after selection an option in a SingleSelector
     if(!props.multiple) 
       SetToggle(false); 
