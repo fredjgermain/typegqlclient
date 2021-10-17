@@ -28,6 +28,12 @@ export function DisplayArray(props:{values:any[], options?:IOption[], reducer?:P
 } 
 
 
+/** 
+ * value 
+ * options, defaults to [] 
+ * @param props 
+ * @returns 
+ */
 export function DisplayScalar(props:{value:any[], options?:IOption[]}) {
   const value = !IsEmpty(props.options) ? 
     PickOptions(props.value, props.options ?? []).map(o => o.label).shift(): 
