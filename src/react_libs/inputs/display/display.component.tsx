@@ -37,3 +37,19 @@ export function DisplayScalar(props:{value:any[], options?:IOption[]}) {
     props.value; 
   return <span>{StringifyEach(value)}</span> 
 }
+
+
+
+export function DisplayField({entry, ifield, options}:{
+  entry:IEntry, 
+  ifield:IField, 
+  options:IOption[], 
+}) { 
+const value = entry[ifield.accessor] ?? ifield.type.defaultValue; 
+
+const DisplayComponent = 
+  ifield.type.isArray ? <DisplayArray {...{values:value, options}} /> : 
+    <DisplayScalar {...{value, options}} /> 
+
+return <span>{DisplayComponent}</span>
+} 

@@ -1,8 +1,7 @@
 import React, { useContext } from 'react'; 
 
 // -------------------------------------------------------- 
-import { CrudEntryContext } 
-  from '../../react_libs/crudentry'; 
+import { CrudEntryContext } from '../../react_libs/crudentry'; 
 import { FieldEditor } from '../../react_libs/entryreadereditor/fieldeditor.component'; 
 
 
@@ -17,20 +16,20 @@ export function CrudEntry_FieldEditor({ifield}:{ifield:IField}) {
     {label} <FieldAnnotations {...{ifield}} /> 
     <FieldEditor {...fieldArgs} /> 
     <FieldValidationNotif {...{ifield}} /> 
-  </div>
-}
+  </div> 
+} 
 
 
-function FieldAnnotations({ifield}:{ifield:IField}) { 
+export function FieldAnnotations({ifield}:{ifield:IField}) { 
   const {required, unique} = (ifield.options ?? {}) as IFieldOption; 
   const requiredAnnotation = required ? '*': ''; 
   const uniqueAnnotation = unique ? '!': ''; 
   return <span>{`${requiredAnnotation} ${uniqueAnnotation}`}</span> 
 } 
 
-function FieldValidationNotif({ifield}:{ifield:IField}) { 
+export function FieldValidationNotif({ifield}:{ifield:IField}) { 
   const {FieldValidation} = useContext(CrudEntryContext); 
 
 
   return <span>{FieldValidation(ifield) ? '✔': '✖' }</span> 
-}
+} 

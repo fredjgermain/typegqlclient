@@ -4,7 +4,7 @@ import React, { useContext, useState, useEffect } from "react";
 // --------------------------------------------------------
 import { EnumCrud } from "../../../dao/dao.class"; 
 import { DaoContext } from "../../../dao/daocontexter.component"; 
-import { IsEmpty } from "../../../utils/utils";
+import { IsEmpty, FieldValidation as FieldValid } from "../../../utils/utils"; 
 
 
 
@@ -101,18 +101,14 @@ export function useCrudEntry({
 
   // Validation -------------------------------------------
   function EntryValidation() { 
-    const editableFields = crudEntry.model.ifields.filter( f => f.options?.editable ) 
-    return editableFields.every( f => FieldValidation(f) ) 
+    const ifields = crudEntry.model.ifields.filter( f => f.options?.editable ) 
+    return ifields.every( f => FieldValidation(f) ) 
   } 
 
   function FieldValidation(ifield:IField) { 
     const value = crudEntry.entry[ifield.accessor]; 
-    if(ifield.options?.required && IsEmpty(value)) 
-      return false; 
-    if( ifield.options?.regex && !(new RegExp(ifield.options.regex).test(value ?? '')) ) 
-      return false; 
-    return true; 
-  }
+    return FieldValid(value, ifield); 
+  } 
 
   return {crudEntry, SelectEntry, SetEntry, EntryValidation, FieldValidation, Submit, Cancel} 
 }

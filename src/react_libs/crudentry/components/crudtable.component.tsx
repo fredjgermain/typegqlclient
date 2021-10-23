@@ -3,7 +3,7 @@ import { useContext } from 'react';
 
 // -------------------------------------------------------------------- 
 import { EnumCrud } from '../../../dao/dao.class'; 
-import { FieldReader } from '../../entryreadereditor/fieldreader.component';
+import { DisplayField } from '../../inputs'; 
 import { InputSelect } from '../../inputs'; 
 import { PageOfPages, PagerBtns, usePager } from '../../pager'; 
 
@@ -96,7 +96,7 @@ function Cell() {
   const ifield = model.ifields.find( f => f.accessor === col) ?? {} as IField; 
   const options = ifieldsOptions[ifield.accessor]; 
 
-  return <FieldReader {...{entry, ifield, options}} /> 
+  return <DisplayField {...{entry, ifield, options}} /> 
 } 
 
 

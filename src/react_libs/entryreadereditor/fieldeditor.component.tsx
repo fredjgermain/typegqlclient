@@ -6,7 +6,7 @@ import { InputArray } from "../inputs/inputarray/inputarray.component";
 import { InputScalar } from "../inputs/inputscalar/inputscalar.component"; 
 import { InputSelect } from "../inputs/inputselect/inputselect"; 
 import { IsEmpty } from "../../utils/utils"; 
-import { FieldReader } from "./fieldreader.component";
+import { DisplayField } from "../inputs";
 
 
 
@@ -33,7 +33,7 @@ export function FieldEditor({entry, SetEntry, ifield, options}:{
         <InputScalar {...{value, SetValue, valueType}} /> 
 
   if(!ifield.options?.editable) 
-    return <FieldReader {...{entry, ifield, options}} /> 
+    return <DisplayField {...{entry, ifield, options}} /> 
   return <span>{InputComponent}</span>
 } 
 

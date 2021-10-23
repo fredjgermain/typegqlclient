@@ -3,7 +3,7 @@ import { useContext } from 'react';
 
 // -------------------------------------------------------------------- 
 import { EnumCrud } from '../../../dao/dao.class'; 
-import { FieldReader } from '../../../react_libs/entryreadereditor/fieldreader.component';
+import { DisplayField } from '../../../react_libs/inputs';
 
 
 import { THeadContext, RowContext, ColContext } 
@@ -49,7 +49,7 @@ export function Cell() {
   const ifield = model.ifields.find( f => f.accessor === col) ?? {} as IField; 
   const options = ifieldsOptions[ifield.accessor]; 
 
-  return <FieldReader {...{entry, ifield, options}} /> 
+  return <DisplayField {...{entry, ifield, options}} /> 
 } 
 
 

@@ -1,6 +1,25 @@
 import { Filter, Pick, AreEqual, IsEmpty, ToArray } from './utils'; 
 
 
+
+
+
+/** FieldValidation --------------------------------------- 
+ * 
+ * @param value 
+ * @param ifield 
+ * @returns 
+ */
+ export function FieldValidation(value:any, ifield:IField) { 
+  if(ifield.options && ifield.options.required && IsEmpty(value)) 
+    return false; 
+  if(ifield.options && ifield.options.regex && !(new RegExp(ifield.options.regex).test(value ?? '')) ) 
+    return false; 
+  return true; 
+}
+
+
+
 /** PickOptions -------------------------------------------
  * Returns an array Options matching the values. 
  * 
