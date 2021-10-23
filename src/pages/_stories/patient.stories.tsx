@@ -3,23 +3,23 @@ import { Story } from '@storybook/react';
 
 // ------------------------------------------------------- 
 import { client } from '../../dao/apolloclient'; 
-import { AdminPage } from '../admin/admin.page'; 
 import { DaoContexter } from '../../dao/daocontexter.component';
+import { PatientPage } from '../patient/patient.page';
 
 
 
 export default { 
-  title: 'AdminPage', 
+  title: 'PatientPage', 
   component: TemplateComponent, 
 } 
 
 function TemplateComponent() { 
   return <DaoContexter {...{client}} > 
-    <AdminPage/> 
+    <PatientPage/> 
   </DaoContexter> 
 } 
 
 
 const Template:Story<any> = (args) => <TemplateComponent {...args} /> 
 
-export const TestAdminPage = Template.bind({}) 
+export const TestPatientPage = Template.bind({}) 

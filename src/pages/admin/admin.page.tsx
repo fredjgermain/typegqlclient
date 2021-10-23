@@ -1,12 +1,10 @@
-import React, { useContext } from 'react'; 
-
 // -------------------------------------------------------- 
 import style from '../../css/main.module.css'; 
-import { CrudEntryContexter, useModelSelector } from '../../libs/crudentry'; 
+import { CrudEntryContexter, useModelSelector } from '../../react_libs/crudentry'; 
 
 import { ModelDescriptor } from './components/modeldescriptor.component'; 
 import { ModelSelector } from './components/modelselector.component'; 
-import { CrudEditorSection } from './components/crudeditor.component'; 
+import { CrudEditorSection } from './components/crudentry_editor.component'; 
 import { CrudTable } from './components/crudtable.component';
 
 

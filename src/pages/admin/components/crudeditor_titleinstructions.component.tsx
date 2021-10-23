@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 
 // -------------------------------------------------------- 
 import style from '../../../css/main.module.css'; 
-import { CrudEntryContext } from '../../../libs/crudentry'; 
+import { CrudEntryContext } from '../../../react_libs/crudentry'; 
 
 
 export function CrudEditor_TitleInstructions() { 

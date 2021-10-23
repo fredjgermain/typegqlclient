@@ -2,15 +2,15 @@ import { useContext } from 'react';
 
 
 // -------------------------------------------------------------------- 
-import { InputSelect } from '../../../libs/inputs'; 
-import { PageOfPages, PagerBtns, usePager } from '../../../libs/pager'; 
+import { InputSelect } from '../../../react_libs/inputs'; 
+import { PageOfPages, PagerBtns, usePager } from '../../../react_libs/pager'; 
 
 import style from '../../../css/main.module.css'; 
 
 import { Table, THeads, THead, Rows, Row, Cols, Col } 
-    from '../../../libs/table/_table'; 
-import { useColumnSelector } from '../../../libs/customhooks/usecolumnselector.hook'; 
-import { CrudEntryContext } from '../../../libs/crudentry'; 
+    from '../../../react_libs/table'; 
+import { useColumnSelector } from '../../../react_libs/customhooks/usecolumnselector.hook'; 
+import { CrudEntryContext } from '../../../react_libs/crudentry'; 
 import { BtnSelectEntry, Cell, Head } from './crudtable_elements.components'; 
 
 

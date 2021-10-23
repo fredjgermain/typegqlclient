@@ -2,14 +2,14 @@ import { useContext } from 'react';
 
 
 // -------------------------------------------------------------------- 
-import { EnumCrud } from '../../../libs/dao/dao.class'; 
-import { FieldReader } from '../../../libs/entryreadereditor/fieldreader.component';
+import { EnumCrud } from '../../../dao/dao.class'; 
+import { FieldReader } from '../../../react_libs/entryreadereditor/fieldreader.component';
 
 
 import { THeadContext, RowContext, ColContext } 
-  from '../../../libs/table/_table'; 
-import { Capitalize, Label } from '../../../libs/utils'; 
-import { CrudEntryContext } from '../../../libs/crudentry';
+  from '../../../react_libs/table'; 
+import { Capitalize, Label } from '../../../utils/utils'; 
+import { CrudEntryContext } from '../../../react_libs/crudentry';
 
 
 

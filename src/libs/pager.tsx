@@ -1,1 +1,0 @@
-export { PageOfPages, PagerBtns, usePager } from './pager/pager'; 

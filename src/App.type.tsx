@@ -3,15 +3,15 @@ import { ApolloProvider, gql } from "@apollo/client";
 
 
 // --------------------------------------------------------
-import { client } from './libs/dao/apolloclient'; 
+import { client } from './dao/apolloclient'; 
 import { GetModels } from './components/modeldescriptors.component'; 
 
-import * as request from './libs/dao/gql'; 
+import * as request from './dao/gql'; 
 import { CreateForm } from './components/createform.component'; 
 import { ReadForms } from './components/readforms.component'; 
 import { UpdateForm } from './components/updateform.component'; 
 import { DeleteForm } from './components/deleteform.component'; 
-import { Dao } from './libs/dao/dao.class'; 
+import { Dao } from './dao/dao.class'; 
 
 
 

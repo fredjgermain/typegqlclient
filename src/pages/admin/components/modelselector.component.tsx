@@ -2,9 +2,9 @@
 
 // -------------------------------------------------------- 
 import style from '../../../css/main.module.css'; 
-import { useModelSelector } from '../../../libs/crudentry'; 
+import { useModelSelector } from '../../../react_libs/crudentry'; 
 
-import { InputSelect } from '../../../libs/inputs'; 
+import { InputSelect } from '../../../react_libs/inputs'; 
 
 
 export function ModelSelector({usemodelselector}:{usemodelselector:ReturnType<typeof useModelSelector>}) { 
