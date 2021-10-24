@@ -8,7 +8,7 @@ export function CrudEntryContexter({children, ...props}:React.PropsWithChildren<
 
   const crudentrycontext = useCrudEntry(props); 
 
-  return <CrudEntryContext.Provider value={crudentrycontext} > 
+  return <CrudEntryContext.Provider key={props.model.accessor} value={crudentrycontext} > 
     {!IsEmpty(props.model) && children} 
   </CrudEntryContext.Provider> 
 } 

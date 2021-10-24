@@ -1,9 +1,13 @@
 import React, {useContext, useEffect, useState} from 'react'; 
+
+// --------------------------------------------------------
+import style from '../../css/main.module.css'; 
+import { EnumCrud } from '../../dao/dao.class';
 import { DaoContext } from '../../dao/daocontexter.component'; 
-import { CrudConfirmCancelBtn, CrudEntryContext, CrudEntryContexter } from '../../react_libs/crudentry';
-import { InputScalar } from '../../react_libs/inputs';
-import { Filter, IsEmpty} from '../../utils/utils';
-import { CrudEntry_FieldEditor } from '../common/crudentry_fieldeditor.component';
+import { CrudConfirmCancelBtn, CrudEntryContext, CrudEntryContexter, CrudFeedback } from '../../react_libs/crudentry';
+import { IsEmpty} from '../../utils/utils'; 
+import { CrudEntry_FieldEditor } from '../common/crudentry_fieldeditor.component'; 
+
 
 // fetch patientModel 
 // display Input 
@@ -14,15 +18,13 @@ interface IPatient extends IEntry {
   ramq:string; 
 } 
 
-export const PatientContext = React.createContext({} as ReturnType<typeof usePatient>); 
-export function usePatient() { 
+//const PatientContext = React.createContext({} as ReturnType<typeof usePatient>); 
+function usePatient() { 
   const {dao} = useContext(DaoContext); 
 
   type TPatientEdit = typeof defaultPatientState; 
   const defaultPatientState = { 
     model:{} as IModel, 
-    patient: {} as IPatient, 
-    patients: [] as IPatient[], 
   } 
 
   const [patientState, setPatientState] = useState(defaultPatientState); 
@@ -35,90 +37,108 @@ export function usePatient() {
   async function FetchPatientCollection() { 
     const modelName = 'Patient'; 
     const [model] = await dao.ModelDescriptors({modelsName:[modelName]}); 
-    const patients = await dao.Read({modelName, subfields:['_id', 'ramq']}); 
-    SetPatientState({model, patients:patients as IPatient[]}) 
-  }
-
-  const InputRamq:React.ComponentProps<typeof InputScalar> = { 
-    value: patientState.patient.ramq ?? '', 
-    SetValue: (newRamq:string) => { 
-      const patient = {ramq:newRamq, _id:''} as IPatient; 
-      SetPatientState({patient}); 
-    }, 
-    defaultValue: '', 
-    valueType:'string', 
-  }
-
-  // Return null if not found 
-  function FindPatient() { 
-    const {patient} = patientState; 
-    return patientState.patients.find( p => p.ramq === patient.ramq ) 
+    SetPatientState({model}) 
   } 
 
-  return {patientState, InputRamq, FindPatient} 
-}
+  return {patientState, SetPatientState} 
+} 
+
 
 
 export function PatientPage() { 
   const patientcontext = usePatient(); 
-  const {patientState:{model}, FindPatient} = patientcontext; 
-  const foundPatient = FindPatient(); 
+  const {patientState:{model}} = patientcontext; 
 
   return <div> 
-    {IsEmpty(model) ? 
-      <span>...</span>:
-      <PatientContext.Provider value={patientcontext}> 
-        {!foundPatient ? 
-          <InputRamq/>: 
-          <PatientEditor/>} 
-      </PatientContext.Provider> } 
+    {!IsEmpty(model) && <PatientEditor {...{model}}/> }
   </div> 
 } 
 
-function InputRamq() { 
-  const {patientState:{model, patients}, InputRamq} = useContext(PatientContext); 
-  const ifield = model.ifields.find( f => f.accessor === 'ramq')!; 
-  const label = `${ifield.label[0] ?? ifield.accessor} : `; 
+function PatientEditor({model}:{model:IModel}) { 
+  //const {patientState:{model}, FindPatient } = useContext(PatientContext); 
 
-  return <div> 
-    <div>
-      {patients.map( p => {return <div>
-        {JSON.stringify(p)} 
-      </div>})} 
-    </div>
-    {label} <InputScalar {...InputRamq} /> 
-  </div> 
+  return <div className={style.roundbox}> 
+    <CrudEntryContexter {...{model, action:EnumCrud.Create}} > 
+      <CrudFeedback/> 
+      <hr/> 
+      <CrudEntry_PatientEditor/> 
+    </CrudEntryContexter> 
+  </div>
 } 
-
-function PatientEditor() { 
-  const {patientState:{model}, FindPatient } = useContext(PatientContext); 
-  const entry = FindPatient(); 
-  const crudcontext = {model, entry, defaultEntry:entry}; 
-
-  // return <CrudEntryContexter key={entry?.ramq} {...crudcontext} > 
-  //   {JSON.stringify(entry)} 
-  // </CrudEntryContexter>
-  return <CrudEntryContexter key={entry?.ramq} {...crudcontext} > 
-    <CrudEntry_PatientEditor/> 
-  </CrudEntryContexter> 
-} 
-
 
 
 function CrudEntry_PatientEditor() { 
-  const {crudEntry:{model}} = useContext(CrudEntryContext); 
-  //const _idfield = model.ifields.filter( f => f.accessor === '_id') ?? []; 
-  
-  const ramqIField = model.ifields.find( f => f.accessor === 'ramq')!; 
-  const editableIFields = model.ifields.filter( f => f.options?.editable && f.accessor != 'ramq' ); 
-
-  // return <div>
-  //   {JSON.stringify(editableIFields)} 
-  // </div>
+  const {crudEntry:{model, action, entries}} = useContext(CrudEntryContext); 
+  const editableIFields = model.ifields.filter( f => f.options?.editable ); 
 
   return <div> 
-    <CrudEntry_FieldEditor {...{ifield:ramqIField}} /> 
+    {entries.map( (entry, i) => { 
+      const logout = `${JSON.stringify(entry.ramq)} + ${JSON.stringify(entry.abbrev)}`; 
+      return <div key={i}>{logout}</div> 
+    })} 
+    
+    <span>Instruction ... {action} a new profile. </span> <br/> 
     {editableIFields.map( (ifield, i) => {return <CrudEntry_FieldEditor key={i} {...{ifield}}/>})} 
     <CrudConfirmCancelBtn/> 
   </div> 
 } 
+
+
+
+
+
+
+// export const PatientContext = React.createContext({} as ReturnType<typeof usePatient>); 
+// export function usePatient() { 
+//   const {dao} = useContext(DaoContext); 
+
+//   type TPatientEdit = typeof defaultPatientState; 
+//   const defaultPatientState = { 
+//     model:{} as IModel, 
+//     patient: {} as IPatient, 
+//     patients: [] as IPatient[], 
+//   } 
+
+//   const [patientState, setPatientState] = useState(defaultPatientState); 
+//   function SetPatientState(newPatientState:Partial<TPatientEdit>) { 
+//     setPatientState( prev => { return {...prev, ...newPatientState}}) 
+//   } 
+
+//   useEffect(() => { FetchPatientCollection() }, []) 
+
+//   async function FetchPatientCollection() { 
+//     const modelName = 'Patient'; 
+//     const [model] = await dao.ModelDescriptors({modelsName:[modelName]}); 
+//     const patients = await dao.Read({modelName, subfields:['_id', 'ramq']}); 
+//     SetPatientState({model, patients:patients as IPatient[]}) 
+//   }
+
+//   const InputRamq:React.ComponentProps<typeof InputScalar> = { 
+//     value: patientState.patient.ramq ?? '', 
+//     SetValue: (newRamq:string) => { 
+//       const patient = {ramq:newRamq, _id:''} as IPatient; 
+//       SetPatientState({patient}); 
+//     }, 
+//     defaultValue: '', 
+//     valueType:'string', 
+//   }
+
+//   // Return null if not found 
+//   async function FindPatient() { 
+//     const modelName = 'Patient'; 
+//     const {patient} = patientState; 
+//     const foundPatient = patientState.patients.find( p => p.ramq === patient.ramq ) 
+//     if(foundPatient) { 
+//       await dao.Read({modelName, ids:[foundPatient._id]}) 
+//         .then(([res]) => { 
+//           const patient = res as IPatient; 
+//           SetPatientState({patient}) 
+//         }); 
+//     }
+      
+//     return 
+//   } 
+
+//   return {patientState, InputRamq, FindPatient} 
+// }
+

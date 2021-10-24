@@ -55,7 +55,7 @@ export class Dao {
 
   private async IntrospectSubfields(model:IModel):Promise<string[]> { 
     const {accessor, ifields} = model; 
-    const introspection = await (this.TypeIntrospection(accessor)) 
+    const introspection = await this.TypeIntrospection(accessor) 
     // Returns nested subfields in case of a nested field
     return introspection.fields.map( field => { 
       const ifield = ifields.find( f => f.accessor === field.name ); 

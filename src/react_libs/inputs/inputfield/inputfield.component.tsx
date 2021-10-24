@@ -5,27 +5,38 @@ import { InputArray } from "../inputarray/inputarray.component";
 import { InputScalar } from "../inputscalar/inputscalar.component"; 
 import { InputSelect } from "../inputselect/inputselect"; 
 import { IsEmpty, FieldValidation } from "../../../utils/utils"; 
+import { DisplayArray, DisplayScalar } from '../display/display.component';
 
-
+import style from '../../../css/main.module.css'; 
 
 type TInputField = { 
   value:any, 
-  SetValue:(newValue:any) => void, 
+  SetValue?:(newValue:any) => void, 
   ifield:IField, 
   options?:IOption[] 
 } 
 
-export const InputFieldContext = React.createContext({} as Required<TInputField>); 
-export function InputField ( { children, options = [], ...props}:React.PropsWithChildren<TInputField>) { 
-  return <InputFieldContext.Provider value={{...props, options}}> 
+
+export const FieldContext = React.createContext({} as Required<TInputField>); 
+export function FieldContexter ( { children, 
+    value, SetValue = (newValue:any) => {}, 
+    ifield, options = [], }:React.PropsWithChildren<TInputField>) { 
+
+  return <FieldContext.Provider value={{value, SetValue, ifield, options}}> 
     {children} 
-  </InputFieldContext.Provider> 
+  </FieldContext.Provider> 
 } 
 
 
+export function DisplayFieldValue() { 
+  const {value, ifield, options} = useContext(FieldContext); 
+  return ifield.type.isArray ? <DisplayArray {...{values:value, options}} /> : 
+    <DisplayScalar {...{value, options}} /> 
+}
 
-export function FieldValue() { 
-  const {value, SetValue, ifield, options} = useContext(InputFieldContext); 
+
+export function InputFieldValue() { 
+  const {value, SetValue, ifield, options} = useContext(FieldContext); 
   const valueType = ifield.type.name; 
 
   return !IsEmpty(options) ? <InputSelect {...{value, SetValue, options, multiple:ifield.type.isArray}} /> : 
@@ -34,17 +45,15 @@ export function FieldValue() {
 }
 
 
-
 export function FieldLabel() { 
-  const {ifield} = useContext(InputFieldContext); 
-  const label = `${ifield.label ?? ifield.accessor} : `; 
+  const {ifield} = useContext(FieldContext); 
+  const label = `${ifield.label ?? ifield.accessor}`; 
   return <span>{label}</span> 
 } 
 
 
-
 export function FieldAnnotations() { 
-  const {ifield} = useContext(InputFieldContext); 
+  const {ifield} = useContext(FieldContext); 
   const {required, unique} = (ifield.options ?? {}) as IFieldOption; 
   const requiredAnnotation = required ? '*': ''; 
   const uniqueAnnotation = unique ? '!': ''; 
@@ -52,8 +61,10 @@ export function FieldAnnotations() {
 } 
 
 
-
 export function FieldCheck() { 
-  const {value, ifield} = useContext(InputFieldContext); 
-  return <span>{FieldValidation(value, ifield) ? '✔': '✖' }</span> 
+  const {value, ifield} = useContext(FieldContext); 
+  const valid = FieldValidation(value, ifield);
+  if(valid) 
+    return <span className={style.success}>{'✔'}</span> 
+  return <span className={style.error}>{'✖'}</span> 
 } 

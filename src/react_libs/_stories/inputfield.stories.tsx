@@ -3,10 +3,10 @@ import { Story } from '@storybook/react';
 
 
 // -------------------------------------------------------- 
-import { InputField, FieldCheck, FieldLabel, FieldValue } from '../inputs'; 
+import { FieldContexter, FieldCheck, FieldLabel, InputFieldValue } from '../inputs'; 
 
 
-type IInputSelect = React.ComponentProps<typeof InputField>; 
+type IInputSelect = React.ComponentProps<typeof FieldContexter>; 
 function TestInput(props:IInputSelect) { 
   const [value, setValue] = useState(props.value); 
   const SetValue = (newValue:any) => setValue(newValue); 
@@ -14,9 +14,9 @@ function TestInput(props:IInputSelect) {
 
   return <div> 
     {JSON.stringify(value)} <br/> 
-    <InputField {...args} > 
-      <FieldLabel/> <FieldValue/> <FieldCheck/> 
-    </InputField> 
+    <FieldContexter {...args} > 
+      <FieldLabel/> : <InputFieldValue/> <FieldCheck/> 
+    </FieldContexter> 
   </div> 
 } 
 

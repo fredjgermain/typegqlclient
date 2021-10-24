@@ -18,7 +18,7 @@ export function AdminPage() {
     {usemodelselector.modelSelector.model.accessor} 
     <div className={style.roundbox}> 
       <ModelSelector {...{usemodelselector}}/> 
-      <CrudEntryContexter key={model.accessor} {...{model}}> 
+      <CrudEntryContexter {...{model}}> 
         <hr/>
         <CrudEditorSection/> 
         <hr/>

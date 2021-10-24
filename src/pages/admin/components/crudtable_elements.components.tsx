@@ -3,7 +3,7 @@ import { useContext } from 'react';
 
 // -------------------------------------------------------------------- 
 import { EnumCrud } from '../../../dao/dao.class'; 
-import { DisplayField } from '../../../react_libs/inputs';
+import { FieldContexter, DisplayFieldValue } from '../../../react_libs/inputs'; 
 
 
 import { THeadContext, RowContext, ColContext } 
@@ -45,11 +45,14 @@ export function Cell() {
   const { crudEntry:{model, entries, ifieldsOptions} } = useContext(CrudEntryContext); 
   const {row} = useContext(RowContext); 
   const {col} = useContext(ColContext); 
-  const entry = (entries.find( entry => entry._id === row ) ?? {}) as IEntry; 
   const ifield = model.ifields.find( f => f.accessor === col) ?? {} as IField; 
+  const entry = (entries.find( entry => entry._id === row ) ?? {})!; 
+  const value = ((entry ?? {}) as any)[ifield.accessor]; 
   const options = ifieldsOptions[ifield.accessor]; 
 
-  return <DisplayField {...{entry, ifield, options}} /> 
+  return <FieldContexter {...{value, ifield, options}} > 
+    <DisplayFieldValue/> 
+  </FieldContexter> 
 } 
 
 
