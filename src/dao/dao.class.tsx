@@ -102,6 +102,7 @@ export class Dao {
   // READ .................................................
   public async Read({modelName, subfields, ids}:ArgsIds) { 
     const reducedSubfields = await this.GetReducedSubfields({modelName, subfields}); 
+    //console.log(reducedSubfields); 
     const query = request.Read(modelName, reducedSubfields); 
     const variables = {ids}; 
     

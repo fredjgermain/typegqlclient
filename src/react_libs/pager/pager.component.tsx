@@ -3,7 +3,7 @@ import { usePager } from './usepager.hook';
 
 
 
-type IUsePager = ReturnType<typeof usePager>; 
+type TUsePager = ReturnType<typeof usePager>; 
 
 
 
@@ -12,7 +12,7 @@ type IUsePager = ReturnType<typeof usePager>;
  * @param param0 
  * @returns 
  */
-export function PageOfPages({pages, pageIndex}:IUsePager) { 
+export function PageOfPages({pages, pageIndex}:TUsePager) { 
   return <div>Page {pageIndex+1} of {pages?.length ?? 0}</div> 
 } 
 
@@ -23,7 +23,7 @@ export function PageOfPages({pages, pageIndex}:IUsePager) {
  * @param param0 
  * @returns 
  */
-export function PagerBtns({pages, pageIndex, SetPageIndex}:IUsePager) { 
+export function PagerBtns({pages, pageIndex, SetPageIndex}:TUsePager) { 
   let indexes = pages.map( (p,i) => i); 
   if(indexes.length > 5) 
     indexes = AbbrevIndexes(pageIndex, indexes); 
