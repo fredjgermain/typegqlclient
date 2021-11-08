@@ -111,7 +111,7 @@ export class Dao {
       return ParseEntries(res.data) 
     } catch(err) { 
       throw err; 
-    }
+    } 
   } 
 
 
@@ -138,10 +138,11 @@ export class Dao {
   // CREATE ..................................................
   public async Create({modelName, subfields, inputs}:ArgsInputs) { 
     const action = EnumCrud.Create; 
-    const variables = {inputs:inputs.map( i => { 
-      const {_id, ...input} = i; 
-      return input; 
-    })}; 
+    const variables = {inputs}; 
+    // const variables = {inputs:inputs.map( i => { 
+    //   const {_id, ...input} = i; 
+    //   return input; 
+    // })}; 
     return await this.Mutation({action, modelName, subfields, variables}); 
   }
 

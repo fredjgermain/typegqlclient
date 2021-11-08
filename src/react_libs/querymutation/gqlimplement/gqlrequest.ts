@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client"; 
-import { ReduceToString } from "../utils/string.utils";
+import { ReduceToString } from "../../../utils/string.utils";
 
 
 function ReduceSubfields(subfields:string|string[]) { 

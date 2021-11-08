@@ -7,8 +7,7 @@ import { QuestionnaireContext, useQuestionnaire, IAnswer, IQuestion } from './ho
 
 
 
-export function QuestionnairePage() { 
-  const patient = {} as IEntry; 
+export function QuestionnairePage({patient}:{patient:IEntry}) { 
   const context = useQuestionnaire({patient}); 
   const {pager, ValidateAnswers} = context; 
   const items = pager.page; 
@@ -17,6 +16,8 @@ export function QuestionnairePage() {
   const valid = ValidateAnswers(); 
   
   return <QuestionnaireContext.Provider value={context}> 
+    <h3>{patient.ramq}</h3> 
+
     {question && <QuestionnaireHeader {...{question}} /> } 
     {items.map( ({qid}) => { 
       return <QuestionItem key={qid} {...{qid}} /> 
@@ -57,6 +58,7 @@ export function NextPageBtn () {
   const page = pager.page as IQuestion[]; 
 
   const pageValid = ValidateAnswers(page.map( q => q.qid )); 
+  console.log(pageValid)
 
   function NextPage() { pager.SetPageIndex(pager.pageIndex++); }
 

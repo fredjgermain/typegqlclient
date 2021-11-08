@@ -1,4 +1,3 @@
-import { InputScalar, InputSelect } from '../../react_libs/inputs'; 
 
 enum EnumResponseTypeNames { 
   number = "number", 
@@ -6,15 +5,6 @@ enum EnumResponseTypeNames {
   enums = "enums" 
 } 
 
-/*const InputTypes = { 
-  inputScalar: InputScalar, 
-  inputSelect: InputSelect, 
-} */
-
-const InputTypes = { 
-  inputScalar: InputScalar, 
-  inputSelect: InputSelect, 
-} 
 
 type TNumber = { 
   typeName: EnumResponseTypeNames.number, 
@@ -61,12 +51,11 @@ export function ResponseElement(responseType:TResponse) {
 }
 
 function ResponseTypeString({responseType}:{responseType:TString}) { 
-
-  return <div></div>
-}
+  
+  return <div></div> 
+} 
 
 function ResponseTypeNumber({responseType}:{responseType:TNumber}) { 
-
   return <div></div> 
 } 
 

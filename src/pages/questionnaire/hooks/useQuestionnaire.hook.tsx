@@ -4,6 +4,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { DaoContext } from '../../../dao/daocontexter.component'; 
 import { Predicate, ReduceToString } from '../../../utils/utils'; 
 import { usePager } from '../../../react_libs/pager';
+import { EnumCrud } from '../../../dao/dao.class';
 
 
 
@@ -29,7 +30,7 @@ export interface IQuestion extends IEntry {
 
 export interface IResponseGroup extends IEntry { 
   responsechoices: string[][]; 
-}
+} 
 
 
 
@@ -39,8 +40,15 @@ export function useQuestionnaire({patient}:{patient:IEntry}) {
 
   type TQuestionnaire = typeof defaultQuestionnaire; 
   const defaultQuestionnaire = { 
-    date: new Date(), 
+    feedback: { 
+      action:EnumCrud.Create, 
+      input:{} as any, 
+      success:false, 
+      feedback:{} as any
+    }, 
+    
     patient: patient, 
+    date: new Date(), 
     questions: [] as IQuestion[], 
     answers: [] as IAnswerItem[], 
   } 
@@ -90,7 +98,9 @@ export function useQuestionnaire({patient}:{patient:IEntry}) {
 
   async function FetchQuestionnaire() { 
     const subfields = await FetchQuestionnaireSubfields(); 
-    const questions = (await dao.Read({modelName:'Question', subfields})) as IQuestion[]; 
+    let questions = (await dao.Read({modelName:'Question', subfields})) as IQuestion[]; 
+    questions = questions.filter( (v, i) => i < 10 ); 
+    // pick only 10 questions for testing. 
     const answers = questions.map( ({qid}) => {return {qid, value:-1}} ) as IAnswerItem[]; 
     SetQuestionnaire({questions, answers}); 
   } 
@@ -101,9 +111,11 @@ export function useQuestionnaire({patient}:{patient:IEntry}) {
   async function SubmitAnswers() { 
     const {date, patient, answers} = questionnaire; 
     const inputs = [{_id:'', date, patient, answers}]; 
-    await dao.Create({modelName:'Answer', inputs}) 
-      .then( res => res ) 
-      .catch( err => err ); 
+    await dao.Create({modelName:'Answer', inputs})
+      .then( results => { 
+        const feedback = {...questionnaire.feedback, success:true, feedback:results, inputs}; 
+        SetQuestionnaire({feedback}); 
+      }) 
   } 
 
   function ValidateAnswers(qids?:string[]) { 
@@ -113,9 +125,7 @@ export function useQuestionnaire({patient}:{patient:IEntry}) {
 
     return answers.map( ({qid,value}) => { 
       const question = questionnaire.questions.find( q => q.qid === qid ); 
-      if( question && !question.optional && value < 0) 
-        return false; 
-      return true; 
+      return !(question && !question.optional && value < 0)
     }).every( v => v ); 
   } 
 

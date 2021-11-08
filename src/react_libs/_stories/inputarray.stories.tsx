@@ -4,18 +4,20 @@ import { Story } from '@storybook/react';
 
 // -------------------------------------------------------- 
 import { InputArray } from '../inputs/inputarray/inputarray'; 
+import { DaoContexter } from '../../dao/daocontexter.component'; 
+
 
 
 type TInputArray = React.ComponentProps<typeof InputArray> 
 function TestInput({...props}:TInputArray) { 
   const [values, setValues] = useState(props.values); 
   const SetValues = (newValue:any[]) => setValues(newValue); 
-  const args = {...props, values, SetValues}
+  const args = {...props, values, SetValues} 
 
-  return <div> 
+  return <div>
     {JSON.stringify(values)} <br/> 
     <InputArray {...args} /> 
-  </div> 
+  </div>
 } 
 
 

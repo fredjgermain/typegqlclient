@@ -129,6 +129,14 @@ export function Filter<T>(array:T[] = [], predicate:Predicate<T>):[T[], T[]] {
 
 
 
+export function Update<T>(source:T[] = [], updates:T[] = [], comparator:Comparator<T> ) { 
+  return source.map( a => { 
+    const update = updates.find( m => comparator(a, m) ) 
+    return update ?? a; 
+  }) 
+}
+
+
 /** UNIC ================= 
  * Takes an array and a 'sameness' criteria 
  * return 2 arrays [unic values, duplicates values] 
