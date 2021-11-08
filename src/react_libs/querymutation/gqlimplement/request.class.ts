@@ -21,28 +21,30 @@ export class GqlRequest {
   public Type() { return request.Type(); } 
 
   public Models(subfields?:TSubfield) { 
-    const _subfields = this.subfielder.CacheReduceToSubfields({subfields}); 
-    return request.ModelDescriptors(_subfields); 
+    const reducedSubfields = subfields ? 
+      this.subfielder.CacheReduceToSubfields({subfields}): 
+      this.defaultModelSubfields; 
+    return request.ModelDescriptors(reducedSubfields); 
   } 
 
   public Create(modelName:string, subfields?:TSubfield) { 
-    const _subfields = this.subfielder.CacheReduceToSubfields({modelName, subfields}); 
-    return request.Create(modelName, _subfields); 
+    const reducedSubfields = this.subfielder.CacheReduceToSubfields({modelName, subfields}); 
+    return request.Create(modelName, reducedSubfields); 
   } 
 
   public Read(modelName:string, subfields?:TSubfield) { 
-    const _subfields = this.subfielder.CacheReduceToSubfields({modelName, subfields}); 
-    return request.Read(modelName, _subfields); 
+    const reducedSubfields = this.subfielder.CacheReduceToSubfields({modelName, subfields}); 
+    return request.Read(modelName, reducedSubfields); 
   } 
 
   public Update(modelName:string, subfields?:TSubfield) { 
-    const _subfields = this.subfielder.CacheReduceToSubfields({modelName, subfields}); 
-    return request.Update(modelName, _subfields); 
+    const reducedSubfields = this.subfielder.CacheReduceToSubfields({modelName, subfields}); 
+    return request.Update(modelName, reducedSubfields); 
   } 
 
   public Delete(modelName:string, subfields?:TSubfield) { 
-    const _subfields = this.subfielder.CacheReduceToSubfields({modelName, subfields}); 
-    return request.Delete(modelName, _subfields); 
+    const reducedSubfields = this.subfielder.CacheReduceToSubfields({modelName, subfields}); 
+    return request.Delete(modelName, reducedSubfields); 
   } 
 
 

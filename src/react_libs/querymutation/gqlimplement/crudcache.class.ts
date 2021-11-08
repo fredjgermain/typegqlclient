@@ -2,11 +2,13 @@ import { ApolloClient, NormalizedCacheObject }
   from "@apollo/client"; 
 
 // --------------------------------------------------------
-import * as request from '../../../dao/gql'; 
+//import * as request from '../../../dao/gql'; 
+// import { GqlIntrospection } from "./introspection.class"; 
+// import { GqlSubfields } from "./subfields.class";
 import { GqlQueryMutation } from "./querymutation.class"; 
-import { GqlIntrospection } from "./introspection.class"; 
 import { Filter, Update } from "../../../utils/utils"; 
-import { GqlSubfields } from "./subfields.class";
+import { GqlRequest } from "./request.class";
+
 
 
 function ParseEntries(queryResult:any):IEntry[] { 
@@ -16,19 +18,21 @@ function ParseEntries(queryResult:any):IEntry[] {
 
 
 export class GqlCrudCache { 
+  private request: GqlRequest; 
   private querymutation: GqlQueryMutation; 
-  private introspection: GqlIntrospection; 
-  private subfielder: GqlSubfields; 
+  // private introspection: GqlIntrospection; 
+  // private subfielder: GqlSubfields; 
 
   constructor(client:ApolloClient<NormalizedCacheObject>) { 
+    this.request = new GqlRequest(client); 
     this.querymutation = new GqlQueryMutation(client); 
-    this.introspection = new GqlIntrospection(client); 
-    this.subfielder = new GqlSubfields(client); 
+    // this.introspection = new GqlIntrospection(client); 
+    // this.subfielder = new GqlSubfields(client); 
   } 
 
   private Mutation({modelName, modEntries, subfields}:{modelName:string, modEntries:IEntry[], subfields?:string[]}) { 
-    const _subfields = this.subfielder.CacheReduceToSubfields({modelName}); 
-    const query = request.Read(modelName, _subfields); 
+    //const _subfields = this.subfielder.CacheReduceToSubfields({modelName}); 
+    const query = this.request.Read(modelName, subfields); 
     const queryName = `Read${modelName}`; 
     this.querymutation.CacheWrite({queryName, query, modEntries}); 
   } 
@@ -41,8 +45,8 @@ export class GqlCrudCache {
     return inputs; 
   } 
   public Read({modelName, ids, subfields}:ReadArgs): IEntry[] { 
-    const _subfields = this.subfielder.CacheReduceToSubfields({modelName}); 
-    const query = request.Read(modelName, _subfields); 
+    //const _subfields = this.subfielder.CacheReduceToSubfields({modelName}); 
+    const query = this.request.Read(modelName, subfields); 
     const results = this.querymutation.CacheQuery({query, variables:{ids}}) as IEntry[]; 
     return ParseEntries(results); 
   } 

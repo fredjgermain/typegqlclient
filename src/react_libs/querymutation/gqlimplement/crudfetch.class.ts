@@ -2,10 +2,11 @@ import { ApolloClient, NormalizedCacheObject }
   from "@apollo/client"; 
 
 // --------------------------------------------------------
-import * as request from '../../../dao/gql'; 
+//import * as request from '../../../dao/gql'; 
 import { GqlQueryMutation } from "./querymutation.class"; 
 import { GqlIntrospection } from "./introspection.class"; 
 import { GqlSubfields } from "./subfields.class";
+import { GqlRequest } from "./request.class";
 
 
 
@@ -18,22 +19,24 @@ function ParseEntries(queryResult:any):IEntry[] {
 
 // ApolloGqlDao ---------------------------------------------- 
 export class GqlCrudFetch { 
+  private request: GqlRequest; 
   private querymutation: GqlQueryMutation; 
-  private introspection: GqlIntrospection; 
-  private subfielder: GqlSubfields; 
+  // private subfielder: GqlSubfields; 
+  // private introspection: GqlIntrospection; 
 
   constructor(client:ApolloClient<NormalizedCacheObject>) { 
     this.querymutation = new GqlQueryMutation(client); 
-    this.introspection = new GqlIntrospection(client); 
-    this.subfielder = new GqlSubfields(client); 
+    this.request = new GqlRequest(client); 
+    // this.introspection = new GqlIntrospection(client); 
+    // this.subfielder = new GqlSubfields(client); 
   } 
 
   public async Create({modelName, inputs, subfields}:CreateArgs): Promise<IEntry[]> { 
     return await this.Mutation({action:'Create', modelName, variables:{inputs}, subfields}); 
   } 
   public async Read({modelName, ids, subfields}:ReadArgs): Promise<IEntry[]> { 
-    const _subfields = await this.subfielder.ReduceToSubfields({modelName, subfields}); 
-    const query = request.Read(modelName, _subfields); 
+    //const _subfields = await this.subfielder.ReduceToSubfields({modelName, subfields}); 
+    const query = this.request.Read(modelName, subfields); 
     const results = await this.querymutation.Query({query, variables:{ids}}); 
     return ParseEntries(results); 
   } 
@@ -47,8 +50,8 @@ export class GqlCrudFetch {
   private async Mutation({action, modelName, variables, subfields}: 
     {action:string, modelName:string, subfields?:string[], variables:any}) 
     :Promise<IEntry[]> { 
-      const _subfields = await this.subfielder.ReduceToSubfields({modelName, subfields}); 
-      const mutation = (request as any)[action](modelName, _subfields); 
+      //const _subfields = await this.subfielder.ReduceToSubfields({modelName, subfields}); 
+      const mutation = (this.request as any)[action](modelName, subfields); 
       const results = await this.querymutation.Mutation({mutation, variables}); 
       return ParseEntries(results); 
   }
